@@ -8,6 +8,7 @@ import argparse
 sys.stdout.reconfigure(encoding='utf-8')
 from data_fetcher import init_db, sync_fred_data, compute_net_liquidity, sync_market_data, sync_news_data, get_latest_snapshot
 from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment
+from backtest_engine import load_backtest_price_matrix, run_event_study_backtest, compute_historical_analog_similarity
 from narrative_generator import generate_report_payload, generate_whatsapp_broadcast
 from html_generator import render_html_report
 
@@ -19,7 +20,7 @@ def run_pipeline(sync=True, print_wa=True):
     init_db()
     
     if sync:
-        print("\n[1/4] Ingesting point-in-time FRED balance sheet & indicators...")
+        print("\n[1/5] Ingesting point-in-time FRED balance sheet & indicators...")
         sync_fred_data()
         print("      Calculating Fed Net Liquidity...")
         compute_net_liquidity()
@@ -28,9 +29,9 @@ def run_pipeline(sync=True, print_wa=True):
         print("      Ingesting verified Global & Indonesia Macro News RSS...")
         sync_news_data()
     else:
-        print("\n[1/4] Skipping live sync, reading cached database...")
+        print("\n[1/5] Skipping live sync, reading cached database...")
         
-    print("\n[2/4] Running Quantitative Analytics & Regime Classifier...")
+    print("\n[2/5] Running Quantitative Analytics & Regime Classifier...")
     snapshot = get_latest_snapshot()
     price_df = load_price_history()
     
@@ -47,10 +48,26 @@ def run_pipeline(sync=True, print_wa=True):
     print(f"      USD/IDR: Rp {indo_macro['usdidr_val']:,.0f} [{indo_macro['kurs_status']}]")
     print(f"      Crypto Stance: {regime['crypto_stance']}")
     
-    print("\n[3/4] Synthesizing Causality Chain & WhatsApp Broadcast...")
-    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro)
+    print("\n[3/5] Executing Phase 3: Event-Study Backtesting & 5D Historical Analog Engine...")
+    hist_prices = load_backtest_price_matrix()
+    backtest_res = run_event_study_backtest(hist_prices)
     
-    print("\n[4/4] Generating Futuristic Minimalist HTML Report...")
+    curr_features = {
+        "us10y": snapshot.get("prices", {}).get("^TNX", {}).get("close", 5.0),
+        "real_yield": snapshot.get("fred", {}).get("DFII10", {}).get("value", 2.0),
+        "oil": snapshot.get("prices", {}).get("CL=F", {}).get("close", 100.0),
+        "dxy": snapshot.get("prices", {}).get("DX-Y.NYB", {}).get("close", 102.0),
+        "vix": snapshot.get("prices", {}).get("^VIX", {}).get("close", 17.0),
+        "net_liq_chg": snapshot.get("net_liquidity", {}).get("change_4w_bil", 40.0)
+    }
+    analogs = compute_historical_analog_similarity(curr_features)
+    print(f"      Historical Analog Match: {analogs[0]['name']} ({analogs[0]['similarity_score']}%)")
+    print(f"      Event Studies Backtested: {len(backtest_res)} event regimes")
+    
+    print("\n[4/5] Synthesizing Causality Chain & WhatsApp Broadcast...")
+    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, analogs, backtest_res)
+    
+    print("\n[5/5] Generating Futuristic Minimalist HTML Report...")
     report_file = render_html_report(payload, output_path="report_us_macro.html")
     print(f"      Dashboard generated: file:///{report_file.replace('\\', '/')}")
     
