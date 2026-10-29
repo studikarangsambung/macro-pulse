@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="300">
+    <title>MACRO PULSE · US Sectors & Crypto Intelligence</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        vault: {
+                            950: '#06070A',
+                            900: '#0A0C11',
+                            850: '#10131B',
+                            800: '#171B26',
+                            700: '#262C3D',
+                        },
+                        accent: {
+                            cyan: '#00F0FF',
+                            purple: '#7928CA',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #06070A;
+            color: #E2E8F0;
+            letter-spacing: -0.01em;
+        }
+        .glass-card {
+            background: linear-gradient(135deg, rgba(16, 19, 27, 0.75) 0%, rgba(10, 12, 17, 0.6) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.25);
+            box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.3);
+        }
+        .tab-btn.active {
+            background-color: #171B26;
+            color: #00F0FF;
+            border-color: rgba(0, 240, 255, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06070A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262C3D;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-cyan-500/20 selection:text-cyan-300">
+
+    <!-- Top Glow Element -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-cyan-500/10 blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed top-40 right-10 w-[400px] h-[300px] bg-purple-600/10 blur-[130px] pointer-events-none -z-10"></div>
+
+    <!-- Sticky Minimal Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-vault-950/80 border-b border-white/[0.06] px-4 sm:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-black text-black text-sm tracking-wider">
+                    MP
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
+                        MACRO PULSE <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400">US & Crypto Engine v1.0</span>
+                    </h1>
+                    <p class="text-xs text-zinc-400 font-mono">Thursday, 29 October 2026 · 10:58 WIB</p>
+                </div>
+            </div>
+
+            <!-- Tab Switcher (Personalization Filter) -->
+            <div class="flex items-center bg-vault-900/90 p-1 rounded-xl border border-white/10 text-xs font-medium">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded-lg border border-transparent transition-all">Overview</button>
+                <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all">US Sectors</button>
+                <button onclick="switchTab('tab-crypto')" id="btn-tab-crypto" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all">Crypto & Liquidity</button>
+                <button onclick="switchTab('tab-whatsapp')" id="btn-tab-whatsapp" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>WhatsApp
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-10">
+
+        <!-- HERO REGIME BANNER -->
+        <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono tracking-wider uppercase font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                            CURRENT MACRO REGIME
+                        </span>
+                        <span class="text-xs font-mono text-zinc-400">Analog: 1973 Oil Shock / Q2 2022 Fed Rate Shock</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                        STAGFLASI ENERGI & SQUEEZE BIAYA
+                    </h2>
+                    <p class="text-sm text-zinc-300 max-w-3xl leading-relaxed">
+                        Tekanan pasokan komoditas energi menaikkan yield dan membatasi ruang pelonggaran bank sentral, menekan margin emiten non-energi.
+                    </p>
+                </div>
+
+                <!-- EWS Tally Scorecard -->
+                <div class="flex items-center gap-3 shrink-0 bg-vault-900/80 p-3.5 rounded-xl border border-white/10">
+                    <div class="text-center px-3 border-r border-white/10">
+                        <div class="text-xl font-bold font-mono text-rose-400">3</div>
+                        <div class="text-[10px] text-zinc-400 uppercase tracking-wider">Bahaya</div>
+                    </div>
+                    <div class="text-center px-3 border-r border-white/10">
+                        <div class="text-xl font-bold font-mono text-amber-400">1</div>
+                        <div class="text-[10px] text-zinc-400 uppercase tracking-wider">Waspada</div>
+                    </div>
+                    <div class="text-center px-3">
+                        <div class="text-xl font-bold font-mono text-emerald-400">4</div>
+                        <div class="text-[10px] text-zinc-400 uppercase tracking-wider">Aman</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Causality Chain Streamline -->
+            <div class="mt-6 pt-6 border-t border-white/[0.06] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+                <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
+                    <div class="text-[10px] text-cyan-400 uppercase font-semibold">1 · Pemicu Makro</div>
+                    <div class="text-zinc-200">US10Y (5.04%) & WTI ($101.44)</div>
+                </div>
+                <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
+                    <div class="text-[10px] text-amber-400 uppercase font-semibold">2 · Kondisi Moneter</div>
+                    <div class="text-zinc-200">Suku bunga riil tinggi & Ekspektasi inflasi alot</div>
+                </div>
+                <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
+                    <div class="text-[10px] text-purple-400 uppercase font-semibold">3 · Transmisi Sektor</div>
+                    <div class="text-zinc-200">Rotasi modal ke XLE (Energy), XLB (Materials)</div>
+                </div>
+                <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
+                    <div class="text-[10px] text-emerald-400 uppercase font-semibold">4 · Sikap Crypto</div>
+                    <div class="text-zinc-200">DEFENSIVE / VOLATILE (Tunggu stabilisasi yield real)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 1: OVERVIEW -->
+        <div id="tab-overview" class="tab-pane space-y-8">
+            
+            <!-- KEY ASSET METRIC TICKERS -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">Bitcoin (BTC)</div>
+                    <div class="text-lg font-bold font-mono text-white">$79,780</div>
+                    <div class="text-xs font-mono text-rose-400">
+                        -1.27% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">S&P 500 (SPY)</div>
+                    <div class="text-lg font-bold font-mono text-white">$772.31</div>
+                    <div class="text-xs font-mono text-emerald-400">
+                        +0.34% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">US 10Y Yield</div>
+                    <div class="text-lg font-bold font-mono text-white">5.045%</div>
+                    <div class="text-xs font-mono text-zinc-400">Benchmark Rate</div>
+                </div>
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">US Dollar (DXY)</div>
+                    <div class="text-lg font-bold font-mono text-white">102.16</div>
+                    <div class="text-xs font-mono text-rose-400">
+                        -0.16% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">WTI Crude Oil</div>
+                    <div class="text-lg font-bold font-mono text-white">$101.44</div>
+                    <div class="text-xs font-mono text-emerald-400">
+                        +1.54% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">Fed Net Liquidity</div>
+                    <div class="text-lg font-bold font-mono text-cyan-400">$5,801.4B</div>
+                    <div class="text-xs font-mono text-emerald-400">
+                        +42.3B (4W)
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2-COL GRID: EWS & CORRELATION MATRIX -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Early Warning Signals -->
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+                        <h3 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>EARLY WARNING SIGNALS (EWS)
+                        </h3>
+                        <span class="text-xs font-mono text-zinc-400">8 Triggers Monitored</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">US 10Y Treasury Yield</div>
+                                <div class="text-[11px] text-zinc-400">Yield 10Y di level restriktif 5.045%, menaikkan discount rate aset durasi panjang (Tech & Crypto).</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">5.045%</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BAHAYA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">Yield Curve (10Y - 3M T-Bill)</div>
+                                <div class="text-[11px] text-zinc-400">Kurva un-inverting / steepening (105.0 bps).</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">+105.0 bps</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>WASPADA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">US 10Y Real Yield (TIPS)</div>
+                                <div class="text-[11px] text-zinc-400">Suku bunga riil 2.64% di atas 2.0% membatasi ekspansi PE ratio Tech dan apresiasi Crypto.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">2.64%</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BAHAYA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">US High Yield Credit Spread</div>
+                                <div class="text-[11px] text-zinc-400">Spread 318 bps rendah - pasar kredit korporasi tenang.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">318 bps</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>AMAN</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">CBOE Volatility Index (VIX)</div>
+                                <div class="text-[11px] text-zinc-400">VIX 16.91 relatif stabil di bawah 20.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">16.91</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>AMAN</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">Fed Net Liquidity (4W Delta)</div>
+                                <div class="text-[11px] text-zinc-400">Injeksi likuiditas bersih Fed +$42.3B (Katalis positif BTC & Growth).</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">$5,801.4B (+42.3B)</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>AMAN</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">US Dollar Index (DXY)</div>
+                                <div class="text-[11px] text-zinc-400">DXY 102.16 lemah/stabil, suportif untuk komoditas & crypto.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">102.16</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>AMAN</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">WTI Crude Oil</div>
+                                <div class="text-[11px] text-zinc-400">Minyak $101.44/bbl memicu risiko stagflasi dan kenaikan ekspektasi inflasi.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">$101.44</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BAHAYA</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Cross-Asset Correlations -->
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+                        <h3 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>CROSS-ASSET CORRELATION MATRIX
+                        </h3>
+                        <span class="text-xs font-mono text-zinc-400">Rolling 30-Day Pearson r</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">BTC-USD ↔ QQQ</div>
+                                <div class="text-[11px] text-zinc-400">Korelasi High-Beta Tech vs Crypto (Expected: +0.60 to +0.85)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-emerald-400">+0.54</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">NORMAL</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">BTC-USD ↔ DX-Y.NYB</div>
+                                <div class="text-[11px] text-zinc-400">Korelasi Likuiditas Dolar vs Bitcoin (Expected: -0.50 to -0.75)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-rose-400">-0.17</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">BREAK</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">XLK ↔ ^TNX</div>
+                                <div class="text-[11px] text-zinc-400">Tekanan Discount Rate pada Sektor Teknologi (Expected: -0.40 to -0.65)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-emerald-400">+0.57</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20">INVERT</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">XLE ↔ CL=F</div>
+                                <div class="text-[11px] text-zinc-400">Transmisi Harga Minyak ke Sektor Energi (Expected: +0.70 to +0.90)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-emerald-400">+0.41</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">NORMAL</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">^VIX ↔ SPY</div>
+                                <div class="text-[11px] text-zinc-400">Inversi Volatilitas terhadap Indeks Saham (Expected: -0.70 to -0.85)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-rose-400">-0.88</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">NORMAL</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">GC=F ↔ DX-Y.NYB</div>
+                                <div class="text-[11px] text-zinc-400">Inversi Dolar terhadap Emas (Expected: -0.40 to -0.60)</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-rose-400">-0.18</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">BREAK</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 2: US 11 SECTORS DEEP-DIVE -->
+        <div id="tab-sectors" class="tab-pane hidden space-y-6">
+            <div class="glass-card rounded-2xl p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+                    <div>
+                        <h3 class="text-base font-bold text-white">S&P 500 Select Sector SPDR Tracker</h3>
+                        <p class="text-xs text-zinc-400">Rotasi momentum dan keselarasan dengan rezim makro saat ini</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono">
+                        <span class="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">OW = Overweight</span>
+                        <span class="px-2 py-1 rounded bg-zinc-800 text-zinc-300 border border-white/10">N = Neutral</span>
+                        <span class="px-2 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">UW = Underweight</span>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="text-[11px] font-mono text-zinc-400 uppercase tracking-wider border-b border-white/[0.06]">
+                            <tr>
+                                <th class="pb-3 font-semibold">Ticker & Sektor</th>
+                                <th class="pb-3 font-semibold">Profil Karakter</th>
+                                <th class="pb-3 font-semibold text-right">Harga</th>
+                                <th class="pb-3 font-semibold text-right">1D %</th>
+                                <th class="pb-3 font-semibold text-right">5D %</th>
+                                <th class="pb-3 font-semibold text-right">20D %</th>
+                                <th class="pb-3 font-semibold text-right">Momentum</th>
+                                <th class="pb-3 font-semibold text-right">Rekomendasi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/[0.04] font-mono">
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLE</span>
+                                    <span class="font-sans font-medium text-zinc-200">Energy</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Inflation Hedge / Commodity Shock</td>
+                                <td class="py-3.5 text-right font-bold text-white">$68.45</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.35%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.43%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+11.30%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+5.85</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        OVERWEIGHT (OW)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLU</span>
+                                    <span class="font-sans font-medium text-zinc-200">Utilities</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Bond Proxy / AI Power Demand</td>
+                                <td class="py-3.5 text-right font-bold text-white">$42.49</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.84%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+1.17%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+7.73%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+4.05</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLP</span>
+                                    <span class="font-sans font-medium text-zinc-200">Consumer Staples</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Defensive / Margin Squeeze</td>
+                                <td class="py-3.5 text-right font-bold text-white">$86.84</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.36%</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.31%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+7.74%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+3.71</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLB</span>
+                                    <span class="font-sans font-medium text-zinc-200">Materials</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Commodity / Infrastructure</td>
+                                <td class="py-3.5 text-right font-bold text-white">$51.86</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.15%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+1.05%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+6.49%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+3.59</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                        OVERWEIGHT (OW)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLV</span>
+                                    <span class="font-sans font-medium text-zinc-200">Health Care</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Defensive / Non-cyclical</td>
+                                <td class="py-3.5 text-right font-bold text-white">$179.72</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.30%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.44%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+6.71%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+3.55</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLY</span>
+                                    <span class="font-sans font-medium text-zinc-200">Consumer Discretionary</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Consumer Health / Rate Sensitive</td>
+                                <td class="py-3.5 text-right font-bold text-white">$115.33</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.10%</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.17%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+5.96%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+2.91</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                        UNDERWEIGHT (UW)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLF</span>
+                                    <span class="font-sans font-medium text-zinc-200">Financials</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Yield Curve Steepening / Credit</td>
+                                <td class="py-3.5 text-right font-bold text-white">$56.13</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.45%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.16%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+5.11%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+2.69</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLRE</span>
+                                    <span class="font-sans font-medium text-zinc-200">Real Estate</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Debt Burden / Yield Sensitive</td>
+                                <td class="py-3.5 text-right font-bold text-white">$42.13</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.73%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.17%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+2.98%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+1.40</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                        UNDERWEIGHT (UW)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLI</span>
+                                    <span class="font-sans font-medium text-zinc-200">Industrials</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">Global Trade / Capex Cycle</td>
+                                <td class="py-3.5 text-right font-bold text-white">$168.49</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.34%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.11%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.90%</td>
+                                <td class="py-3.5 text-right font-bold text-white">+0.55</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLK</span>
+                                    <span class="font-sans font-medium text-zinc-200">Technology</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">High Beta / Long Duration</td>
+                                <td class="py-3.5 text-right font-bold text-white">$191.00</td>
+                                <td class="py-3.5 text-right text-emerald-400">+0.80%</td>
+                                <td class="py-3.5 text-right text-emerald-400">+1.30%</td>
+                                <td class="py-3.5 text-right text-rose-400">-2.43%</td>
+                                <td class="py-3.5 text-right font-bold text-white">-0.67</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                        UNDERWEIGHT (UW)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-white/[0.02] transition-colors">
+                                <td class="py-3.5 font-bold text-white flex items-center gap-2">
+                                    <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs">XLC</span>
+                                    <span class="font-sans font-medium text-zinc-200">Communication Services</span>
+                                </td>
+                                <td class="py-3.5 font-sans text-zinc-400">High Beta / Ad Cyclical</td>
+                                <td class="py-3.5 text-right font-bold text-white">$103.14</td>
+                                <td class="py-3.5 text-right text-rose-400">-0.42%</td>
+                                <td class="py-3.5 text-right text-rose-400">-5.35%</td>
+                                <td class="py-3.5 text-right text-rose-400">-7.06%</td>
+                                <td class="py-3.5 text-right font-bold text-white">-5.22</td>
+                                <td class="py-3.5 text-right">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-white/10">
+                                        NEUTRAL (N)
+                                    </span>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: CRYPTO & LIQUIDITY -->
+        <div id="tab-crypto" class="tab-pane hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs font-bold">BTC-USD</span>
+                        <span class="text-xs text-zinc-400 font-mono">Digital Gold / High Beta Liquidity</span>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$79,779.60</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.27% (1D) · -2.32% (20D)</div>
+                    </div>
+                    <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
+                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs font-bold">ETH-USD</span>
+                        <span class="text-xs text-zinc-400 font-mono">Smart Contract / Tech Platform</span>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$2,304.91</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.82% (1D) · -6.76% (20D)</div>
+                    </div>
+                    <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
+                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-cyan-400 font-mono text-xs font-bold">SOL-USD</span>
+                        <span class="text-xs text-zinc-400 font-mono">High Throughput / Speculative Beta</span>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$99.57</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.66% (1D) · -9.02% (20D)</div>
+                    </div>
+                    <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
+                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                    </div>
+                </div>
+                
+
+            </div>
+
+            <!-- Fed Net Liquidity Card -->
+            <div class="glass-card rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-white/[0.06]">
+                    <div>
+                        <h3 class="text-base font-bold text-white">Fed Net Liquidity Engine</h3>
+                        <p class="text-xs text-zinc-400">Total Assets (WALCL) − Treasury General Account (TGA) − Overnight Reverse Repo (RRP)</p>
+                    </div>
+                    <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20">
+                        Historical Correlation with BTC: +0.82
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
+                    <div class="bg-vault-900/70 p-4 rounded-xl border border-white/5">
+                        <div class="text-xs text-zinc-400">Fed Total Assets (WALCL)</div>
+                        <div class="text-lg font-bold font-mono text-white mt-1">$6,753,604M</div>
+                    </div>
+                    <div class="bg-vault-900/70 p-4 rounded-xl border border-white/5">
+                        <div class="text-xs text-zinc-400">Treasury TGA (WTREGEN)</div>
+                        <div class="text-lg font-bold font-mono text-amber-400 mt-1">$952,002M</div>
+                    </div>
+                    <div class="bg-vault-900/70 p-4 rounded-xl border border-white/5">
+                        <div class="text-xs text-zinc-400">Reverse Repo (RRP)</div>
+                        <div class="text-lg font-bold font-mono text-zinc-300 mt-1">$0.176B</div>
+                    </div>
+                    <div class="bg-vault-900/70 p-4 rounded-xl border border-cyan-500/30">
+                        <div class="text-xs text-cyan-400 font-semibold">Net Liquidity Result</div>
+                        <div class="text-lg font-bold font-mono text-cyan-300 mt-1">$5,801.4B</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: WHATSAPP BROADCAST (READY TO COPY) -->
+        <div id="tab-whatsapp" class="tab-pane hidden space-y-6">
+            <div class="glass-card rounded-2xl p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+                    <div>
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            WhatsApp Macro & Sector Impact Broadcast
+                        </h3>
+                        <p class="text-xs text-zinc-400">Teks rantai kausalitas sentimen siap salin dan kirim langsung ke grup investor</p>
+                    </div>
+                    <button onclick="copyToClipboard()" id="copy-btn" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold font-mono flex items-center gap-2 transition-all">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <textarea id="wa-text" readonly rows="22" class="w-full bg-vault-950/90 border border-white/10 rounded-xl p-4 font-mono text-xs text-zinc-200 leading-relaxed focus:outline-none focus:border-cyan-500/50 resize-y">🌐 *MACRO PULSE | US SECTORS & CRYPTO RADAR*
+📅 Thursday, 29 Oct 2026 · 10:58 WIB
+🏛 *REZIM MAKRO:* STAGFLASI ENERGI & SQUEEZE BIAYA
+⚠️ *STATUS EWS:* 🔴 3 Bahaya | 🟡 1 Waspada | 🟢 4 Aman
+
+━━━━━━━━━━━━━━━━━━━━━
+⚡ *RANTAI TRANSMISI KAUSALITAS (SENTIMEN & DAMPAK):*
+1️⃣ *Pemicu:* Minyak WTI ($101.44) & US10Y (5.04%) berada di zona elevasi tinggi
+   ⬇️
+2️⃣ *Transmisi Moneter:* Ekspektasi Inflasi bertahan alot -> The Fed terkunci pada suku bunga tinggi (Higher for Longer)
+   ⬇️
+3️⃣ *Efek Likuiditas:* Suku Bunga Riil (TIPS) menekan valuasi PE saham High-Beta Tech & menahan inflow Crypto
+   ⬇️
+4️⃣ *Dampak Akhir Sektor & Crypto:* Terjadi rotasi modal agresif ke sektor Energi (XLE) & Material (XLB) sebagai benteng proteksi inflasi
+
+━━━━━━━━━━━━━━━━━━━━━
+📊 *MARKET SNAPSHOT:*
+• *S&P 500 (SPY):* $772.31 (+0.34%)
+• *Nasdaq (QQQ):* $725.61 (+0.60%)
+• *Bitcoin (BTC):* $79,780 (-1.27%)
+• *US 10Y Yield:* 5.045%
+• *DXY (Dollar):* 102.16
+• *WTI Oil:* $101.44 (+1.54%)
+• *Gold:* $4,053.1
+• *Fed Net Liquidity:* $5,801.4B (+42.3B 4W)
+
+━━━━━━━━━━━━━━━━━━━━━
+🏆 *ROTASI 11 SEKTOR US (TACTICAL ACTION):*
+🟢 *Top Momentum (Overweight):*
+  • *XLE* (Energy): Momentum Score +5.8 | 1D: +0.35% | 20D: +11.30%
+  • *XLU* (Utilities): Momentum Score +4.0 | 1D: -0.84% | 20D: +7.73%
+  • *XLP* (Consumer Staples): Momentum Score +3.7 | 1D: -0.36% | 20D: +7.74%
+
+🔴 *Bottom Laggards (Underweight):*
+  • *XLI* (Industrials): Momentum Score +0.6 | 1D: +0.34% | 20D: +0.90%
+  • *XLK* (Technology): Momentum Score -0.7 | 1D: +0.80% | 20D: -2.43%
+  • *XLC* (Communication Services): Momentum Score -5.2 | 1D: -0.42% | 20D: -7.06%
+
+━━━━━━━━━━━━━━━━━━━━━
+🪙 *CRYPTO & LIQUIDITY MATRIX:*
+• *BTC-USD:* $79,780 (20D Chg: -2.32%)
+• *ETH-USD:* $2,305
+• *SOL-USD:* $99.57
+• *ETH/BTC Ratio:* 0.0289 (Altseason Pause / BTC Dominance)
+• *Crypto Stance:* DEFENSIVE / VOLATILE (Tunggu stabilisasi yield real)
+
+━━━━━━━━━━━━━━━━━━━━━
+💡 *KESIMPULAN & STRATEGI EKSEKUSI:*
+Tekanan pasokan komoditas energi menaikkan yield dan membatasi ruang pelonggaran bank sentral, menekan margin emiten non-energi.
+• *Historical Analog:* Mirip episode _1973 Oil Shock / Q2 2022 Fed Rate Shock_.
+• *Playbook:* Fokus alokasi pada sektor yang selaras dengan siklus saat ini (XLE (Energy), XLB (Materials), Cash / Bil). Hindari agresivitas di sektor tertinggal (XLK (Tech), XLY (Discretionary), XLRE (Real Estate)).
+
+_Generated by Antigravity US Macro & Crypto Engine_</textarea>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-8 py-8 border-t border-white/[0.06] text-center text-xs text-zinc-500 font-mono">
+        MACRO PULSE · Institutional-grade Pattern Recognition Engine for US Equities & Crypto. Point-in-time FRED & Market Ingestion.
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+            
+            const btn = document.getElementById('btn-' + tabId);
+            if (btn) btn.classList.add('active');
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("wa-text");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            const btn = document.getElementById("copy-btn");
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✅ Copied to Clipboard!";
+            btn.classList.remove("bg-emerald-500", "text-black");
+            btn.classList.add("bg-cyan-400", "text-black");
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove("bg-cyan-400");
+                btn.classList.add("bg-emerald-500", "text-black");
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
