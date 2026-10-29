@@ -4,10 +4,16 @@ on:
   schedule:
     # 22:30 UTC = 05:30 WIB (Pasca penutupan bursa Wall Street)
     - cron: '30 22 * * 1-5'
-    # 13:00 UTC = 20:00 WIB (Jelang pembukaan bursa Wall Street)
-    - cron: '0 13 * * 1-5'
-    # 05:00 UTC = 12:00 WIB (Siang sesi Asia / Eropa)
+    # 02:00 UTC = 09:00 WIB (Pembukaan pasar Asia / Sesi 1 IHSG)
+    - cron: '0 2 * * 1-5'
+    # 05:00 UTC = 12:00 WIB (Siang sesi Asia / Pembukaan bursa Eropa)
     - cron: '0 5 * * *'
+    # 09:00 UTC = 16:00 WIB (Penutupan pasar domestik IHSG)
+    - cron: '0 9 * * 1-5'
+    # 13:00 UTC = 20:00 WIB (Jelang pembukaan Wall Street & Rilis PCE/CPI/NFP)
+    - cron: '0 13 * * 1-5'
+    # 15:30 UTC = 22:30 WIB (Sesi aktif perdagangan New York)
+    - cron: '30 15 * * 1-5'
   workflow_dispatch: # Memungkinkan tombol 'Run workflow' manual kapan saja dari web/aplikasi HP
   push:
     branches: [main, master]
@@ -27,6 +33,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Jakarta'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

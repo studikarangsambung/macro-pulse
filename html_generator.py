@@ -174,19 +174,28 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         </div>
     </header>
 
-    <!-- MAIN HERO & LIVESTREAM STRIP -->
-    <section class="bg-forest-700 text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800">
-        <div class="max-w-7xl mx-auto space-y-6">
+    <!-- MAIN HERO & LIVESTREAM STRIP WITH ROTATING NATURAL LANDSCAPE -->
+    <section id="hero-landscape-section" class="relative text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800 bg-cover bg-center transition-all duration-700 ease-in-out">
+        <!-- Natural Landscape Dark Overlay for Superior Legibility -->
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-900/90 via-forest-800/85 to-forest-900/95 backdrop-blur-[1.5px]"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto space-y-6">
             
             <!-- Hero Header Row -->
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div class="space-y-2 max-w-3xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-800/70 border border-forest-600 text-xs text-sprout font-medium">
-                        <svg class="w-3.5 h-3.5 text-sprout" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                        Sinkronisasi Terakhir: {display_date}
+                    <!-- Status & Landscape Capsule -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-900/80 border border-forest-600/80 text-xs text-sprout font-medium shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-sprout"></span>
+                            <span>Database FRED & Sektor: <b class="text-white font-mono">{display_date}</b></span>
+                        </div>
+                        <div id="landscape-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900/80 border border-forest-600/80 text-xs text-sage-200 font-medium shadow-sm">
+                            <span class="text-sprout">🌿</span>
+                            <span id="landscape-caption">Misty Pine Forest</span>
+                        </div>
                     </div>
+
                     <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
                         Navigasi Makroekonomi & Arus Modal
                     </h1>
@@ -197,12 +206,20 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
                 <!-- Action Controls -->
                 <div class="flex flex-wrap items-center gap-3">
-                    <button onclick="fetchLiveCryptoPrices()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                    <button onclick="cycleLandscape()" title="Klik untuk berganti foto pemandangan alam" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                        <svg class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Ganti Lanskap 🍃</span>
+                    </button>
+                    
+                    <button onclick="fetchLiveCryptoPrices()" id="btn-refresh" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
                         <svg id="sync-icon" class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        Refresh Live Data
+                        <span id="btn-refresh-text">Refresh Live Data</span>
                     </button>
+
                     <a href="#tab-wa" onclick="switchTab('tab-wa')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sprout hover:bg-white text-forest-900 text-xs font-bold transition-all shadow-sm">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.45 1.743 1.966 2.091.246.057.448.014.592-.043.144-.058.462-.534.592-.722.13-.188.26-.159.433-.087.173.072 1.097.518 1.285.612.188.094.318.144.364.223.046.079.046.462-.098.867z"/>
@@ -212,16 +229,16 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
             </div>
 
-            <!-- Real-time Live Price Cards (Binance Streamer + Macro) -->
+            <!-- Real-time Live Price Cards with Glassmorphism Over Nature Background -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
                 
                 <!-- BTC Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-btc">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-btc">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-sprout"></span>BTC / USD
+                            <span class="w-2 h-2 rounded-full bg-sprout animate-pulse"></span>BTC / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <div id="live-btc" class="text-lg font-extrabold text-white font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
@@ -230,12 +247,12 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- ETH Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-eth">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-eth">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>ETH / USD
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>ETH / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <div id="live-eth" class="text-lg font-extrabold text-white font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
@@ -244,12 +261,12 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- SOL Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-sol">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-sol">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>SOL / USD
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>SOL / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <div id="live-sol" class="text-lg font-extrabold text-white font-mono">${prices.get('SOL-USD', {}).get('close', 0):,.2f}</div>
@@ -258,7 +275,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- USD / IDR -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">USD / IDR</span>
                         <span class="text-[10px] text-amber-300 font-semibold">{indo_macro.get('kurs_status', 'KURS')}</span>
@@ -270,7 +287,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- XAUUSD (Gold) -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">Emas (XAUUSD)</span>
                         <span class="text-[10px] text-amber-300 font-semibold">Spot</span>
@@ -282,7 +299,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- US 10Y Yield -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">US 10Y Yield</span>
                         <span class="text-[10px] text-rose-300 font-semibold">Risk Benchmark</span>
@@ -845,20 +862,104 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-forest-900 text-sage-300 text-xs py-8 px-4 sm:px-8 border-t border-forest-800 mt-12">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <div>
-                <div class="font-bold text-white text-sm">Macro Pulse · Natural Horizon</div>
-                <div class="text-[11px] text-sage-400 mt-0.5">Dirancang dengan palet ramah lanskap & tipografi geometris terbuka</div>
+    <!-- FOOTER WITH TRUSTED DATA SOURCES & QUANTITATIVE METHODOLOGY -->
+    <footer class="bg-forest-900 text-linen-100 text-xs pt-12 pb-8 px-4 sm:px-8 border-t border-forest-800 mt-12">
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-forest-800">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-sprout font-bold">Sumber Data Terpercaya & Metodologi Kuantitatif</div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-white">Institusi Penyedia Data & Arsitektur Ingesti</h3>
+                    <p class="text-sage-300 text-xs mt-1">Seluruh data makroekonomi, neraca bank sentral, suku bunga, dan harga pasar disinkronisasi langsung dari sumber resmi bebas bias lookahead.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-800 text-sprout border border-forest-700 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-sprout"></span> 100% Official & Public APIs
+                    </span>
+                </div>
             </div>
-            <div class="text-[11px] text-sage-400">
-                Pembaruan data otomatis via GitHub Actions · Open Source Quantitative Engine
+
+            <!-- 4 Source Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Source 1: FRED St. Louis Fed -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">FRED® API</span>
+                        <a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">Federal Reserve Bank of St. Louis</div>
+                        <div class="text-[11px] text-sage-300">Bank Sentral Amerika Serikat</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Data point-in-time neraca The Fed: Total Aset (<code class="text-sprout font-mono">WALCL</code>), Treasury General Account (<code class="text-sprout font-mono">WTREGEN</code>), Reverse Repo (<code class="text-sprout font-mono">RRPONTSYD</code>), 10Y Real TIPS Yield (<code class="text-sprout font-mono">DFII10</code>), dan BofA HY OAS Spread (<code class="text-sprout font-mono">BAMLH0A0HYM2</code>).
+                    </div>
+                </div>
+
+                <!-- Source 2: US Treasury & CBOE -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">YIELDS & VIX</span>
+                        <a href="https://home.treasury.gov/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">U.S. Dept of Treasury & CBOE</div>
+                        <div class="text-[11px] text-sage-300">Pasar Uang & Volatilitas Global</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Yield acuan US 10-Year Treasury Note (<code class="text-sprout font-mono">^TNX</code>), 3-Month T-Bill (<code class="text-sprout font-mono">^IRX</code>), Indeks Volatilitas CBOE (<code class="text-sprout font-mono">^VIX</code>), dan Indeks Kekuatan Dolar AS (<code class="text-sprout font-mono">DX-Y.NYB</code>) untuk kalibrasi slope kurva imbal hasil.
+                    </div>
+                </div>
+
+                <!-- Source 3: S&P Dow Jones & Sector SPDRs -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">S&P 500 ETF</span>
+                        <a href="https://www.spglobal.com/spdji/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">S&P Dow Jones & SPDR ETFs</div>
+                        <div class="text-[11px] text-sage-300">11 Sektor Utama Ekonomi AS</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Data historis & momentum 11 sektor: Teknologi (<code class="text-sprout font-mono">XLK</code>), Energi (<code class="text-sprout font-mono">XLE</code>), Keuangan (<code class="text-sprout font-mono">XLF</code>), Kesehatan (<code class="text-sprout font-mono">XLV</code>), Industri (<code class="text-sprout font-mono">XLI</code>), Konsumer (<code class="text-sprout font-mono">XLY/XLP</code>), Utilitas (<code class="text-sprout font-mono">XLU</code>), Material (<code class="text-sprout font-mono">XLB</code>), Properti (<code class="text-sprout font-mono">XLRE</code>), dan Komunikasi (<code class="text-sprout font-mono">XLC</code>).
+                    </div>
+                </div>
+
+                <!-- Source 4: Bank Indonesia, Yahoo & Binance Gateway -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">LIVE API</span>
+                        <a href="https://www.bi.go.id/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">Bank Indonesia & Public Gateways</div>
+                        <div class="text-[11px] text-sage-300">Valas, Komoditas, & Kripto Live</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Nilai tukar spot Rupiah (<code class="text-sprout font-mono">USDIDR=X</code>), MSCI Indonesia (<code class="text-sprout font-mono">EIDO</code>), Minyak WTI (<code class="text-sprout font-mono">CL=F</code>), Emas Spot (<code class="text-sprout font-mono">GC=F</code>), serta WebSocket/REST Public Gateway Binance (<code class="text-sprout font-mono">BTCUSDT, ETHUSDT, SOLUSDT</code>) streaming tiap 10 detik.
+                    </div>
+                </div>
+
             </div>
+
+            <!-- Bottom Sub-footer -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-forest-800 text-[11px] text-sage-400">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-white">Macro Pulse · Natural Horizon</span>
+                    <span>· Quantitative Macro & Sector Intelligence Engine</span>
+                </div>
+                <div class="text-center sm:text-right">
+                    Pembaruan Data Otomatis via GitHub Actions · Bebas Bias Lookahead · Open Source
+                </div>
+            </div>
+
         </div>
     </footer>
 
-    <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING -->
+    <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING, DYNAMIC LANDSCAPE -->
     <script>
         // 1. Tab Switcher
         function switchTab(tabId) {{
@@ -913,11 +1014,87 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         setInterval(updateLiveClocks, 1000);
         updateLiveClocks();
 
-        // 3. Live Client-Side Crypto Poller via Binance Public API
+        // 3. Dynamic Rotating Natural Landscape Collection
+        const NATURAL_LANDSCAPES = [
+            {{
+                name: "Misty Pine Forest",
+                location: "Alpine Wilderness",
+                url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
+            }},
+            {{
+                name: "Lush Botanical Foliage",
+                location: "Canopy Leaves",
+                url: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80"
+            }},
+            {{
+                name: "Golden Woodland Sunbeams",
+                location: "Temperate Forest",
+                url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80"
+            }},
+            {{
+                name: "Emerald Highland Valleys",
+                location: "Mountain Mist",
+                url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80"
+            }},
+            {{
+                name: "Serene Alpine Glacier Stream",
+                location: "Mountain Slopes",
+                url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1920&q=80"
+            }},
+            {{
+                name: "Yosemite High Sierra",
+                location: "Forest Vista",
+                url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80"
+            }}
+        ];
+
+        let currentLandscapeIdx = 0;
+
+        function setRandomNaturalLandscape() {{
+            try {{
+                const storedIdx = parseInt(sessionStorage.getItem('macro_landscape_idx'));
+                let nextIdx;
+                if (!isNaN(storedIdx)) {{
+                    nextIdx = (storedIdx + 1) % NATURAL_LANDSCAPES.length;
+                }} else {{
+                    nextIdx = Math.floor(Math.random() * NATURAL_LANDSCAPES.length);
+                }}
+                sessionStorage.setItem('macro_landscape_idx', nextIdx);
+                applyLandscape(nextIdx);
+            }} catch (e) {{
+                applyLandscape(0);
+            }}
+        }}
+
+        function cycleLandscape() {{
+            currentLandscapeIdx = (currentLandscapeIdx + 1) % NATURAL_LANDSCAPES.length;
+            sessionStorage.setItem('macro_landscape_idx', currentLandscapeIdx);
+            applyLandscape(currentLandscapeIdx);
+        }}
+
+        function applyLandscape(idx) {{
+            currentLandscapeIdx = idx;
+            const hero = document.getElementById('hero-landscape-section');
+            const caption = document.getElementById('landscape-caption');
+            if (hero && NATURAL_LANDSCAPES[idx]) {{
+                const item = NATURAL_LANDSCAPES[idx];
+                hero.style.backgroundImage = `url('${{item.url}}')`;
+                if (caption) {{
+                    caption.textContent = `${{item.name}} (${{item.location}})`;
+                }}
+            }}
+        }}
+
+        // Run landscape setup immediately
+        setRandomNaturalLandscape();
+
+        // 4. Live Client-Side Crypto Poller via Binance Public API
         let previousCrypto = {{}};
         async function fetchLiveCryptoPrices() {{
             const syncIcon = document.getElementById('sync-icon');
+            const btnText = document.getElementById('btn-refresh-text');
             if (syncIcon) syncIcon.classList.add('animate-spin');
+            if (btnText) btnText.textContent = "Sinkronisasi Live...";
 
             try {{
                 const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT"]';
@@ -933,8 +1110,14 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     if (sym === "ETHUSDT") updatePriceCard("eth", price);
                     if (sym === "SOLUSDT") updatePriceCard("sol", price);
                 }});
+                
+                if (btnText) {{
+                    btnText.textContent = "✓ Live Terkini!";
+                    setTimeout(() => {{ btnText.textContent = "Refresh Live Data"; }}, 2500);
+                }}
             }} catch (err) {{
                 console.warn("Binance ticker poll:", err);
+                if (btnText) btnText.textContent = "Refresh Live Data";
             }} finally {{
                 if (syncIcon) setTimeout(() => syncIcon.classList.remove('animate-spin'), 600);
             }}
@@ -970,7 +1153,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         setInterval(fetchLiveCryptoPrices, 10000);
         setTimeout(fetchLiveCryptoPrices, 1500);
 
-        // 4. One-Click Copy for WhatsApp Broadcast
+        // 5. One-Click Copy for WhatsApp Broadcast
         function copyWhatsAppBroadcast() {{
             const text = document.getElementById('wa-text-content').textContent;
             navigator.clipboard.writeText(text).then(() => {{

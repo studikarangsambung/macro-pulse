@@ -127,19 +127,28 @@
         </div>
     </header>
 
-    <!-- MAIN HERO & LIVESTREAM STRIP -->
-    <section class="bg-forest-700 text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800">
-        <div class="max-w-7xl mx-auto space-y-6">
+    <!-- MAIN HERO & LIVESTREAM STRIP WITH ROTATING NATURAL LANDSCAPE -->
+    <section id="hero-landscape-section" class="relative text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800 bg-cover bg-center transition-all duration-700 ease-in-out">
+        <!-- Natural Landscape Dark Overlay for Superior Legibility -->
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-900/90 via-forest-800/85 to-forest-900/95 backdrop-blur-[1.5px]"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto space-y-6">
             
             <!-- Hero Header Row -->
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div class="space-y-2 max-w-3xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-800/70 border border-forest-600 text-xs text-sprout font-medium">
-                        <svg class="w-3.5 h-3.5 text-sprout" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                        Sinkronisasi Terakhir: Thursday, 29 October 2026 · 14:53 WIB
+                    <!-- Status & Landscape Capsule -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-900/80 border border-forest-600/80 text-xs text-sprout font-medium shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-sprout"></span>
+                            <span>Database FRED & Sektor: <b class="text-white font-mono">Thursday, 29 October 2026 · 20:34 WIB</b></span>
+                        </div>
+                        <div id="landscape-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-900/80 border border-forest-600/80 text-xs text-sage-200 font-medium shadow-sm">
+                            <span class="text-sprout">🌿</span>
+                            <span id="landscape-caption">Misty Pine Forest</span>
+                        </div>
                     </div>
+
                     <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
                         Navigasi Makroekonomi & Arus Modal
                     </h1>
@@ -150,12 +159,20 @@
 
                 <!-- Action Controls -->
                 <div class="flex flex-wrap items-center gap-3">
-                    <button onclick="fetchLiveCryptoPrices()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                    <button onclick="cycleLandscape()" title="Klik untuk berganti foto pemandangan alam" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                        <svg class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Ganti Lanskap 🍃</span>
+                    </button>
+                    
+                    <button onclick="fetchLiveCryptoPrices()" id="btn-refresh" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
                         <svg id="sync-icon" class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        Refresh Live Data
+                        <span id="btn-refresh-text">Refresh Live Data</span>
                     </button>
+
                     <a href="#tab-wa" onclick="switchTab('tab-wa')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sprout hover:bg-white text-forest-900 text-xs font-bold transition-all shadow-sm">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.45 1.743 1.966 2.091.246.057.448.014.592-.043.144-.058.462-.534.592-.722.13-.188.26-.159.433-.087.173.072 1.097.518 1.285.612.188.094.318.144.364.223.046.079.046.462-.098.867z"/>
@@ -165,53 +182,53 @@
                 </div>
             </div>
 
-            <!-- Real-time Live Price Cards (Binance Streamer + Macro) -->
+            <!-- Real-time Live Price Cards with Glassmorphism Over Nature Background -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
                 
                 <!-- BTC Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-btc">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-btc">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-sprout"></span>BTC / USD
+                            <span class="w-2 h-2 rounded-full bg-sprout animate-pulse"></span>BTC / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div id="live-btc" class="text-lg font-extrabold text-white font-mono">$79,743</div>
-                        <div id="live-btc-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.88%</span></div>
+                        <div id="live-btc" class="text-lg font-extrabold text-white font-mono">$79,953</div>
+                        <div id="live-btc-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.62%</span></div>
                     </div>
                 </div>
 
                 <!-- ETH Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-eth">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-eth">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>ETH / USD
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>ETH / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div id="live-eth" class="text-lg font-extrabold text-white font-mono">$2,303</div>
-                        <div id="live-eth-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-2.31%</span></div>
+                        <div id="live-eth" class="text-lg font-extrabold text-white font-mono">$2,320</div>
+                        <div id="live-eth-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.61%</span></div>
                     </div>
                 </div>
 
                 <!-- SOL Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-sol">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-sol">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>SOL / USD
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>SOL / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div id="live-sol" class="text-lg font-extrabold text-white font-mono">$99.60</div>
-                        <div id="live-sol-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-2.65%</span></div>
+                        <div id="live-sol" class="text-lg font-extrabold text-white font-mono">$100.30</div>
+                        <div id="live-sol-chg" class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.96%</span></div>
                     </div>
                 </div>
 
                 <!-- USD / IDR -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">USD / IDR</span>
                         <span class="text-[10px] text-amber-300 font-semibold">TEKANAN BERAT</span>
@@ -223,26 +240,26 @@
                 </div>
 
                 <!-- XAUUSD (Gold) -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">Emas (XAUUSD)</span>
                         <span class="text-[10px] text-amber-300 font-semibold">Spot</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">$4,039.5</div>
-                        <div class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-0.30%</span></div>
+                        <div class="text-lg font-extrabold text-white font-mono">$4,036.1</div>
+                        <div class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-0.38%</span></div>
                     </div>
                 </div>
 
                 <!-- US 10Y Yield -->
-                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
                         <span class="font-bold">US 10Y Yield</span>
                         <span class="text-[10px] text-rose-300 font-semibold">Risk Benchmark</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">5.045%</div>
-                        <div class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+1.04%</span></div>
+                        <div class="text-lg font-extrabold text-white font-mono">5.001%</div>
+                        <div class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-0.87%</span></div>
                     </div>
                 </div>
 
@@ -322,7 +339,7 @@
                                 Pemicu Utama
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                Minyak WTI ($101.83) & US10Y (5.04%) berada di elevasi tinggi.
+                                Minyak WTI ($100.46) & US10Y (5.00%) berada di elevasi tinggi.
                             </p>
                         </div>
 
@@ -388,15 +405,15 @@
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">US 10Y Treasury Yield</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">5.045%</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Yield 10Y di level restriktif 5.045%, menaikkan discount rate aset durasi panjang (Tech & Crypto).</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">5.001%</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Yield 10Y di level restriktif 5.001%, menaikkan discount rate aset durasi panjang (Tech & Crypto).</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>BAHAYA</span></td>
                                 </tr>
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">Yield Curve (10Y - 3M T-Bill)</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">+105.0 bps</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Kurva un-inverting / steepening (105.0 bps).</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">+100.1 bps</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Kurva un-inverting / steepening (100.1 bps).</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>WASPADA</span></td>
                                 </tr>
                                 
@@ -416,8 +433,8 @@
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">CBOE Volatility Index (VIX)</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">17.24</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">VIX 17.24 relatif stabil di bawah 20.</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">16.94</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">VIX 16.94 relatif stabil di bawah 20.</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>AMAN</span></td>
                                 </tr>
                                 
@@ -430,15 +447,15 @@
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">US Dollar Index (DXY)</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">102.24</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">DXY 102.24 lemah/stabil, suportif untuk komoditas & crypto.</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">102.34</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">DXY 102.34 lemah/stabil, suportif untuk komoditas & crypto.</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>AMAN</span></td>
                                 </tr>
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">WTI Crude Oil</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$101.83</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Minyak $101.83/bbl memicu risiko stagflasi dan kenaikan ekspektasi inflasi.</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$100.46</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Minyak $100.46/bbl memicu risiko stagflasi dan kenaikan ekspektasi inflasi.</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>BAHAYA</span></td>
                                 </tr>
                                 
@@ -451,8 +468,8 @@
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">Emas (XAUUSD)</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$4,039.5/oz</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Emas XAUUSD di level rekor $4,039.5/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global.</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$4,036.1/oz</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Emas XAUUSD di level rekor $4,036.1/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global.</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>WASPADA</span></td>
                                 </tr>
                                 
@@ -918,14 +935,27 @@
                             
                             <tr class="hover:bg-linen-50 transition-colors">
                                 <td class="py-3.5">
+                                    <div class="font-bold text-forest-900">XLV</div>
+                                    <div class="text-stone-500 text-[11px]">Health Care</div>
+                                </td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$184.59</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+2.71%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.81%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+11.06%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+6.6</td>
+                                <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
+                            </tr>
+                            
+                            <tr class="hover:bg-linen-50 transition-colors">
+                                <td class="py-3.5">
                                     <div class="font-bold text-forest-900">XLE</div>
                                     <div class="text-stone-500 text-[11px]">Energy</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$68.45</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.35%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.43%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+11.30%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+5.8</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$68.92</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.69%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+2.00%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+9.92%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+5.7</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>OVERWEIGHT (OW)</span></td>
                             </tr>
                             
@@ -934,11 +964,11 @@
                                     <div class="font-bold text-forest-900">XLU</div>
                                     <div class="text-stone-500 text-[11px]">Utilities</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$42.49</td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.84%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.17%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+7.73%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+4.0</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$43.23</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.74%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.84%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+8.95%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+5.1</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
                             </tr>
                             
@@ -947,11 +977,11 @@
                                     <div class="font-bold text-forest-900">XLP</div>
                                     <div class="text-stone-500 text-[11px]">Consumer Staples</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$86.84</td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.36%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.31%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+7.74%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+3.7</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$88.03</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.37%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-2.18%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+9.59%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+4.4</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
                             </tr>
                             
@@ -960,38 +990,12 @@
                                     <div class="font-bold text-forest-900">XLB</div>
                                     <div class="text-stone-500 text-[11px]">Materials</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$51.86</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.15%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.05%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+6.49%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+3.6</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$52.16</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.59%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.92%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+7.47%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+4.1</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>OVERWEIGHT (OW)</span></td>
-                            </tr>
-                            
-                            <tr class="hover:bg-linen-50 transition-colors">
-                                <td class="py-3.5">
-                                    <div class="font-bold text-forest-900">XLV</div>
-                                    <div class="text-stone-500 text-[11px]">Health Care</div>
-                                </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$179.72</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.30%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.44%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+6.71%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+3.5</td>
-                                <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
-                            </tr>
-                            
-                            <tr class="hover:bg-linen-50 transition-colors">
-                                <td class="py-3.5">
-                                    <div class="font-bold text-forest-900">XLY</div>
-                                    <div class="text-stone-500 text-[11px]">Consumer Discretionary</div>
-                                </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$115.33</td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.10%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.17%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+5.96%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+2.9</td>
-                                <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>UNDERWEIGHT (UW)</span></td>
                             </tr>
                             
                             <tr class="hover:bg-linen-50 transition-colors">
@@ -999,11 +1003,11 @@
                                     <div class="font-bold text-forest-900">XLF</div>
                                     <div class="text-stone-500 text-[11px]">Financials</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$56.13</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.45%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.16%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+5.11%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+2.7</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$57.10</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.73%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.79%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+6.81%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+4.0</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
                             </tr>
                             
@@ -1012,11 +1016,24 @@
                                     <div class="font-bold text-forest-900">XLRE</div>
                                     <div class="text-stone-500 text-[11px]">Real Estate</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$42.13</td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.73%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.17%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+2.98%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+1.4</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$42.99</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+2.04%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.11%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+5.68%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+3.6</td>
+                                <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>UNDERWEIGHT (UW)</span></td>
+                            </tr>
+                            
+                            <tr class="hover:bg-linen-50 transition-colors">
+                                <td class="py-3.5">
+                                    <div class="font-bold text-forest-900">XLY</div>
+                                    <div class="text-stone-500 text-[11px]">Consumer Discretionary</div>
+                                </td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$115.54</td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.18%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.46%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+6.19%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+3.3</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>UNDERWEIGHT (UW)</span></td>
                             </tr>
                             
@@ -1025,11 +1042,11 @@
                                     <div class="font-bold text-forest-900">XLI</div>
                                     <div class="text-stone-500 text-[11px]">Industrials</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$168.49</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.34%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.11%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.90%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">+0.6</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$168.48</td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.01%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.05%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.09%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">+0.3</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
                             </tr>
                             
@@ -1038,11 +1055,11 @@
                                     <div class="font-bold text-forest-900">XLK</div>
                                     <div class="text-stone-500 text-[11px]">Technology</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$191.00</td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+0.80%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+1.30%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-2.43%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">-0.7</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$187.91</td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-1.62%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-emerald-700 font-semibold">+3.05%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-5.00%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">-1.9</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>UNDERWEIGHT (UW)</span></td>
                             </tr>
                             
@@ -1051,11 +1068,11 @@
                                     <div class="font-bold text-forest-900">XLC</div>
                                     <div class="text-stone-500 text-[11px]">Communication Services</div>
                                 </td>
-                                <td class="py-3.5 font-mono font-bold text-forest-800">$103.14</td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-0.42%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-5.35%</span></td>
-                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-7.06%</span></td>
-                                <td class="py-3.5 font-mono font-bold text-stone-800">-5.2</td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">$100.44</td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-2.62%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-6.50%</span></td>
+                                <td class="py-3.5 font-mono"><span class="text-rose-600 font-semibold">-8.64%</span></td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">-6.8</td>
                                 <td class="py-3.5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEUTRAL (N)</span></td>
                             </tr>
                             
@@ -1078,12 +1095,12 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">BTC-USD <span class="text-stone-500 font-normal text-xs">(Bitcoin)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.88%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.62%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$79,743.40</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$79,952.70</div>
                         <div class="text-xs text-stone-600 flex justify-between">
-                            <span>20D Return: <span class="text-rose-600 font-semibold">-3.40%</span></span>
-                            <span>5D Return: <span class="text-rose-600 font-semibold">-1.30%</span></span>
+                            <span>20D Return: <span class="text-rose-600 font-semibold">-3.14%</span></span>
+                            <span>5D Return: <span class="text-rose-600 font-semibold">-1.04%</span></span>
                         </div>
                         <div class="pt-2 text-right">
                             <span class="text-xs px-2.5 py-1 rounded-full bg-linen-200 font-semibold text-forest-800">Digital Gold / High Beta Liquidity</span>
@@ -1093,12 +1110,12 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">ETH-USD <span class="text-stone-500 font-normal text-xs">(Ethereum)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-2.31%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.61%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$2,303.28</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$2,319.74</div>
                         <div class="text-xs text-stone-600 flex justify-between">
-                            <span>20D Return: <span class="text-rose-600 font-semibold">-7.33%</span></span>
-                            <span>5D Return: <span class="text-rose-600 font-semibold">-2.24%</span></span>
+                            <span>20D Return: <span class="text-rose-600 font-semibold">-6.67%</span></span>
+                            <span>5D Return: <span class="text-rose-600 font-semibold">-1.54%</span></span>
                         </div>
                         <div class="pt-2 text-right">
                             <span class="text-xs px-2.5 py-1 rounded-full bg-linen-200 font-semibold text-forest-800">Smart Contract / Tech Platform</span>
@@ -1108,12 +1125,12 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">SOL-USD <span class="text-stone-500 font-normal text-xs">(Solana)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-2.65%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-1.96%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$99.60</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$100.30</div>
                         <div class="text-xs text-stone-600 flex justify-between">
-                            <span>20D Return: <span class="text-rose-600 font-semibold">-8.74%</span></span>
-                            <span>5D Return: <span class="text-rose-600 font-semibold">-2.61%</span></span>
+                            <span>20D Return: <span class="text-rose-600 font-semibold">-8.10%</span></span>
+                            <span>5D Return: <span class="text-rose-600 font-semibold">-1.93%</span></span>
                         </div>
                         <div class="pt-2 text-right">
                             <span class="text-xs px-2.5 py-1 rounded-full bg-linen-200 font-semibold text-forest-800">High Throughput / Speculative Beta</span>
@@ -1147,7 +1164,7 @@
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">MSCI Indonesia (EIDO)</div>
-                        <div class="text-xl font-extrabold text-forest-900 font-mono">$10.45</div>
+                        <div class="text-xl font-extrabold text-forest-900 font-mono">$10.04</div>
                         <div class="text-xs text-stone-600">Netral</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
@@ -1184,26 +1201,6 @@
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">IFA Magazine</span>
-                                <span class="text-stone-500 font-mono"></span>
-                            </div>
-                            <a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxPYUNMYXlqV0ZZZVpUQUQ4WkhsOElfOEF0LWYzZVdnMExzNzBzREEyX0tyRTNDUUlWaVJEbkRnV2tDbnhFTXdoNlo0Y0tPaXRrdElhZVVZTm93LTFpZktuOHFNUUxRZHJ6NUROTzJUbC1rS1JtTE1IdkdNOVFGa0NCeEdaNnlyTlVXUmhJMFk4RDZJQkRzTmRRTlZfRlFneTk1OHdGNjk5eWFPTHBy?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
-                                Fed holds interest rates at 3.75% to 4% as inflation risks keep further hikes in play
-                            </a>
-                        </div>
-                        
-                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
-                            <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">Benzinga</span>
-                                <span class="text-stone-500 font-mono"></span>
-                            </div>
-                            <a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxNYzhJMzZPS281SzU0bmVGRzZYaGF2YWJka2pOZWV6X0J5b3dRclR0aWFObDN4STFXaUEtcFlwZzNxZkJOYk1EUndHbk8zYU5ZaTZvMU1OcGg1Q1pMTnpCdDMtbTBFVmliODhKVm53WVZHNzYzZXdISk8yZGZPNGp0V1FpdGN2OW1IVXAxcDRQckhhSzMwN0oxbUw1ZWhBQmJuM1A3WkwwZXVvbk9MQl81ZGhJa1BtRGc?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
-                                Fed Holds Rate at 3.75%-4%, Two Officials Push for Hike - State Street SPDR S&P Regional Banking ETF (ARC
-                            </a>
-                        </div>
-                        
-                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
-                            <div class="flex items-center justify-between text-[11px]">
                                 <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">Nonstop Local News Montana</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
@@ -1214,21 +1211,41 @@
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">CNBC</span>
-                                <span class="text-stone-500 font-mono"></span>
-                            </div>
-                            <a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxPemFCemhRSnI2LTdtSk9nOGRqR3IyQVotVHh4YzEwZzJld3dqNTM4TmRpbHJZSlVRZWZlX0JJYzAtODd1a0lyVlVETlRkbmtWOHpZbzc0eXo2VUFBTzdZZ1ZrWFhKaklMN1JQcmNhaEpEVEpNa0JPRllsdUN0cU9kc1NLM3J0eHpLWHfSAY8BQVVfeXFMTml6aGtHdzhmakJjT00ya2VsRkpBbFpXNDU0YUFmQU96TFRvSFhMWDJhS1RkWG1yNjdWOW1zQTFEV1M3eEg3VEx6ZTM4Z1lSWEZxcnJ6ckQ5Skt2V1hLYUNkX1lZM2R0dklVaHd6dGdSR2lhZEhXVlA4MEphQ0lSTjBSeHp3M0IwMnc5eFhTelk?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
-                                Fed rate hikes are coming, but not this week: CNBC survey
-                            </a>
-                        </div>
-                        
-                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
-                            <div class="flex items-center justify-between text-[11px]">
                                 <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">TradingView</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
                             <a href="https://news.google.com/rss/articles/CBMi4AFBVV95cUxNeHc1ZXFBRldobzh1clpsbnlQYmd2OHpzSTVhOGJHT3Z0QkdUX0M5cDhXLUdRWUJzLUhHRGNoaTljd1RvMHlJSTNrSUdqMFM3d3ZjcmV5dFpxTTRCc1BQR0RRNFRqU2JLOXdHUkg1akFqRWQ4WTJfX3ZYdnVvUmJZbGdKMWVQTzNfY01GOXhiR25TZU5vR1FaaDJTWlU3b1VFMlVCdGVkSl84TjVmLWxSbFJDbDljNi1fbXN1cFUtbUpxN09JbzFqWF9lQW1rNTBaZmtLRzFZamQ1WXM1UUtiYQ?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
                                 Fed Rate Decision Today: Here’s What Goldman Strategist Has To Say About Interest Rates
+                            </a>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">JournalArta</span>
+                                <span class="text-stone-500 font-mono"></span>
+                            </div>
+                            <a href="https://news.google.com/rss/articles/CBMilwFBVV95cUxPQjJQYjg5LXRVRGJfNm45SU5YbzhTMzF0TlhfZjM0ZjUtUjJTQ3JUMFZZYnpueWNpMGg1bUkzY21LUTJkS2p2MlE3NEFWWFpKYkNadUFMRnozQ0wxVkIzU1lFTnRUTENYM0w2WTRzamUyck14MUh5N0Y3TlNWVWhUYjhvdkVyQWx3OXpEb0hWY2cxbGRMNGdR?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
+                                Fed Holds Rates at 3.75%-4% as Hammack, Cook Dissent Favoring Hike
+                            </a>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">The Hill</span>
+                                <span class="text-stone-500 font-mono"></span>
+                            </div>
+                            <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxOY2pPeHlGNkV2VUoyUlVodUxxdnV5Q0pRc2VUNDRINmYyN2lxdlRnMVBfc281cksycXVhYWVXTnR0ZHBMeVFJclVWTWV5Q3VOSzlQUFQwTkMwNkpxRDFaVXZocWxYc2tSTDY3dHR3MUJYZUV4a0N6RDB1YXMyRlhWetIBhgFBVV95cUxORmNwQXRxNnQ0bHpMV2JKUEJPdmdUcHBFdTJVTU9uS1N3dUhqNDlsR0tXTGxnTVV1MEZnVjFBM3pEODdydHBpWXJOY09leTdBdFBvWWhpak5ZT2FycVliZkNIekFuRTktUWdxczVqemE2VjdtLWFORDczenFzUjQzdGhoaGVodw?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
+                                Fed likely to hold rates steady ahead of midterms
+                            </a>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">매일경제</span>
+                                <span class="text-stone-500 font-mono"></span>
+                            </div>
+                            <a href="https://news.google.com/rss/articles/CBMiUkFVX3lxTFBCbHVmV1JHcTN3OTVxSThqSUJfZGI3ek5UU1pmZ3ljOFA1SWNTSFdFa1NOdXZvZUhSYWIzX1RRWVU3ZFlhSVl2R2htNFE3U0tmbVE?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
+                                Regarding the Federal Reserve System (Fed), the U.S. central bank, freezing its key interest rate at..
                             </a>
                         </div>
                         
@@ -1249,51 +1266,51 @@
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">InvestorTrust</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">FXStreet</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
-                            <a href="https://news.google.com/rss/articles/CBMiqAFBVV95cUxNbzFkZDJ3NDhNVWdFMGdQeWlONkphMzFIamtlZGhKeEQ3cjNsaWpZc0I1ZlgtaDJOU1p4WnBmMDJ4TlE3Mk9RaW41U3BCcXlrbVhNdFdsdGtxcEZWZWZmX05zakp1NTl3eHlaQWN5SEhNUS10Z1ZRNnFxVEM4dHIzcW56b1RSV3l3UHZ5eDlNM0RTVlh2OElGYnJGZ19tZkxoekZKYW1hU2E?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
-                                IHSG Ambles 2,64% ke 5.142, Outflow Dana Asing Ancam Koreksi Lanjutan
+                            <a href="https://news.google.com/rss/articles/CBMiwgFBVV95cUxOMUFqdlAxNkExaDBrMWFhczlFQ1JXQUhGUmRoa1BUTVZ3WkRUWnZZTDBjTUtoNTh2ZXA2RlNwNldXY05KRlk2SEd3cUdfcmdOWWszS3hjVWxRQllqOF84NkV2NjBKZmQ0VTdNLXpwQjkxaXVqTE5kbmNfMnRTQmhSZVZpRVBqNUpRUlZOUThlM1czUnRYQXA2ZnY3ODAtSFZEUktOWWRkbUNCbGJkc0JWRHlmLVNUQ0ZCdlpPWUt2VWhYQdIBxwFBVV95cUxQaHpnNm9kTXhRVzZOQkw1aF9TZXdDOTlETVdKcXV2Z004WnlFZnlVT3RiRzNhMUNEZVR3Wi1YbHNnZnpfV0loV1lmM2F6bWMzanpWUU9haGdqSnFVdlQ2UDNmbzdXWEtUOVBjYVBpbTJNWHFSU21GRHNxX1B2QjdsUnJMM2xKaHQ2Q0lUM2lBZXlvVVBsbGF4VXZXZnFmOGNraUpiUTVKbWVBRU9ZU0NmUlVrRlptTXBrc2RjQ0dOaWpldkVFLVE4?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                IHSG Terjun 3,49% ke 5.098, Saham Bank Terpukul saat Pasar Menanti PCE dan PDB AS
                             </a>
                         </div>
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">investor.id</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">IDNFinancials</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
-                            <a href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxPYWtVYVREVV91dmxHZUtJYW43elRBWkJFZm5vdWJ1Nk1oZ3J5UlFRVWx5SnVYR1ZuanZBWHM4OEpsWEpCUzhWY2QwaWJYVUJwNXFxX3ZIb0xWUTNkRGZsbUtUVzFCT2VnYnZ4V3JZdWVidDZtSU9WNXRlakxudUsySjI5clJtYXRxMmMw?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
-                                IHSG Tiba-tiba Terjun Bebas, 25 Saham ARB Berjemaah
+                            <a href="https://news.google.com/rss/articles/CBMipgFBVV95cUxOc2VtRHhBMGU1cE5pakFPcEZ5eURHNFhfWHN4a242Z3YzbzdZWWp2ckxxVzFXV1BReGhsRDVjVHdVcnN2Z1JJX3hWdEx4YnNpRnFZRXRoanlseW1fS1hYa3Y4UThFZW5ZN2xQVzlUdzRXV2ZScFhnenJCa19uWFFkekdaX1htb0YzVVVnU0xFandjc3VIUG5MWkgyUXA2eEFsdDJnLXJR?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                Asing buang saham-saham ini saat IHSG anjlok 2,64% di sesi I
                             </a>
                         </div>
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Pasardana</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">beritanasionalupdate.com</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
-                            <a href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxPRGt3VGlTV29xXzRFeWg4Nlo1YVpWSUJSaW51QnBER2FnYlNvMU42OXkxMVpFcXF2VFFOaHAwRnM3cjlSa2NjX2xkVThfX0xSTnBsVWdHemxzMm5GVzZiQTk5T1gxRzd2Mng4V0FVdElwb01LTVVjNnowcklqX1lvbk9LVXgzOEZlaWZr?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
-                                IHSG Sesi I Melemah -2,64 Persen di Level 5.142
+                            <a href="https://news.google.com/rss/articles/CBMixwFBVV95cUxNdEJfdXpxdmxOMEcwZjVzWnVpWW93TkM3bG9NS2VjZGtHamlrc2tnUC1KLXA1ODFxeGx2VzFkMll3QWtPdG5ZeFVmMzVldDZqaHBfdUs0RkhYczZDV2Vuam5ZbEF1T3liR1BqU0lQRzE4RGJDaFEyRW5MVi04LVpYVFRIeFZqVHQwUnprNU5GOUZNWjN6Wm50OTF2Q19FTVM3VWJYVTFDLVRqUXhXRTRqdkh3UmpaUEZQRlJyZWFDeG9nVVl1NUtN?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                Generasi Muda Hebat: Mahasiswa Jadi Garda Terdepan Penjaga Persatuan dan Inovasi Nasional
                             </a>
                         </div>
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">ANTARA News Jambi</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Bloomberg Technoz</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
-                            <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxOWnc3U1dFWDF4ZXNHdHNuU1M0TTZJYkFYSnBsNGgySkE4eER5NXJKRC1UeWd5TEhRWUs1VlVacTNkc0VlSW5nd0JsdnVFYjFrNzVEb254MzF5U3dTTTRSX0xtRFdlWGV4SERGX2htZ2szOE56dzVXdC1GWThFTTRhVFZSTlRwZk1kS2w3S0M0Z005RUo4T1dzWtIBngFBVV95cUxPWXJNX2R6ekVCRE5UUk00VWh2Y2hSbXk4S0xDZlVCdDdhcXhWTmkwaHdoRnVTVEk4QzBtNzRnSThHX3p4RzExaW1IcFM0Ri1RRnRVZ1hyaHluOXVYUWZFUnRDelZJVkxCZ2JTdzFXSS1hX0pTQlMxRVpkMVAyc3E0NDM5eWRDaFg5YktURVFKSW82eDJ6dXh4SVhQanQ1Zw?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
-                                IHSG Kamis dibuka menguat 22,89 poin ke posisi 5.305
+                            <a href="https://news.google.com/rss/articles/CBMirwFBVV95cUxPYU1venY4blc3WnhpNkFaZXpnYlEtTktFX09qYmhJa3JPcDFlbVc4WElGZTI5NEdZM1RBVVVlTjJSUHNGSWwyZWg2aktiV2dBVGM3d3Q5c1FUeW5hQThYSnFYejZNeG5pOXRQWVRUcFo2ajE1bzF2TjdoRGZJdzlLd1lUN2dNY0o5M0V6YnF1R3llR0tvTEVFS1lxczkwUWNPeTJ0SURmdXl1UUVCMW04?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                Penyebab IHSG Balik Arah Jadi Melemah, Hingga Turun 2% Lebih - Market
                             </a>
                         </div>
                         
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Bareksa.com</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Kompas.id</span>
                                 <span class="text-stone-500 font-mono"></span>
                             </div>
-                            <a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxOR2pJNlNTb01Tb1VNSHo2cTFORlFEM0tRelQ1OGxxXzUxS091WlU0ZVV3cGo4VnRqTEYyRVRyLUdJN0RvOGt6cXNZV0x3eDFsZm82V1lKbWZmbWNVX1ZCUFhIaERqSFlvQTZ3b0JRV3huY3lWN1hISnktZHRGRmNlQlFfN2JGVndhQ1RndVhkTTNDQ2ZwbG41eXdFc0FoNy1WZXBWZkJnQlI0VXMxSFQ0dTA0TkduYXUzbkQtdWdZM0k?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
-                                Rekomendasi Saham Tim Analis Bareksa: JSMR, SGER & PTBA, IHSG Berpeluang Rebound
+                            <a href="https://news.google.com/rss/articles/CBMifkFVX3lxTFBjR21fM2VwSmFDT3NRNTdKdkQ0U1MxdHpCR29id1VRMUNJVnoyMkpzQlJQdGVxQzhaSlZsMjctODNkVkhyVHdqSm1hcUFvUVhHUlFJa3A5S0hEaUhBRVlodXczRnUyUmRCcVp1OXQxODRyV3NLM0M5dUY5dTNFQQ?oc=5" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                IHSG Kembali Melemah, Emiten Besar dan Kecil sama-sama Terpukul
                             </a>
                         </div>
                         
@@ -1324,13 +1341,13 @@
 
                 <div class="relative">
                     <pre id="wa-text-content" class="p-6 rounded-2xl bg-linen-50 border border-linen-300 text-stone-800 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed max-h-[600px] overflow-y-auto">🌐 *MACRO PULSE | US SECTORS, CRYPTO & INDONESIA*
-📅 Thursday, 29 Oct 2026 · 14:53 WIB
+📅 Thursday, 29 Oct 2026 · 20:34 WIB
 🏛 *REZIM MAKRO:* STAGFLASI ENERGI & SQUEEZE BIAYA
 ⚠️ *STATUS EWS:* 🔴 4 Bahaya | 🟡 2 Waspada | 🟢 4 Aman
 
 ━━━━━━━━━━━━━━━━━━━━━
 ⚡ *RANTAI TRANSMISI KAUSALITAS (SENTIMEN & DAMPAK):*
-1️⃣ *Pemicu:* Minyak WTI ($101.83) & US10Y (5.04%) berada di zona elevasi tinggi
+1️⃣ *Pemicu:* Minyak WTI ($100.46) & US10Y (5.00%) berada di zona elevasi tinggi
    ⬇️
 2️⃣ *Transmisi Moneter:* Ekspektasi Inflasi bertahan alot -> The Fed terkunci pada suku bunga tinggi (Higher for Longer)
    ⬇️
@@ -1340,23 +1357,23 @@
 
 ━━━━━━━━━━━━━━━━━━━━━
 📊 *MARKET SNAPSHOT:*
-• *S&P 500 (SPY):* $772.31 (+0.34%)
-• *Nasdaq (QQQ):* $725.61 (+0.60%)
-• *Bitcoin (BTC):* $79,743 (-1.88%)
-• *Emas (XAUUSD):* $4,039.5/oz (-0.30%)
+• *S&P 500 (SPY):* $767.68 (-0.60%)
+• *Nasdaq (QQQ):* $712.33 (-1.83%)
+• *Bitcoin (BTC):* $79,953 (-1.62%)
+• *Emas (XAUUSD):* $4,036.1/oz (-0.38%)
 • *USD / IDR:* Rp 18,128 (-0.06%)
-• *US 10Y Yield:* 5.045%
-• *DXY (Dollar):* 102.24
-• *WTI Oil:* $101.83 (-0.92%)
+• *US 10Y Yield:* 5.001%
+• *DXY (Dollar):* 102.34
+• *WTI Oil:* $100.46 (-2.26%)
 • *Fed Net Liquidity:* $5,801.4B (+42.3B 4W)
 
 ━━━━━━━━━━━━━━━━━━━━━
 🇮🇩 *TRANSMISI MAKRO GLOBAL KE INDONESIA:*
 • *USD / IDR (Kurs):* Rp 18,128 (-0.06%) [TEKANAN BERAT]
-• *MSCI Indonesia (EIDO):* $10.45 (+1.06%) [RISK-OFF ASING / UNDERPERFORM]
+• *MSCI Indonesia (EIDO):* $10.04 (-3.88%) [RISK-OFF ASING / UNDERPERFORM]
 • *Kebijakan Bank Indonesia:* HAWKISH / INTERVENSI AGRESIF
 • *Beban APBN & Subsidi:* BEBAN SUBSIDI MENINGKAT
-• *Analisis:* Kombinasi US10Y di level 5.045%, DXY 102.24, dan WTI Crude $101.83 memicu transmisi negatif ke Indonesia lewat dua saluran utama: depresiasi nilai tukar (USD/IDR Rp 18,128) dan ancaman 'imported inflation' dari energi. Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas.
+• *Analisis:* Kombinasi US10Y di level 5.001%, DXY 102.34, dan WTI Crude $100.46 memicu transmisi negatif ke Indonesia lewat dua saluran utama: depresiasi nilai tukar (USD/IDR Rp 18,128) dan ancaman 'imported inflation' dari energi. Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas.
 
 ━━━━━━━━━━━━━━━━━━━━━
 📅 *KATALIS KALENDER EKONOMI PEKAN INI & DAMPAK:*
@@ -1382,21 +1399,21 @@
 ━━━━━━━━━━━━━━━━━━━━━
 🏆 *ROTASI 11 SEKTOR US (TACTICAL ACTION):*
 🟢 *Top Momentum (Overweight):*
-  • *XLE* (Energy): Momentum Score +5.8 | 1D: +0.35% | 20D: +11.30%
-  • *XLU* (Utilities): Momentum Score +4.0 | 1D: -0.84% | 20D: +7.73%
-  • *XLP* (Consumer Staples): Momentum Score +3.7 | 1D: -0.36% | 20D: +7.74%
+  • *XLV* (Health Care): Momentum Score +6.6 | 1D: +2.71% | 20D: +11.06%
+  • *XLE* (Energy): Momentum Score +5.7 | 1D: +0.69% | 20D: +9.92%
+  • *XLU* (Utilities): Momentum Score +5.1 | 1D: +1.74% | 20D: +8.95%
 
 🔴 *Bottom Laggards (Underweight):*
-  • *XLI* (Industrials): Momentum Score +0.6 | 1D: +0.34% | 20D: +0.90%
-  • *XLK* (Technology): Momentum Score -0.7 | 1D: +0.80% | 20D: -2.43%
-  • *XLC* (Communication Services): Momentum Score -5.2 | 1D: -0.42% | 20D: -7.06%
+  • *XLI* (Industrials): Momentum Score +0.3 | 1D: -0.01% | 20D: -0.09%
+  • *XLK* (Technology): Momentum Score -1.9 | 1D: -1.62% | 20D: -5.00%
+  • *XLC* (Communication Services): Momentum Score -6.8 | 1D: -2.62% | 20D: -8.64%
 
 ━━━━━━━━━━━━━━━━━━━━━
 🪙 *CRYPTO & LIQUIDITY MATRIX:*
-• *BTC-USD:* $79,743 (20D Chg: -3.40%)
-• *ETH-USD:* $2,303
-• *SOL-USD:* $99.60
-• *ETH/BTC Ratio:* 0.0289 (Altseason Pause / BTC Dominance)
+• *BTC-USD:* $79,953 (20D Chg: -3.14%)
+• *ETH-USD:* $2,320
+• *SOL-USD:* $100.30
+• *ETH/BTC Ratio:* 0.0290 (Altseason Pause / BTC Dominance)
 • *Crypto Stance:* DEFENSIVE / VOLATILE (Tunggu stabilisasi yield real)
 
 ━━━━━━━━━━━━━━━━━━━━━
@@ -1413,20 +1430,104 @@ _Generated by Antigravity US Macro & Crypto Engine_</pre>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-forest-900 text-sage-300 text-xs py-8 px-4 sm:px-8 border-t border-forest-800 mt-12">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <div>
-                <div class="font-bold text-white text-sm">Macro Pulse · Natural Horizon</div>
-                <div class="text-[11px] text-sage-400 mt-0.5">Dirancang dengan palet ramah lanskap & tipografi geometris terbuka</div>
+    <!-- FOOTER WITH TRUSTED DATA SOURCES & QUANTITATIVE METHODOLOGY -->
+    <footer class="bg-forest-900 text-linen-100 text-xs pt-12 pb-8 px-4 sm:px-8 border-t border-forest-800 mt-12">
+        <div class="max-w-7xl mx-auto space-y-8">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-forest-800">
+                <div>
+                    <div class="text-[11px] uppercase tracking-wider text-sprout font-bold">Sumber Data Terpercaya & Metodologi Kuantitatif</div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-white">Institusi Penyedia Data & Arsitektur Ingesti</h3>
+                    <p class="text-sage-300 text-xs mt-1">Seluruh data makroekonomi, neraca bank sentral, suku bunga, dan harga pasar disinkronisasi langsung dari sumber resmi bebas bias lookahead.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-800 text-sprout border border-forest-700 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-sprout"></span> 100% Official & Public APIs
+                    </span>
+                </div>
             </div>
-            <div class="text-[11px] text-sage-400">
-                Pembaruan data otomatis via GitHub Actions · Open Source Quantitative Engine
+
+            <!-- 4 Source Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Source 1: FRED St. Louis Fed -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">FRED® API</span>
+                        <a href="https://fred.stlouisfed.org/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">Federal Reserve Bank of St. Louis</div>
+                        <div class="text-[11px] text-sage-300">Bank Sentral Amerika Serikat</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Data point-in-time neraca The Fed: Total Aset (<code class="text-sprout font-mono">WALCL</code>), Treasury General Account (<code class="text-sprout font-mono">WTREGEN</code>), Reverse Repo (<code class="text-sprout font-mono">RRPONTSYD</code>), 10Y Real TIPS Yield (<code class="text-sprout font-mono">DFII10</code>), dan BofA HY OAS Spread (<code class="text-sprout font-mono">BAMLH0A0HYM2</code>).
+                    </div>
+                </div>
+
+                <!-- Source 2: US Treasury & CBOE -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">YIELDS & VIX</span>
+                        <a href="https://home.treasury.gov/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">U.S. Dept of Treasury & CBOE</div>
+                        <div class="text-[11px] text-sage-300">Pasar Uang & Volatilitas Global</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Yield acuan US 10-Year Treasury Note (<code class="text-sprout font-mono">^TNX</code>), 3-Month T-Bill (<code class="text-sprout font-mono">^IRX</code>), Indeks Volatilitas CBOE (<code class="text-sprout font-mono">^VIX</code>), dan Indeks Kekuatan Dolar AS (<code class="text-sprout font-mono">DX-Y.NYB</code>) untuk kalibrasi slope kurva imbal hasil.
+                    </div>
+                </div>
+
+                <!-- Source 3: S&P Dow Jones & Sector SPDRs -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">S&P 500 ETF</span>
+                        <a href="https://www.spglobal.com/spdji/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">S&P Dow Jones & SPDR ETFs</div>
+                        <div class="text-[11px] text-sage-300">11 Sektor Utama Ekonomi AS</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Data historis & momentum 11 sektor: Teknologi (<code class="text-sprout font-mono">XLK</code>), Energi (<code class="text-sprout font-mono">XLE</code>), Keuangan (<code class="text-sprout font-mono">XLF</code>), Kesehatan (<code class="text-sprout font-mono">XLV</code>), Industri (<code class="text-sprout font-mono">XLI</code>), Konsumer (<code class="text-sprout font-mono">XLY/XLP</code>), Utilitas (<code class="text-sprout font-mono">XLU</code>), Material (<code class="text-sprout font-mono">XLB</code>), Properti (<code class="text-sprout font-mono">XLRE</code>), dan Komunikasi (<code class="text-sprout font-mono">XLC</code>).
+                    </div>
+                </div>
+
+                <!-- Source 4: Bank Indonesia, Yahoo & Binance Gateway -->
+                <div class="p-5 rounded-2xl bg-forest-800/80 border border-forest-700 space-y-3 hover:border-sprout/50 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-forest-700 text-sprout font-mono">LIVE API</span>
+                        <a href="https://www.bi.go.id/" target="_blank" rel="noopener noreferrer" class="text-sage-300 hover:text-white text-xs">Kunjungi ↗</a>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white text-sm">Bank Indonesia & Public Gateways</div>
+                        <div class="text-[11px] text-sage-300">Valas, Komoditas, & Kripto Live</div>
+                    </div>
+                    <div class="text-[11px] text-sage-200 leading-relaxed">
+                        Nilai tukar spot Rupiah (<code class="text-sprout font-mono">USDIDR=X</code>), MSCI Indonesia (<code class="text-sprout font-mono">EIDO</code>), Minyak WTI (<code class="text-sprout font-mono">CL=F</code>), Emas Spot (<code class="text-sprout font-mono">GC=F</code>), serta WebSocket/REST Public Gateway Binance (<code class="text-sprout font-mono">BTCUSDT, ETHUSDT, SOLUSDT</code>) streaming tiap 10 detik.
+                    </div>
+                </div>
+
             </div>
+
+            <!-- Bottom Sub-footer -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-forest-800 text-[11px] text-sage-400">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-white">Macro Pulse · Natural Horizon</span>
+                    <span>· Quantitative Macro & Sector Intelligence Engine</span>
+                </div>
+                <div class="text-center sm:text-right">
+                    Pembaruan Data Otomatis via GitHub Actions · Bebas Bias Lookahead · Open Source
+                </div>
+            </div>
+
         </div>
     </footer>
 
-    <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING -->
+    <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING, DYNAMIC LANDSCAPE -->
     <script>
         // 1. Tab Switcher
         function switchTab(tabId) {
@@ -1481,11 +1582,87 @@ _Generated by Antigravity US Macro & Crypto Engine_</pre>
         setInterval(updateLiveClocks, 1000);
         updateLiveClocks();
 
-        // 3. Live Client-Side Crypto Poller via Binance Public API
+        // 3. Dynamic Rotating Natural Landscape Collection
+        const NATURAL_LANDSCAPES = [
+            {
+                name: "Misty Pine Forest",
+                location: "Alpine Wilderness",
+                url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1920&q=80"
+            },
+            {
+                name: "Lush Botanical Foliage",
+                location: "Canopy Leaves",
+                url: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1920&q=80"
+            },
+            {
+                name: "Golden Woodland Sunbeams",
+                location: "Temperate Forest",
+                url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80"
+            },
+            {
+                name: "Emerald Highland Valleys",
+                location: "Mountain Mist",
+                url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80"
+            },
+            {
+                name: "Serene Alpine Glacier Stream",
+                location: "Mountain Slopes",
+                url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1920&q=80"
+            },
+            {
+                name: "Yosemite High Sierra",
+                location: "Forest Vista",
+                url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80"
+            }
+        ];
+
+        let currentLandscapeIdx = 0;
+
+        function setRandomNaturalLandscape() {
+            try {
+                const storedIdx = parseInt(sessionStorage.getItem('macro_landscape_idx'));
+                let nextIdx;
+                if (!isNaN(storedIdx)) {
+                    nextIdx = (storedIdx + 1) % NATURAL_LANDSCAPES.length;
+                } else {
+                    nextIdx = Math.floor(Math.random() * NATURAL_LANDSCAPES.length);
+                }
+                sessionStorage.setItem('macro_landscape_idx', nextIdx);
+                applyLandscape(nextIdx);
+            } catch (e) {
+                applyLandscape(0);
+            }
+        }
+
+        function cycleLandscape() {
+            currentLandscapeIdx = (currentLandscapeIdx + 1) % NATURAL_LANDSCAPES.length;
+            sessionStorage.setItem('macro_landscape_idx', currentLandscapeIdx);
+            applyLandscape(currentLandscapeIdx);
+        }
+
+        function applyLandscape(idx) {
+            currentLandscapeIdx = idx;
+            const hero = document.getElementById('hero-landscape-section');
+            const caption = document.getElementById('landscape-caption');
+            if (hero && NATURAL_LANDSCAPES[idx]) {
+                const item = NATURAL_LANDSCAPES[idx];
+                hero.style.backgroundImage = `url('${item.url}')`;
+                if (caption) {
+                    caption.textContent = `${item.name} (${item.location})`;
+                }
+            }
+        }
+
+        // Run landscape setup immediately
+        setRandomNaturalLandscape();
+
+        // 4. Live Client-Side Crypto Poller via Binance Public API
         let previousCrypto = {};
         async function fetchLiveCryptoPrices() {
             const syncIcon = document.getElementById('sync-icon');
+            const btnText = document.getElementById('btn-refresh-text');
             if (syncIcon) syncIcon.classList.add('animate-spin');
+            if (btnText) btnText.textContent = "Sinkronisasi Live...";
 
             try {
                 const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT"]';
@@ -1501,8 +1678,14 @@ _Generated by Antigravity US Macro & Crypto Engine_</pre>
                     if (sym === "ETHUSDT") updatePriceCard("eth", price);
                     if (sym === "SOLUSDT") updatePriceCard("sol", price);
                 });
+                
+                if (btnText) {
+                    btnText.textContent = "✓ Live Terkini!";
+                    setTimeout(() => { btnText.textContent = "Refresh Live Data"; }, 2500);
+                }
             } catch (err) {
                 console.warn("Binance ticker poll:", err);
+                if (btnText) btnText.textContent = "Refresh Live Data";
             } finally {
                 if (syncIcon) setTimeout(() => syncIcon.classList.remove('animate-spin'), 600);
             }
@@ -1538,7 +1721,7 @@ _Generated by Antigravity US Macro & Crypto Engine_</pre>
         setInterval(fetchLiveCryptoPrices, 10000);
         setTimeout(fetchLiveCryptoPrices, 1500);
 
-        // 4. One-Click Copy for WhatsApp Broadcast
+        // 5. One-Click Copy for WhatsApp Broadcast
         function copyWhatsAppBroadcast() {
             const text = document.getElementById('wa-text-content').textContent;
             navigator.clipboard.writeText(text).then(() => {
