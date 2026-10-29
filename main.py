@@ -1,6 +1,6 @@
 """
 Master Orchestrator for US Macro & Crypto Pulse Engine
-Runs Phase 1 (Ingestion & Data Pipeline) and Phase 2 (Analytics, EWS, WhatsApp Chain, and Futuristic Minimalist HTML Report).
+Runs Ingestion, Quantitative Analytics, Economic Calendar, Flow Projections, WhatsApp Chain, and Retro Classic Terminal HTML Report.
 """
 
 import sys
@@ -8,7 +8,7 @@ import argparse
 sys.stdout.reconfigure(encoding='utf-8')
 from data_fetcher import init_db, sync_fred_data, compute_net_liquidity, sync_market_data, sync_news_data, get_latest_snapshot
 from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment
-from backtest_engine import load_backtest_price_matrix, run_event_study_backtest, compute_historical_analog_similarity
+from calendar_engine import get_weekly_economic_calendar, compute_macro_flow_projections
 from narrative_generator import generate_report_payload, generate_whatsapp_broadcast
 from html_generator import render_html_report
 
@@ -48,26 +48,16 @@ def run_pipeline(sync=True, print_wa=True):
     print(f"      USD/IDR: Rp {indo_macro['usdidr_val']:,.0f} [{indo_macro['kurs_status']}]")
     print(f"      Crypto Stance: {regime['crypto_stance']}")
     
-    print("\n[3/5] Executing Phase 3: Event-Study Backtesting & 5D Historical Analog Engine...")
-    hist_prices = load_backtest_price_matrix()
-    backtest_res = run_event_study_backtest(hist_prices)
-    
-    curr_features = {
-        "us10y": snapshot.get("prices", {}).get("^TNX", {}).get("close", 5.0),
-        "real_yield": snapshot.get("fred", {}).get("DFII10", {}).get("value", 2.0),
-        "oil": snapshot.get("prices", {}).get("CL=F", {}).get("close", 100.0),
-        "dxy": snapshot.get("prices", {}).get("DX-Y.NYB", {}).get("close", 102.0),
-        "vix": snapshot.get("prices", {}).get("^VIX", {}).get("close", 17.0),
-        "net_liq_chg": snapshot.get("net_liquidity", {}).get("change_4w_bil", 40.0)
-    }
-    analogs = compute_historical_analog_similarity(curr_features)
-    print(f"      Historical Analog Match: {analogs[0]['name']} ({analogs[0]['similarity_score']}%)")
-    print(f"      Event Studies Backtested: {len(backtest_res)} event regimes")
+    print("\n[3/5] Executing Phase 3: Weekly Economic Calendar & Flow Projections...")
+    weekly_cal = get_weekly_economic_calendar()
+    flow_proj = compute_macro_flow_projections(snapshot, regime, ews)
+    print(f"      Weekly Calendar Events: {len(weekly_cal)} high-impact releases")
+    print(f"      Liquidity Flow Regime: {flow_proj.get('primary_flow_regime', 'ROTASI SIKLIKAL')}")
     
     print("\n[4/5] Synthesizing Causality Chain & WhatsApp Broadcast...")
-    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, analogs, backtest_res)
+    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, weekly_cal, flow_proj)
     
-    print("\n[5/5] Generating Futuristic Minimalist HTML Report...")
+    print("\n[5/5] Generating Retro Classic Financial Terminal HTML Report...")
     report_file = render_html_report(payload, output_path="report_us_macro.html")
     print(f"      Dashboard generated: file:///{report_file.replace('\\', '/')}")
     
