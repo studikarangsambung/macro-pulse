@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" content="300">
-    <title>MACRO PULSE · US Sectors & Crypto Intelligence</title>
+    <title>MACRO PULSE · US Sectors, Crypto & Indonesia Intelligence</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,15 +54,11 @@
             box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.08);
             transform: translateY(-2px);
         }
-        .glow-cyan {
-            box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.3);
-        }
         .tab-btn.active {
             background-color: #171B26;
             color: #00F0FF;
             border-color: rgba(0, 240, 255, 0.3);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -87,25 +83,28 @@
 
     <!-- Sticky Minimal Navigation Bar -->
     <header class="sticky top-0 z-50 backdrop-blur-xl bg-vault-950/80 border-b border-white/[0.06] px-4 sm:px-8 py-3.5">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center font-black text-black text-sm tracking-wider">
                     MP
                 </div>
                 <div>
                     <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
-                        MACRO PULSE <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400">US & Crypto Engine v1.0</span>
+                        MACRO PULSE <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-cyan-400">US, Crypto & ID Engine</span>
                     </h1>
-                    <p class="text-xs text-zinc-400 font-mono">Thursday, 29 October 2026 · 10:58 WIB</p>
+                    <p class="text-xs text-zinc-400 font-mono">Thursday, 29 October 2026 · 11:34 WIB</p>
                 </div>
             </div>
 
             <!-- Tab Switcher (Personalization Filter) -->
-            <div class="flex items-center bg-vault-900/90 p-1 rounded-xl border border-white/10 text-xs font-medium">
-                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded-lg border border-transparent transition-all">Overview</button>
-                <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all">US Sectors</button>
-                <button onclick="switchTab('tab-crypto')" id="btn-tab-crypto" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all">Crypto & Liquidity</button>
-                <button onclick="switchTab('tab-whatsapp')" id="btn-tab-whatsapp" class="tab-btn px-3.5 py-1.5 rounded-lg border border-transparent transition-all flex items-center gap-1.5">
+            <div class="flex flex-wrap items-center bg-vault-900/90 p-1 rounded-xl border border-white/10 text-xs font-medium">
+                <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3 py-1.5 rounded-lg border border-transparent transition-all">Overview</button>
+                <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent transition-all">US Sectors</button>
+                <button onclick="switchTab('tab-crypto')" id="btn-tab-crypto" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent transition-all">Crypto & Liquidity</button>
+                <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent transition-all flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>Indonesia & News
+                </button>
+                <button onclick="switchTab('tab-whatsapp')" id="btn-tab-whatsapp" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent transition-all flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>WhatsApp
                 </button>
             </div>
@@ -137,11 +136,11 @@
                 <!-- EWS Tally Scorecard -->
                 <div class="flex items-center gap-3 shrink-0 bg-vault-900/80 p-3.5 rounded-xl border border-white/10">
                     <div class="text-center px-3 border-r border-white/10">
-                        <div class="text-xl font-bold font-mono text-rose-400">3</div>
+                        <div class="text-xl font-bold font-mono text-rose-400">4</div>
                         <div class="text-[10px] text-zinc-400 uppercase tracking-wider">Bahaya</div>
                     </div>
                     <div class="text-center px-3 border-r border-white/10">
-                        <div class="text-xl font-bold font-mono text-amber-400">1</div>
+                        <div class="text-xl font-bold font-mono text-amber-400">2</div>
                         <div class="text-[10px] text-zinc-400 uppercase tracking-wider">Waspada</div>
                     </div>
                     <div class="text-center px-3">
@@ -155,7 +154,7 @@
             <div class="mt-6 pt-6 border-t border-white/[0.06] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
                 <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
                     <div class="text-[10px] text-cyan-400 uppercase font-semibold">1 · Pemicu Makro</div>
-                    <div class="text-zinc-200">US10Y (5.04%) & WTI ($101.44)</div>
+                    <div class="text-zinc-200">US10Y (5.04%) & WTI ($101.34)</div>
                 </div>
                 <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
                     <div class="text-[10px] text-amber-400 uppercase font-semibold">2 · Kondisi Moneter</div>
@@ -166,8 +165,8 @@
                     <div class="text-zinc-200">Rotasi modal ke XLE (Energy), XLB (Materials)</div>
                 </div>
                 <div class="bg-vault-900/60 p-3.5 rounded-xl border border-white/5 space-y-1">
-                    <div class="text-[10px] text-emerald-400 uppercase font-semibold">4 · Sikap Crypto</div>
-                    <div class="text-zinc-200">DEFENSIVE / VOLATILE (Tunggu stabilisasi yield real)</div>
+                    <div class="text-[10px] text-emerald-400 uppercase font-semibold">4 · Transmisi Indonesia</div>
+                    <div class="text-zinc-200">USD/IDR Rp 18,100 [TEKANAN BERAT]</div>
                 </div>
             </div>
         </section>
@@ -175,44 +174,58 @@
         <!-- TAB 1: OVERVIEW -->
         <div id="tab-overview" class="tab-pane space-y-8">
             
-            <!-- KEY ASSET METRIC TICKERS -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                <div class="glass-card rounded-xl p-4 space-y-1">
+            <!-- KEY ASSET METRIC TICKERS (8 CARDS INCLUDING GOLD & USD/IDR) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
                     <div class="text-[11px] text-zinc-400 font-medium">Bitcoin (BTC)</div>
-                    <div class="text-lg font-bold font-mono text-white">$79,780</div>
+                    <div class="text-base font-bold font-mono text-white">$79,853</div>
                     <div class="text-xs font-mono text-rose-400">
-                        -1.27% (1D)
+                        -1.18% (1D)
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4 space-y-1">
+                <div class="glass-card rounded-xl p-3.5 space-y-1 border-amber-500/20 bg-amber-500/[0.03]">
+                    <div class="text-[11px] text-amber-400 font-medium flex items-center gap-1">Emas (XAUUSD)</div>
+                    <div class="text-base font-bold font-mono text-white">$4,048.9</div>
+                    <div class="text-xs font-mono text-rose-400">
+                        -0.07% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-3.5 space-y-1 border-cyan-500/20 bg-cyan-500/[0.03]">
+                    <div class="text-[11px] text-cyan-400 font-medium">USD / IDR (Kurs)</div>
+                    <div class="text-base font-bold font-mono text-white">Rp 18,100</div>
+                    <div class="text-xs font-mono text-rose-400">
+                        -0.22% (1D)
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
                     <div class="text-[11px] text-zinc-400 font-medium">S&P 500 (SPY)</div>
-                    <div class="text-lg font-bold font-mono text-white">$772.31</div>
+                    <div class="text-base font-bold font-mono text-white">$772.31</div>
                     <div class="text-xs font-mono text-emerald-400">
                         +0.34% (1D)
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4 space-y-1">
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
                     <div class="text-[11px] text-zinc-400 font-medium">US 10Y Yield</div>
-                    <div class="text-lg font-bold font-mono text-white">5.045%</div>
-                    <div class="text-xs font-mono text-zinc-400">Benchmark Rate</div>
+                    <div class="text-base font-bold font-mono text-white">5.045%</div>
+                    <div class="text-xs font-mono text-zinc-400">Benchmark</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 space-y-1">
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
                     <div class="text-[11px] text-zinc-400 font-medium">US Dollar (DXY)</div>
-                    <div class="text-lg font-bold font-mono text-white">102.16</div>
+                    <div class="text-base font-bold font-mono text-white">102.17</div>
                     <div class="text-xs font-mono text-rose-400">
-                        -0.16% (1D)
+                        -0.02% (1D)
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4 space-y-1">
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
                     <div class="text-[11px] text-zinc-400 font-medium">WTI Crude Oil</div>
-                    <div class="text-lg font-bold font-mono text-white">$101.44</div>
-                    <div class="text-xs font-mono text-emerald-400">
-                        +1.54% (1D)
+                    <div class="text-base font-bold font-mono text-white">$101.34</div>
+                    <div class="text-xs font-mono text-rose-400">
+                        -1.40% (1D)
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4 space-y-1">
-                    <div class="text-[11px] text-zinc-400 font-medium">Fed Net Liquidity</div>
-                    <div class="text-lg font-bold font-mono text-cyan-400">$5,801.4B</div>
+                <div class="glass-card rounded-xl p-3.5 space-y-1">
+                    <div class="text-[11px] text-zinc-400 font-medium">Net Liquidity</div>
+                    <div class="text-base font-bold font-mono text-cyan-400">$5,801.4B</div>
                     <div class="text-xs font-mono text-emerald-400">
                         +42.3B (4W)
                     </div>
@@ -228,7 +241,7 @@
                         <h3 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-cyan-400"></span>EARLY WARNING SIGNALS (EWS)
                         </h3>
-                        <span class="text-xs font-mono text-zinc-400">8 Triggers Monitored</span>
+                        <span class="text-xs font-mono text-zinc-400">10 Triggers Monitored</span>
                     </div>
 
                     <div class="space-y-3">
@@ -302,10 +315,10 @@
                         <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div class="space-y-1">
                                 <div class="text-xs font-semibold text-zinc-200">US Dollar Index (DXY)</div>
-                                <div class="text-[11px] text-zinc-400">DXY 102.16 lemah/stabil, suportif untuk komoditas & crypto.</div>
+                                <div class="text-[11px] text-zinc-400">DXY 102.17 lemah/stabil, suportif untuk komoditas & crypto.</div>
                             </div>
                             <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                                <span class="font-mono text-xs font-bold text-white">102.16</span>
+                                <span class="font-mono text-xs font-bold text-white">102.17</span>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>AMAN</span>
                             </div>
                         </div>
@@ -313,11 +326,33 @@
                         <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div class="space-y-1">
                                 <div class="text-xs font-semibold text-zinc-200">WTI Crude Oil</div>
-                                <div class="text-[11px] text-zinc-400">Minyak $101.44/bbl memicu risiko stagflasi dan kenaikan ekspektasi inflasi.</div>
+                                <div class="text-[11px] text-zinc-400">Minyak $101.34/bbl memicu risiko stagflasi dan kenaikan ekspektasi inflasi.</div>
                             </div>
                             <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                                <span class="font-mono text-xs font-bold text-white">$101.44</span>
+                                <span class="font-mono text-xs font-bold text-white">$101.34</span>
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BAHAYA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">USD / IDR (Kurs Rupiah)</div>
+                                <div class="text-[11px] text-zinc-400">Rupiah tertekan di Rp 18,100 melampaui level Rp 18.000, memicu intervensi cadangan devisa agresif BI.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">Rp 18,100</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BAHAYA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="text-xs font-semibold text-zinc-200">Emas (XAUUSD)</div>
+                                <div class="text-[11px] text-zinc-400">Emas XAUUSD di level rekor $4,048.9/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global.</div>
+                            </div>
+                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                                <span class="font-mono text-xs font-bold text-white">$4,048.9/oz</span>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>WASPADA</span>
                             </div>
                         </div>
                         
@@ -654,11 +689,11 @@
                         <span class="text-xs text-zinc-400 font-mono">Digital Gold / High Beta Liquidity</span>
                     </div>
                     <div>
-                        <div class="text-2xl font-extrabold font-mono text-white">$79,779.60</div>
-                        <div class="text-xs font-mono text-rose-400 mt-1">-1.27% (1D) · -2.32% (20D)</div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$79,852.53</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.18% (1D) · -2.23% (20D)</div>
                     </div>
                     <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
-                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                        <div>Transmisi: Sensitif terhadap Fed Net Liquidity & Suku Bunga Riil.</div>
                     </div>
                 </div>
                 
@@ -668,11 +703,11 @@
                         <span class="text-xs text-zinc-400 font-mono">Smart Contract / Tech Platform</span>
                     </div>
                     <div>
-                        <div class="text-2xl font-extrabold font-mono text-white">$2,304.91</div>
-                        <div class="text-xs font-mono text-rose-400 mt-1">-1.82% (1D) · -6.76% (20D)</div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$2,310.20</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.60% (1D) · -6.54% (20D)</div>
                     </div>
                     <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
-                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                        <div>Transmisi: Sensitif terhadap Fed Net Liquidity & Suku Bunga Riil.</div>
                     </div>
                 </div>
                 
@@ -682,11 +717,11 @@
                         <span class="text-xs text-zinc-400 font-mono">High Throughput / Speculative Beta</span>
                     </div>
                     <div>
-                        <div class="text-2xl font-extrabold font-mono text-white">$99.57</div>
-                        <div class="text-xs font-mono text-rose-400 mt-1">-1.66% (1D) · -9.02% (20D)</div>
+                        <div class="text-2xl font-extrabold font-mono text-white">$99.68</div>
+                        <div class="text-xs font-mono text-rose-400 mt-1">-1.56% (1D) · -8.92% (20D)</div>
                     </div>
                     <div class="pt-4 border-t border-white/[0.06] text-xs text-zinc-400 space-y-1">
-                        <div>Transmisi: Sangat sensitif terhadap Fed Net Liquidity & DXY.</div>
+                        <div>Transmisi: Sensitif terhadap Fed Net Liquidity & Suku Bunga Riil.</div>
                     </div>
                 </div>
                 
@@ -726,7 +761,254 @@
             </div>
         </div>
 
-        <!-- TAB 4: WHATSAPP BROADCAST (READY TO COPY) -->
+        <!-- TAB 4: INDONESIA & NEWS TRANSMISSION -->
+        <div id="tab-indonesia" class="tab-pane hidden space-y-8">
+            
+            <!-- Indonesia Macro Spillover Hero -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🇮🇩</span>
+                            <h3 class="text-base font-bold text-white">Radar Transmisi Makro Global ke Indonesia</h3>
+                        </div>
+                        <p class="text-xs text-zinc-400">Saluran transmisi yield obligasi AS, Dolar DXY, dan Minyak terhadap pasar keuangan domestik</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                        USD/IDR: Rp 18,100
+                    </span>
+                </div>
+
+                <!-- 4 Pillars Grid for Indonesia -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-vault-900/80 p-4 rounded-xl border border-white/5 space-y-2">
+                        <div class="text-xs text-zinc-400 font-semibold">Tekanan Nilai Tukar Rupiah</div>
+                        <div class="font-mono text-sm font-bold text-white">USD/IDR Rp 18,100</div>
+                        <div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>TEKANAN BERAT</span></div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">USD/IDR di level Rp 18,100 (-0.22%) menembus ambang batas psikologis 18.000 akibat yield spread US10Y (5.04%) yang tinggi.</p>
+                    </div>
+
+                    <div class="bg-vault-900/80 p-4 rounded-xl border border-white/5 space-y-2">
+                        <div class="text-xs text-zinc-400 font-semibold">Sikap Bank Indonesia (BI-Rate)</div>
+                        <div class="font-mono text-sm font-bold text-amber-400">Triple Intervention</div>
+                        <div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>HAWKISH / INTERVENSI AGRESIF</span></div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Ruang pelonggaran BI-Rate terkunci. BI diwajibkan melakukan intervensi 'Triple Intervention' (DNDF, spot, SBN) dan mengerek instrumen SRBI/SVBI untuk menahan capital flight.</p>
+                    </div>
+
+                    <div class="bg-vault-900/80 p-4 rounded-xl border border-white/5 space-y-2">
+                        <div class="text-xs text-zinc-400 font-semibold">Beban Subsidi APBN (Energi)</div>
+                        <div class="font-mono text-sm font-bold text-white">WTI $101.34/bbl</div>
+                        <div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>BEBAN SUBSIDI MENINGKAT</span></div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">Harga minyak WTI ($101.34/bbl) jauh melampaui asumsi ICP APBN, memperlebar defisit subsidi energi dan menekan neraca perdagangan migas.</p>
+                    </div>
+
+                    <div class="bg-vault-900/80 p-4 rounded-xl border border-white/5 space-y-2">
+                        <div class="text-xs text-zinc-400 font-semibold">Spillover IHSG (EIDO ETF)</div>
+                        <div class="font-mono text-sm font-bold text-white">EIDO $10.45</div>
+                        <div><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>RISK-OFF ASING / UNDERPERFORM</span></div>
+                        <p class="text-[11px] text-zinc-400 leading-relaxed">EIDO (+1.06%) mencerminkan de-risking investor asing dari saham perbankan big-cap (BBCA, BBRI, BMRI). Hanya emiten komoditas energi yang mampu bertahan.</p>
+                    </div>
+                </div>
+
+                <!-- Analytical Synthesis Paragraph -->
+                <div class="p-4 rounded-xl bg-vault-950/80 border border-white/[0.08] space-y-1.5">
+                    <div class="text-xs font-semibold text-cyan-400 uppercase font-mono tracking-wider">Kesimpulan Transmisi:</div>
+                    <p class="text-xs text-zinc-300 leading-relaxed">Kombinasi US10Y di level 5.045%, DXY 102.17, dan WTI Crude $101.34 memicu transmisi negatif ke Indonesia lewat dua saluran utama: depresiasi nilai tukar (USD/IDR Rp 18,100) dan ancaman 'imported inflation' dari energi. Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas.</p>
+                </div>
+            </div>
+
+            <!-- 2-COL REAL VERIFIED NEWS WITH SOURCES & LINKS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Global Macro News -->
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>Berita Kritis Makro Global (48 Jam)
+                        </h4>
+                        <span class="text-xs font-mono text-zinc-400">Verified Sources</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">IFA Magazine</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Wed, 28 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Fed holds interest rates at 3.75% to 4% as inflation risks keep further hikes in play</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMirAFBVV95cUxPYUNMYXlqV0ZZZVpUQUQ4WkhsOElfOEF0LWYzZVdnMExzNzBzREEyX0tyRTNDUUlWaVJEbkRnV2tDbnhFTXdoNlo0Y0tPaXRrdElhZVVZTm93LTFpZktuOHFNUUxRZHJ6NUROTzJUbC1rS1JtTE1IdkdNOVFGa0NCeEdaNnlyTlVXUmhJMFk4RDZJQkRzTmRRTlZfRlFneTk1OHdGNjk5eWFPTHBy?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">Benzinga</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Wed, 28 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Fed Holds Rate at 3.75%-4%, Two Officials Push for Hike - State Street SPDR S&P Regional Banking ETF (ARC</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMitwFBVV95cUxNYzhJMzZPS281SzU0bmVGRzZYaGF2YWJka2pOZWV6X0J5b3dRclR0aWFObDN4STFXaUEtcFlwZzNxZkJOYk1EUndHbk8zYU5ZaTZvMU1OcGg1Q1pMTnpCdDMtbTBFVmliODhKVm53WVZHNzYzZXdISk8yZGZPNGp0V1FpdGN2OW1IVXAxcDRQckhhSzMwN0oxbUw1ZWhBQmJuM1A3WkwwZXVvbk9MQl81ZGhJa1BtRGc?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">CNBC</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Tue, 27 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Fed rate hikes are coming, but not this week: CNBC survey</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMiigFBVV95cUxPemFCemhRSnI2LTdtSk9nOGRqR3IyQVotVHh4YzEwZzJld3dqNTM4TmRpbHJZSlVRZWZlX0JJYzAtODd1a0lyVlVETlRkbmtWOHpZbzc0eXo2VUFBTzdZZ1ZrWFhKaklMN1JQcmNhaEpEVEpNa0JPRllsdUN0cU9kc1NLM3J0eHpLWHfSAY8BQVVfeXFMTml6aGtHdzhmakJjT00ya2VsRkpBbFpXNDU0YUFmQU96TFRvSFhMWDJhS1RkWG1yNjdWOW1zQTFEV1M3eEg3VEx6ZTM4Z1lSWEZxcnJ6ckQ5Skt2V1hLYUNkX1lZM2R0dklVaHd6dGdSR2lhZEhXVlA4MEphQ0lSTjBSeHp3M0IwMnc5eFhTelk?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">TradingView</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Wed, 28 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Fed Rate Decision Today: Here’s What Goldman Strategist Has To Say About Interest Rates</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMi4AFBVV95cUxNeHc1ZXFBRldobzh1clpsbnlQYmd2OHpzSTVhOGJHT3Z0QkdUX0M5cDhXLUdRWUJzLUhHRGNoaTljd1RvMHlJSTNrSUdqMFM3d3ZjcmV5dFpxTTRCc1BQR0RRNFRqU2JLOXdHUkg1akFqRWQ4WTJfX3ZYdnVvUmJZbGdKMWVQTzNfY01GOXhiR25TZU5vR1FaaDJTWlU3b1VFMlVCdGVkSl84TjVmLWxSbFJDbDljNi1fbXN1cFUtbUpxN09JbzFqWF9lQW1rNTBaZmtLRzFZamQ1WXM1UUtiYQ?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">JournalArta</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Mortgage Rates Slip as Fed Holds Steady; 30-Year Fixed at 7.14%</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMijwFBVV95cUxQNXJteDZpUkJWTmNmcmJxMzNmbmlyc1dsaXd3V085c3JUQnpTVFVELTZLc1RPSGtBZllfMDNhUVZFYnJrSk1KZUVuSlFyTVpvc01PcmZPeFA5VGRQeEhaWlpQWTI3bXk3X1BhUkR3TUo1WVVORGo3a180aDFKM01mbEEyOUYtVUNmVWtlVkhadw?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 border border-white/10 text-cyan-400">The Hill</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Wed, 28 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Fed likely to hold rates steady ahead of midterms</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxOY2pPeHlGNkV2VUoyUlVodUxxdnV5Q0pRc2VUNDRINmYyN2lxdlRnMVBfc281cksycXVhYWVXTnR0ZHBMeVFJclVWTWV5Q3VOSzlQUFQwTkMwNkpxRDFaVXZocWxYc2tSTDY3dHR3MUJYZUV4a0N6RDB1YXMyRlhWetIBhgFBVV95cUxORmNwQXRxNnQ0bHpMV2JKUEJPdmdUcHBFdTJVTU9uS1N3dUhqNDlsR0tXTGxnTVV1MEZnVjFBM3pEODdydHBpWXJOY09leTdBdFBvWWhpak5ZT2FycVliZkNIekFuRTktUWdxczVqemE2VjdtLWFORDczenFzUjQzdGhoaGVodw?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                    Buka Sumber Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Indonesia Market & Macro News -->
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+                        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>Sentimen Pasar & Makro Indonesia
+                        </h4>
+                        <span class="text-xs font-mono text-zinc-400">IHSG, BI & Rupiah</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Pasardana</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Mirae Asset Wanti-wanti! Pemulihan IHSG Masih Rapuh, Spekulasi Akuisisi BBCA Belum Terbukti</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMixAFBVV95cUxOMnZxY0t1NzBwckl2YlRSQk45dnZDZ2luNzNPdFB2Mm5DRWQ4d2JoTTJWMXVxWVpSaUNuSkFSNUdWVVl0V3BneTlIakNhbG9FeW5iS0U1QkVOTGx6aXZVb1RkbUZhS09pMlZhamlzY1lJb2t2S3ludnludG1Od2VuZkdqNG53b3Q0dFA1RUNvY2dYOGZvZExGa1VPcklONWtIbTVGd1VZdnNrLTBGd1M0bjB2MmFFajIyTW5YR3c1dFk3SHA0?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">TVRI News</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">IHSG Bangkit, Rupiah dan SBN Anjlok</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMihAFBVV95cUxOYlQtbTVzZVhhY0pKUEJDaXB3NGxuN0tMSlJFSEZCS3pVTHhpUkpLQzhGQW1uMnNTU0RaMkpWNG9EbGN6Q0NoaEVyNG5KaUFIZmFtekcySGQ0U0tjOEhqVmNpT1cxV1o1X19zVDFnNlZqNy1nZ0kxQTh2ME1BMEpDV0hjV3U?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Bareksa.com</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Rekomendasi Saham Tim Analis Bareksa: JSMR, SGER & PTBA, IHSG Berpeluang Rebound</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMiwAFBVV95cUxOR2pJNlNTb01Tb1VNSHo2cTFORlFEM0tRelQ1OGxxXzUxS091WlU0ZVV3cGo4VnRqTEYyRVRyLUdJN0RvOGt6cXNZV0x3eDFsZm82V1lKbWZmbWNVX1ZCUFhIaERqSFlvQTZ3b0JRV3huY3lWN1hISnktZHRGRmNlQlFfN2JGVndhQ1RndVhkTTNDQ2ZwbG41eXdFc0FoNy1WZXBWZkJnQlI0VXMxSFQ0dTA0TkduYXUzbkQtdWdZM0k?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">Maybank Trade ID</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">The Fed Tahan Bunga, BBCA-ASII Pimpin Rebound IHSG | Potensi Saham Semen & Aksi Korporasi PACK</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMiyAFBVV95cUxObnVXRlhXNndHU1VEalR0aGU0RTFwTWpRbTRyUmNOR0pkbHNLd2EzNDJvNFI4ZkV6bWpGM3RRd1p6a3l1ekxERFRwaXN5MVlCME0yaGc2el9DeWVlVlFCVlcwYmpZOVdhQ0lMMG5BdTlnVWt2bk1mcHVQMVNFclBqN1BhLWNoRXBuR1dSTUQ1Q2Z1Q004M01FeDZvWi0tUy1ZbjBnUC1pRGx0RXNRaEhtM3hGd0F3bWQyNERJVkFBcGxwZ3JXb1RmWg?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">ANTARA News Jambi</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">IHSG Kamis dibuka menguat 22,89 poin ke posisi 5.305</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMimAFBVV95cUxOWnc3U1dFWDF4ZXNHdHNuU1M0TTZJYkFYSnBsNGgySkE4eER5NXJKRC1UeWd5TEhRWUs1VlVacTNkc0VlSW5nd0JsdnVFYjFrNzVEb254MzF5U3dTTTRSX0xtRFdlWGV4SERGX2htZ2szOE56dzVXdC1GWThFTTRhVFZSTlRwZk1kS2w3S0M0Z005RUo4T1dzWtIBngFBVV95cUxPWXJNX2R6ekVCRE5UUk00VWh2Y2hSbXk4S0xDZlVCdDdhcXhWTmkwaHdoRnVTVEk4QzBtNzRnSThHX3p4RzExaW1IcFM0Ri1RRnRVZ1hyaHluOXVYUWZFUnRDelZJVkxCZ2JTdzFXSS1hX0pTQlMxRVpkMVAyc3E0NDM5eWRDaFg5YktURVFKSW82eDJ6dXh4SVhQanQ1Zw?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="p-3.5 rounded-xl bg-vault-900/80 border border-white/5 space-y-2 hover:border-emerald-500/30 transition-all">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">IDNFinancials</span>
+                                <span class="text-[10px] text-zinc-500 font-mono">Thu, 29 Oct 2026</span>
+                            </div>
+                            <div class="text-xs font-semibold text-zinc-200 leading-snug">Dibayangi Fed Rate dan pelemahan rupiah, IHSG uji level ini</div>
+                            <div class="pt-1">
+                                <a href="https://news.google.com/rss/articles/CBMipAFBVV95cUxQVFVpRnRDUVVuLTdzQnJ5aUN3RFNGcUVKckNnajNqM29aUUxFaWJNZkIzUDJueThTUmFZNHl1dHFTVEdxUG9YVm5tbUVuaUdPV2dROGhTZTl3TzRfazg2NFZWTS1tQ3ZYWDVFNVJROGNReEV0bHBtc1E3TWNXbUlxUlM4VVd0TW52N3NPWHFhOHJCVGxGVEZHOHEzZkZ5Wmh4Y0JieA?oc=5" target="_blank" rel="noopener noreferrer" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                    Buka Berita Asli ↗
+                                </a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 5: WHATSAPP BROADCAST (READY TO COPY) -->
         <div id="tab-whatsapp" class="tab-pane hidden space-y-6">
             <div class="glass-card rounded-2xl p-6 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.06]">
@@ -743,14 +1025,14 @@
                 </div>
 
                 <div class="relative">
-                    <textarea id="wa-text" readonly rows="22" class="w-full bg-vault-950/90 border border-white/10 rounded-xl p-4 font-mono text-xs text-zinc-200 leading-relaxed focus:outline-none focus:border-cyan-500/50 resize-y">🌐 *MACRO PULSE | US SECTORS & CRYPTO RADAR*
-📅 Thursday, 29 Oct 2026 · 10:58 WIB
+                    <textarea id="wa-text" readonly rows="25" class="w-full bg-vault-950/90 border border-white/10 rounded-xl p-4 font-mono text-xs text-zinc-200 leading-relaxed focus:outline-none focus:border-cyan-500/50 resize-y">🌐 *MACRO PULSE | US SECTORS, CRYPTO & INDONESIA*
+📅 Thursday, 29 Oct 2026 · 11:34 WIB
 🏛 *REZIM MAKRO:* STAGFLASI ENERGI & SQUEEZE BIAYA
-⚠️ *STATUS EWS:* 🔴 3 Bahaya | 🟡 1 Waspada | 🟢 4 Aman
+⚠️ *STATUS EWS:* 🔴 4 Bahaya | 🟡 2 Waspada | 🟢 4 Aman
 
 ━━━━━━━━━━━━━━━━━━━━━
 ⚡ *RANTAI TRANSMISI KAUSALITAS (SENTIMEN & DAMPAK):*
-1️⃣ *Pemicu:* Minyak WTI ($101.44) & US10Y (5.04%) berada di zona elevasi tinggi
+1️⃣ *Pemicu:* Minyak WTI ($101.34) & US10Y (5.04%) berada di zona elevasi tinggi
    ⬇️
 2️⃣ *Transmisi Moneter:* Ekspektasi Inflasi bertahan alot -> The Fed terkunci pada suku bunga tinggi (Higher for Longer)
    ⬇️
@@ -762,12 +1044,21 @@
 📊 *MARKET SNAPSHOT:*
 • *S&P 500 (SPY):* $772.31 (+0.34%)
 • *Nasdaq (QQQ):* $725.61 (+0.60%)
-• *Bitcoin (BTC):* $79,780 (-1.27%)
+• *Bitcoin (BTC):* $79,853 (-1.18%)
+• *Emas (XAUUSD):* $4,048.9/oz (-0.07%)
+• *USD / IDR:* Rp 18,100 (-0.22%)
 • *US 10Y Yield:* 5.045%
-• *DXY (Dollar):* 102.16
-• *WTI Oil:* $101.44 (+1.54%)
-• *Gold:* $4,053.1
+• *DXY (Dollar):* 102.17
+• *WTI Oil:* $101.34 (-1.40%)
 • *Fed Net Liquidity:* $5,801.4B (+42.3B 4W)
+
+━━━━━━━━━━━━━━━━━━━━━
+🇮🇩 *TRANSMISI MAKRO GLOBAL KE INDONESIA:*
+• *USD / IDR (Kurs):* Rp 18,100 (-0.22%) [TEKANAN BERAT]
+• *MSCI Indonesia (EIDO):* $10.45 (+1.06%) [RISK-OFF ASING / UNDERPERFORM]
+• *Kebijakan Bank Indonesia:* HAWKISH / INTERVENSI AGRESIF
+• *Beban APBN & Subsidi:* BEBAN SUBSIDI MENINGKAT
+• *Analisis:* Kombinasi US10Y di level 5.045%, DXY 102.17, dan WTI Crude $101.34 memicu transmisi negatif ke Indonesia lewat dua saluran utama: depresiasi nilai tukar (USD/IDR Rp 18,100) dan ancaman 'imported inflation' dari energi. Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas.
 
 ━━━━━━━━━━━━━━━━━━━━━
 🏆 *ROTASI 11 SEKTOR US (TACTICAL ACTION):*
@@ -783,9 +1074,9 @@
 
 ━━━━━━━━━━━━━━━━━━━━━
 🪙 *CRYPTO & LIQUIDITY MATRIX:*
-• *BTC-USD:* $79,780 (20D Chg: -2.32%)
-• *ETH-USD:* $2,305
-• *SOL-USD:* $99.57
+• *BTC-USD:* $79,853 (20D Chg: -2.23%)
+• *ETH-USD:* $2,310
+• *SOL-USD:* $99.68
 • *ETH/BTC Ratio:* 0.0289 (Altseason Pause / BTC Dominance)
 • *Crypto Stance:* DEFENSIVE / VOLATILE (Tunggu stabilisasi yield real)
 
@@ -804,7 +1095,7 @@ _Generated by Antigravity US Macro & Crypto Engine_</textarea>
 
     <!-- Footer -->
     <footer class="max-w-7xl mx-auto px-4 sm:px-8 py-8 border-t border-white/[0.06] text-center text-xs text-zinc-500 font-mono">
-        MACRO PULSE · Institutional-grade Pattern Recognition Engine for US Equities & Crypto. Point-in-time FRED & Market Ingestion.
+        MACRO PULSE · Institutional-grade Pattern Recognition Engine for US Equities, Crypto & Indonesia.
     </footer>
 
     <!-- Interactive Script -->

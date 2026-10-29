@@ -7,6 +7,7 @@ import os
 import sqlite3
 import datetime
 import requests
+import xml.etree.ElementTree as ET
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -49,6 +50,19 @@ def init_db():
         rrp REAL,
         net_liquidity_bil REAL,
         change_4w_bil REAL
+    )
+    """)
+
+    # Table for Macro & Indonesia News
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS macro_news (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category TEXT,
+        title TEXT,
+        source TEXT,
+        link TEXT,
+        pub_date TEXT,
+        UNIQUE(category, title)
     )
     """)
     
@@ -166,6 +180,74 @@ def sync_market_data(days=90):
         conn.close()
         print(f"Synced {len(records)} price records into SQLite database.")
 
+def fetch_rss_news(query, lang_params, category, limit=8):
+    url = f"https://news.google.com/rss/search?q={query}&{lang_params}"
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    news_items = []
+    try:
+        r = requests.get(url, headers=headers, timeout=12)
+        if r.status_code == 200:
+            root = ET.fromstring(r.content)
+            channel = root.find("channel")
+            if channel is not None:
+                items = channel.findall("item")
+                for it in items[:limit]:
+                    title_elem = it.find("title")
+                    link_elem = it.find("link")
+                    pub_elem = it.find("pubDate")
+                    source_elem = it.find("source")
+                    
+                    title = title_elem.text if title_elem is not None else ""
+                    link = link_elem.text if link_elem is not None else ""
+                    pub = pub_elem.text if pub_elem is not None else ""
+                    source = source_elem.text if source_elem is not None else "Financial Media"
+                    
+                    # Clean title if it ends with " - Source Name"
+                    if " - " in title:
+                        title_clean = title.rsplit(" - ", 1)[0]
+                    else:
+                        title_clean = title
+                        
+                    news_items.append({
+                        "category": category,
+                        "title": title_clean,
+                        "source": source,
+                        "link": link,
+                        "pub_date": pub
+                    })
+    except Exception as e:
+        print(f"Error fetching RSS for {category}: {e}")
+    return news_items
+
+def sync_news_data():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    global_items = fetch_rss_news(
+        query="macro+economy+OR+federal+reserve+interest+rates+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="global",
+        limit=8
+    )
+    
+    indo_items = fetch_rss_news(
+        query="rupiah+OR+ihsg+OR+\"bank+indonesia\"+when:2d",
+        lang_params="hl=id&gl=ID&ceid=ID:id",
+        category="indonesia",
+        limit=8
+    )
+    
+    all_items = global_items + indo_items
+    for item in all_items:
+        cursor.execute("""
+        INSERT OR REPLACE INTO macro_news (category, title, source, link, pub_date)
+        VALUES (?, ?, ?, ?, ?)
+        """, (item["category"], item["title"], item["source"], item["link"], item["pub_date"]))
+        
+    conn.commit()
+    conn.close()
+    print(f"Synced {len(all_items)} verified news headlines with sources.")
+
 def get_latest_snapshot():
     conn = sqlite3.connect(DB_PATH)
     prices_df = pd.read_sql_query("""
@@ -192,12 +274,18 @@ def get_latest_snapshot():
     """, conn)
     
     net_liq = pd.read_sql_query("SELECT * FROM net_liquidity ORDER BY date DESC LIMIT 1", conn)
+    
+    global_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='global' ORDER BY id DESC LIMIT 6", conn)
+    indo_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='indonesia' ORDER BY id DESC LIMIT 6", conn)
+    
     conn.close()
     
     return {
         "prices": all_latest.set_index("ticker").to_dict(orient="index"),
         "fred": fred_latest.set_index("series_id").to_dict(orient="index"),
-        "net_liquidity": net_liq.to_dict(orient="records")[0] if not net_liq.empty else {}
+        "net_liquidity": net_liq.to_dict(orient="records")[0] if not net_liq.empty else {},
+        "global_news": global_news.to_dict(orient="records"),
+        "indonesia_news": indo_news.to_dict(orient="records")
     }
 
 if __name__ == "__main__":

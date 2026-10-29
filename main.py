@@ -6,8 +6,8 @@ Runs Phase 1 (Ingestion & Data Pipeline) and Phase 2 (Analytics, EWS, WhatsApp C
 import sys
 import argparse
 sys.stdout.reconfigure(encoding='utf-8')
-from data_fetcher import init_db, sync_fred_data, compute_net_liquidity, sync_market_data, get_latest_snapshot
-from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history
+from data_fetcher import init_db, sync_fred_data, compute_net_liquidity, sync_market_data, sync_news_data, get_latest_snapshot
+from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment
 from narrative_generator import generate_report_payload, generate_whatsapp_broadcast
 from html_generator import render_html_report
 
@@ -23,8 +23,10 @@ def run_pipeline(sync=True, print_wa=True):
         sync_fred_data()
         print("      Calculating Fed Net Liquidity...")
         compute_net_liquidity()
-        print("      Ingesting 24 market tickers (US Sectors, Yields, Crypto)...")
+        print("      Ingesting 26 market tickers (US Sectors, Yields, Gold, USD/IDR, Crypto)...")
         sync_market_data(days=90)
+        print("      Ingesting verified Global & Indonesia Macro News RSS...")
+        sync_news_data()
     else:
         print("\n[1/4] Skipping live sync, reading cached database...")
         
@@ -37,14 +39,16 @@ def run_pipeline(sync=True, print_wa=True):
     corrs = compute_correlation_matrix(price_df)
     sectors = compute_sector_scorecard(snapshot, regime)
     crypto_data, eth_btc = compute_crypto_scorecard(snapshot)
+    indo_macro = analyze_indonesia_macro_sentiment(snapshot, ews, regime)
     
     print(f"      Regime: {regime['title']}")
     print(f"      EWS: {regime['score_bahaya']} Bahaya, {regime['score_waspada']} Waspada")
     print(f"      Top Sector Pick: {sectors[0]['ticker']} ({sectors[0]['name']})")
+    print(f"      USD/IDR: Rp {indo_macro['usdidr_val']:,.0f} [{indo_macro['kurs_status']}]")
     print(f"      Crypto Stance: {regime['crypto_stance']}")
     
     print("\n[3/4] Synthesizing Causality Chain & WhatsApp Broadcast...")
-    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc)
+    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro)
     
     print("\n[4/4] Generating Futuristic Minimalist HTML Report...")
     report_file = render_html_report(payload, output_path="report_us_macro.html")

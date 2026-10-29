@@ -173,6 +173,39 @@ def evaluate_ews(snapshot):
         "status": status,
         "context": ctx
     })
+
+    # 9. USD / IDR (Kurs Rupiah)
+    usdidr = prices.get("USDIDR=X", {}).get("close", 0)
+    if usdidr > 18000:
+        status = "BAHAYA"
+        ctx = f"Rupiah tertekan di Rp {usdidr:,.0f} melampaui level Rp 18.000, memicu intervensi cadangan devisa agresif BI."
+    elif usdidr > 16500:
+        status = "WASPADA"
+        ctx = f"Rupiah Rp {usdidr:,.0f} di atas batas nyaman BI, menahan ruang penurunan suku bunga BI-Rate."
+    else:
+        status = "AMAN"
+        ctx = f"Rupiah stabil di kisaran Rp {usdidr:,.0f}."
+    signals.append({
+        "name": "USD / IDR (Kurs Rupiah)",
+        "value": f"Rp {usdidr:,.0f}",
+        "status": status,
+        "context": ctx
+    })
+
+    # 10. Emas / XAUUSD
+    gold = prices.get("GC=F", {}).get("close", 0)
+    if gold > 3800:
+        status = "WASPADA" if tnx > 4.5 else "AMAN"
+        ctx = f"Emas XAUUSD di level rekor ${gold:,.1f}/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global."
+    else:
+        status = "AMAN"
+        ctx = f"Emas XAUUSD di level ${gold:,.1f}/oz stabil."
+    signals.append({
+        "name": "Emas (XAUUSD)",
+        "value": f"${gold:,.1f}/oz",
+        "status": status,
+        "context": ctx
+    })
     
     return signals
 
@@ -347,6 +380,74 @@ def compute_crypto_scorecard(snapshot):
             "chg_20d": data.get("change_20d_pct", 0),
         })
     return crypto_data, eth_btc_ratio
+
+def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
+    prices = snapshot.get("prices", {})
+    usdidr = prices.get("USDIDR=X", {}).get("close", 18100)
+    usdidr_chg = prices.get("USDIDR=X", {}).get("change_1d_pct", 0)
+    eido = prices.get("EIDO", {}).get("close", 10.45)
+    eido_chg = prices.get("EIDO", {}).get("change_1d_pct", 0)
+    us10y = prices.get("^TNX", {}).get("close", 5.0)
+    dxy = prices.get("DX-Y.NYB", {}).get("close", 102.0)
+    oil = prices.get("CL=F", {}).get("close", 100.0)
+    
+    # 1. Kurs Rupiah Pressure
+    if usdidr > 18000:
+        kurs_status = "TEKANAN BERAT"
+        kurs_desc = f"USD/IDR di level Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) menembus ambang batas psikologis 18.000 akibat yield spread US10Y ({us10y:.2f}%) yang tinggi."
+    elif usdidr > 16500:
+        kurs_status = "WASPADA"
+        kurs_desc = f"USD/IDR di Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) berada di bawah tekanan dolar kuat DXY {dxy:.2f}."
+    else:
+        kurs_status = "STABIL"
+        kurs_desc = f"USD/IDR Rp {usdidr:,.0f} terkendali."
+        
+    # 2. Bank Indonesia Policy Room
+    if us10y > 4.6 or usdidr > 17500:
+        bi_status = "HAWKISH / INTERVENSI AGRESIF"
+        bi_desc = "Ruang pelonggaran BI-Rate terkunci. BI diwajibkan melakukan intervensi 'Triple Intervention' (DNDF, spot, SBN) dan mengerek instrumen SRBI/SVBI untuk menahan capital flight."
+    else:
+        bi_status = "NETRAL / AKOMODATIF"
+        bi_desc = "Ruang pemangkasan suku bunga terbuka jika inflasi domestik terjaga."
+        
+    # 3. Beban Fiskal APBN & Energi
+    if oil > 90.0:
+        apbn_status = "BEBAN SUBSIDI MENINGKAT"
+        apbn_desc = f"Harga minyak WTI (${oil:.2f}/bbl) jauh melampaui asumsi ICP APBN, memperlebar defisit subsidi energi dan menekan neraca perdagangan migas."
+    else:
+        apbn_status = "TERKENDALI"
+        apbn_desc = f"Harga minyak ${oil:.2f}/bbl masih dalam batas toleransi fiskal."
+        
+    # 4. Transmisi ke IHSG & Arus Asing (EIDO)
+    if us10y > 4.8 and dxy > 102.0:
+        ihsg_status = "RISK-OFF ASING / UNDERPERFORM"
+        ihsg_desc = f"EIDO ({eido_chg:+.2f}%) mencerminkan de-risking investor asing dari saham perbankan big-cap (BBCA, BBRI, BMRI). Hanya emiten komoditas energi yang mampu bertahan."
+    else:
+        ihsg_status = "NETRAL / INFLOW SELEKTIF"
+        ihsg_desc = "Arus modal asing selektif masuk ke saham domestik."
+        
+    summary_paragraph = (
+        f"Kombinasi US10Y di level {us10y:.3f}%, DXY {dxy:.2f}, dan WTI Crude ${oil:.2f} memicu transmisi negatif ke Indonesia lewat "
+        f"dua saluran utama: depresiasi nilai tukar (USD/IDR Rp {usdidr:,.0f}) dan ancaman 'imported inflation' dari energi. "
+        f"Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan "
+        f"dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas."
+    )
+    
+    return {
+        "usdidr_val": usdidr,
+        "usdidr_chg": usdidr_chg,
+        "eido_val": eido,
+        "eido_chg": eido_chg,
+        "kurs_status": kurs_status,
+        "kurs_desc": kurs_desc,
+        "bi_status": bi_status,
+        "bi_desc": bi_desc,
+        "apbn_status": apbn_status,
+        "apbn_desc": apbn_desc,
+        "ihsg_status": ihsg_status,
+        "ihsg_desc": ihsg_desc,
+        "summary": summary_paragraph
+    }
 
 if __name__ == "__main__":
     from data_fetcher import get_latest_snapshot
