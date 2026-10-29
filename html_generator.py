@@ -28,6 +28,26 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     weekly_cal = payload.get("weekly_calendar", [])
     flow_proj = payload.get("flow_proj", {})
 
+    # Compute dynamic Net Liquidity status & impact
+    net_liq_chg = net_liq.get('change_4w_bil', 0)
+    if net_liq_chg > 50:
+        liq_status = "Ekspansi Likuiditas Kuat"
+        liq_impact = "Menopang valuasi ekuitas secara luas dan memicu selera risiko tinggi (risk-on) pada saham teknologi & reli kripto."
+    elif net_liq_chg > 0:
+        liq_status = "Ekspansi Likuiditas Moderat"
+        liq_impact = "Menjadi bantalan penahan penurunan saham (cushion), namun belum cukup deras memicu reli altcoins/spekulatif karena suku bunga kas masih tinggi."
+    elif net_liq_chg > -50:
+        liq_status = "Kontraksi Likuiditas Ringan"
+        liq_impact = "Pasar bergerak selektif dan rentan koreksi; investor institusi cenderung mengunci profit dan memegang kas dolar."
+    else:
+        liq_status = "Penarikan Likuiditas Agresif"
+        liq_impact = "Tekanan likuiditas berat memicu aksi jual de-risking menyeluruh di pasar saham dan volatilitas tajam kripto."
+
+    # Extract dynamic unique news sources
+    raw_sources = [n.get('source') for n in global_news + indonesia_news if n.get('source')]
+    unique_sources = sorted(list(set(raw_sources)))
+    active_news_sources_str = ", ".join(unique_sources[:7]) if unique_sources else "FXStreet, IDNFinancials, Bloomberg Technoz, CNBC Indonesia, Kompas"
+
     # Helper for natural badges
     def natural_badge(status):
         s_up = str(status).upper()
@@ -347,6 +367,33 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
                             {regime['summary']}
                         </p>
+
+                        <!-- 4-Quadrant Macro Matrix Visualizer -->
+                        <div class="pt-3">
+                            <div class="text-[11px] font-bold uppercase text-sage-600 mb-1.5">Klasifikasi 4-Kuadran Makro (Pertumbuhan vs Inflasi):</div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'REFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
+                                    <div class="text-[9px] uppercase tracking-wider">Kuadran I</div>
+                                    <div class="font-bold">Reflasi</div>
+                                    <div class="text-[10px] opacity-80">Growth ↑ · Inflasi ↑</div>
+                                </div>
+                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DISINFLASI_BOOM' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
+                                    <div class="text-[9px] uppercase tracking-wider">Kuadran II</div>
+                                    <div class="font-bold">Disinflasi Boom</div>
+                                    <div class="text-[10px] opacity-80">Growth ↑ · Inflasi ↓</div>
+                                </div>
+                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'STAGFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
+                                    <div class="text-[9px] uppercase tracking-wider text-sprout">Kuadran III (Posisi Kita)</div>
+                                    <div class="font-bold text-white">Stagflasi Energi</div>
+                                    <div class="text-[10px] text-sprout">Growth ↓ · Inflasi ↑</div>
+                                </div>
+                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DEFLASI_KONTRAKSI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
+                                    <div class="text-[9px] uppercase tracking-wider">Kuadran IV</div>
+                                    <div class="font-bold">Deflasi Kontraksi</div>
+                                    <div class="text-[10px] opacity-80">Growth ↓ · Inflasi ↓</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- EWS Danger Gauge -->
@@ -467,9 +514,15 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 Perubahan 4 Pekan: +${net_liq.get('change_4w_bil', 0):.1f} Miliar
                             </div>
                         </div>
-                        <div class="p-3 bg-linen-100 rounded-xl border border-linen-200 text-xs text-stone-600 leading-relaxed font-mono">
-                            Rumus: WALCL - WTREGEN - RRPONTSYD<br>
-                            Status: <b class="text-forest-800">Ekspansi Likuiditas Moderat</b>
+                        <div class="p-3.5 bg-linen-100 rounded-xl border border-linen-200 text-xs text-stone-700 leading-relaxed space-y-2">
+                            <div class="font-mono text-stone-500 text-[11px]">Rumus: WALCL - WTREGEN - RRPONTSYD</div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-stone-600">Status Siklus:</span>
+                                <b class="text-forest-900 font-bold">{liq_status}</b>
+                            </div>
+                            <div class="pt-2 border-t border-linen-300 text-stone-700 leading-relaxed">
+                                <b class="text-forest-800">Dampak Nyata ke Pasar:</b> {liq_impact}
+                            </div>
                         </div>
                     </div>
 
@@ -768,6 +821,34 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
             </div>
 
+            <!-- Geopolitical & Energy Shock Transmission Radar -->
+            <div class="natural-card p-6 border-l-4 border-l-amber-600 space-y-3 bg-[#FAFBF8]">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-linen-300">
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-800 text-sm font-bold flex items-center gap-1.5">
+                            <span>🌍</span> Transmisi Geopolitik Global & Premi Risiko Energi
+                        </span>
+                    </div>
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                        Premi Risiko Aktif
+                    </span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                        <div class="font-bold text-forest-800">1. Jalur Minyak Mentah (WTI ${prices.get('CL=F', {}).get('close', 100):.2f})</div>
+                        <p class="text-stone-600 leading-relaxed">Ketegangan kawasan Timur Tengah dan kuota pasokan OPEC+ menahan harga energi di atas $95–$100/barel, memicu 'cost-push inflation' di tingkat global.</p>
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                        <div class="font-bold text-forest-800">2. Jalur Emas Spot (${prices.get('GC=F', {}).get('close', 4040):,.0f}/oz)</div>
+                        <p class="text-stone-600 leading-relaxed">Apresiasi emas di tengah dolar kuat mencerminkan aksi akumulasi devisa bank sentral (de-dolarisasi) dan premi perlindungan risiko perang.</p>
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                        <div class="font-bold text-forest-800">3. Dampak Indonesia (USD/IDR & APBN)</div>
+                        <p class="text-stone-600 leading-relaxed">Defisit migas meningkat dan cadangan devisa tergerus untuk menahan kurs Rupiah, memicu arus keluar modal asing dari perbankan blue-chip IHSG.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Verified News Feed (Global & Indonesia) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
@@ -854,9 +935,10 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
     <!-- FOOTER -->
     <footer class="bg-forest-900 text-sage-300 text-xs py-6 px-4 sm:px-8 border-t border-forest-800 mt-12">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-            <div class="text-xs text-sage-200">
-                <b class="text-white">Sumber Data:</b> Yahoo Finance, FRED (Federal Reserve St. Louis), S&P Global, Bank Indonesia & Binance API
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div class="text-xs text-sage-200 space-y-1">
+                <div><b class="text-white">Sumber Data Pasar & Neraca:</b> Yahoo Finance, FRED (Federal Reserve St. Louis), S&P Global, Bank Indonesia & Binance API</div>
+                <div class="text-[11px] text-sage-300"><b class="text-sprout">Sumber Berita Makro Hari Ini:</b> {active_news_sources_str}</div>
             </div>
             <div class="text-xs text-sage-300 font-mono">
                 Pembaruan: <span class="text-sprout">{display_date}</span>
