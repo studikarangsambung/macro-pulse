@@ -57,7 +57,7 @@ def run_pipeline(sync=True, print_wa=True):
     print("\n[4/5] Synthesizing Causality Chain & WhatsApp Broadcast...")
     payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, weekly_cal, flow_proj)
     
-    print("\n[5/5] Generating Retro Classic Financial Terminal HTML Report...")
+    print("\n[5/5] Generating Natural Horizon Terminal HTML Report...")
     report_file = render_html_report(payload, output_path="report_us_macro.html")
     print(f"      Dashboard generated: file:///{report_file.replace('\\', '/')}")
     

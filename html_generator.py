@@ -1,7 +1,9 @@
 """
-Retro Classic Financial Terminal Dashboard Generator (Bloomberg 1980s / Vintage Teletype Aesthetic)
+Natural Landscape Financial Terminal Dashboard Generator (Inspired by Canva Natural Landscape & Open Sauce Aesthetic)
 Features:
-- Vintage Amber Phosphor on Dark CRT Slate theme
+- Earthy Natural Palette: Forest Olive (#384C25), Muted Sage (#6E804E), Sprout Lime (#D2E8B3), and Linen Cream (#F4F7F0)
+- Clean, highly legible typography using Plus Jakarta Sans (Open Sauce counterpart)
+- Zero clutter: unornamented rounded-2xl cards, crisp micro-borders, organic soft shadows
 - Live client-side real-time price streamer (Binance API for Crypto, live market clock WIB & EST)
 - Flow Projection & Weekly Economic Calendar with Scenario Impacts
 - US 11 Sectors Ledger, Crypto Liquidity, Indonesia Wire, and WhatsApp Dispatch
@@ -26,57 +28,67 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     weekly_cal = payload.get("weekly_calendar", [])
     flow_proj = payload.get("flow_proj", {})
 
-    # Helper for retro badges
-    def retro_badge(status):
-        if any(w in status for w in ["BAHAYA", "TEKANAN BERAT", "RISK-OFF", "HAWKISH", "BEBAN"]):
-            return f'<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold bg-amber-500/20 text-rose-400 border border-rose-500/40">[! {status} !]</span>'
-        elif any(w in status for w in ["WASPADA", "MODERAT"]):
-            return f'<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/30">[* {status} *]</span>'
+    # Helper for natural badges
+    def natural_badge(status):
+        s_up = str(status).upper()
+        if any(w in s_up for w in ["BAHAYA", "TEKANAN BERAT", "RISK-OFF", "HAWKISH", "BEBAN", "UNDERWEIGHT"]):
+            return f'<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>{status}</span>'
+        elif any(w in s_up for w in ["WASPADA", "MODERAT", "NEUTRAL"]):
+            return f'<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>{status}</span>'
         else:
-            return f'<span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">[+ {status} +]</span>'
+            return f'<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>{status}</span>'
 
-    def chg_color(val):
+    def chg_badge(val):
         if val > 0:
-            return "text-amber-400 font-bold"
+            return f'<span class="text-emerald-700 font-semibold">+{val:.2f}%</span>'
         elif val < 0:
-            return "text-rose-400 font-bold"
-        return "text-zinc-400"
+            return f'<span class="text-rose-600 font-semibold">{val:.2f}%</span>'
+        return f'<span class="text-stone-500 font-semibold">{val:.2f}%</span>'
 
     html_content = f"""<!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MACRO PULSE · RETRO FINANCIAL TERMINAL</title>
-    <!-- Vintage & Monospace Fonts -->
+    <title>MACRO PULSE · Natural Horizon Terminal</title>
+    <!-- Google Fonts: Plus Jakarta Sans (Open Sauce counterpart: clean geometric grotesque) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=VT323&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {{
-            darkMode: 'class',
             theme: {{
                 extend: {{
                     fontFamily: {{
-                        mono: ['IBM Plex Mono', 'monospace'],
-                        typewriter: ['Courier Prime', 'monospace'],
-                        headline: ['Playfair Display', 'serif'],
-                        crt: ['VT323', 'monospace'],
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
                     }},
                     colors: {{
-                        amber: {{
-                            400: '#FBBF24',
-                            500: '#F59E0B',
-                            600: '#D97706',
+                        forest: {{
+                            900: '#1D2A14',
+                            800: '#2A3C1E',
+                            700: '#384C25', // Canva Primary Olive Forest
+                            600: '#486230',
+                            500: '#5F7F41',
                         }},
-                        terminal: {{
-                            950: '#08080A',
-                            900: '#0E0F12',
-                            850: '#15161B',
-                            800: '#1D1F26',
-                            700: '#2A2D37',
+                        sage: {{
+                            700: '#4D5E39',
+                            600: '#5E7345',
+                            500: '#768A55', // Canva Sage Green
+                            400: '#8FA36E',
+                            300: '#ADC091',
+                            200: '#CFDCBC',
+                            100: '#E6EEDA',
+                            50: '#F4F7EF',
+                        }},
+                        sprout: '#D2E8B3', // Canva Accent Light Lime
+                        linen: {{
+                            50: '#FAFBF8',
+                            100: '#F4F6F0', // Canva Body Linen Background
+                            200: '#E9EFE3',
+                            300: '#DDE5D6',
+                            400: '#C7D3BD',
                         }}
                     }}
                 }}
@@ -85,398 +97,484 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     </script>
     <style>
         body {{
-            background-color: #08080A;
-            color: #D1D5DB;
-            letter-spacing: -0.01em;
-            background-image: 
-                radial-gradient(rgba(245, 158, 11, 0.03) 1px, transparent 0),
-                linear-gradient(rgba(14, 15, 18, 0.8) 1px, transparent 0);
-            background-size: 24px 24px, 100% 4px;
+            background-color: #F4F6F0;
+            color: #243019;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }}
-        .retro-card {{
-            background-color: #0E0F12;
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(245, 158, 11, 0.02);
-            transition: all 0.2s ease;
+        .natural-card {{
+            background: #FFFFFF;
+            border: 1px solid #DCE5D3;
+            border-radius: 1.25rem;
+            box-shadow: 0 2px 10px rgba(46, 63, 33, 0.04);
+            transition: all 0.2s ease-in-out;
         }}
-        .retro-card:hover {{
-            border-color: rgba(245, 158, 11, 0.45);
-            box-shadow: 0 6px 24px -2px rgba(245, 158, 11, 0.08);
-        }}
-        .retro-double-border {{
-            border: 3px double rgba(245, 158, 11, 0.35);
+        .natural-card:hover {{
+            box-shadow: 0 6px 18px rgba(46, 63, 33, 0.07);
         }}
         .tab-btn.active {{
-            background-color: rgba(245, 158, 11, 0.15);
-            color: #F59E0B;
-            border-color: #F59E0B;
+            background-color: #384C25;
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(56, 76, 37, 0.25);
         }}
-        .amber-glow {{
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        .tab-btn:not(.active) {{
+            background-color: transparent;
+            color: #4D5E39;
         }}
-        .ticker-flash-up {{
-            animation: flashUp 1s ease;
+        .tab-btn:not(.active):hover {{
+            background-color: #E6EEDA;
+            color: #1D2A14;
         }}
-        .ticker-flash-down {{
-            animation: flashDown 1s ease;
-        }}
-        @keyframes flashUp {{
-            0% {{ background-color: rgba(16, 185, 129, 0.3); }}
+        /* Price Flash Animation */
+        @keyframes flashGreen {{
+            0% {{ background-color: rgba(210, 232, 179, 0.8); }}
             100% {{ background-color: transparent; }}
         }}
-        @keyframes flashDown {{
-            0% {{ background-color: rgba(244, 63, 94, 0.3); }}
+        @keyframes flashRed {{
+            0% {{ background-color: rgba(254, 205, 211, 0.8); }}
             100% {{ background-color: transparent; }}
         }}
-        /* Retro Teletype Marquee */
-        .marquee-container {{
-            overflow: hidden;
-            white-space: nowrap;
-        }}
-        .marquee-content {{
-            display: inline-block;
-            animation: marquee 35s linear infinite;
-        }}
-        @keyframes marquee {{
-            0% {{ transform: translate3d(0, 0, 0); }}
-            100% {{ transform: translate3d(-50%, 0, 0); }}
-        }}
+        .flash-up {{ animation: flashGreen 1s ease-out; }}
+        .flash-down {{ animation: flashRed 1s ease-out; }}
+        
+        /* Custom clean scrollbar */
+        ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
+        ::-webkit-scrollbar-track {{ background: #F4F6F0; }}
+        ::-webkit-scrollbar-thumb {{ background: #CFDCBC; border-radius: 9999px; }}
+        ::-webkit-scrollbar-thumb:hover {{ background: #8FA36E; }}
     </style>
 </head>
-<body class="min-h-screen selection:bg-amber-500/20 selection:text-amber-300 font-mono">
+<body class="min-h-screen flex flex-col justify-between selection:bg-sprout selection:text-forest-900">
 
-    <!-- TOP TELETYPE TICKER TAPE -->
-    <div class="border-b border-amber-500/30 bg-terminal-900 py-1.5 px-4 text-[11px] font-mono text-amber-400 flex items-center justify-between">
-        <div class="flex items-center gap-2 shrink-0 pr-4 border-r border-amber-500/30 font-bold uppercase tracking-wider">
-            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span>WIRE TICKER [LIVE]</span>
-        </div>
-        <div class="marquee-container w-full overflow-hidden">
-            <div class="marquee-content flex gap-8 items-center text-xs">
-                <span>BTC/USD: <b class="text-white" id="live-tape-btc">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</b> <span class="{chg_color(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}">{prices.get('BTC-USD', {}).get('change_1d_pct', 0):+.2f}%</span></span>
-                <span>GOLD (XAUUSD): <b class="text-white">${prices.get('GC=F', {}).get('close', 0):,.1f}</b></span>
-                <span>USD/IDR: <b class="text-white">Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f}</b></span>
-                <span>S&P 500: <b class="text-white">${prices.get('SPY', {}).get('close', 0):.2f}</b></span>
-                <span>US10Y: <b class="text-white">{prices.get('^TNX', {}).get('close', 0):.3f}%</b></span>
-                <span>DXY: <b class="text-white">{prices.get('DX-Y.NYB', {}).get('close', 0):.2f}</b></span>
-                <span>WTI OIL: <b class="text-white">${prices.get('CL=F', {}).get('close', 0):.2f}</b></span>
-                <span>ETH/USD: <b class="text-white" id="live-tape-eth">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</b></span>
-                <span>SOL/USD: <b class="text-white" id="live-tape-sol">${prices.get('SOL-USD', {}).get('close', 0):,.2f}</b></span>
-                <span>FED NET LIQ: <b class="text-amber-300">${net_liq.get('net_liquidity_bil', 0):,.1f}B</b></span>
-                <!-- Repeat for smooth loop -->
-                <span>BTC/USD: <b class="text-white">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</b></span>
-                <span>GOLD: <b class="text-white">${prices.get('GC=F', {}).get('close', 0):,.1f}</b></span>
-                <span>USD/IDR: <b class="text-white">Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f}</b></span>
-            </div>
-        </div>
-        <div class="shrink-0 pl-4 border-l border-amber-500/30 text-[10px] text-zinc-400 hidden sm:block">
-            <span id="market-status-badge">[NYSE: OPEN]</span>
-        </div>
-    </div>
-
-    <!-- RETRO CLASSIC HEADER MASTHEAD -->
-    <header class="border-b-2 border-double border-amber-500/40 bg-terminal-950 px-4 sm:px-8 py-5">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            
-            <div class="space-y-1 text-center md:text-left">
-                <div class="flex items-center justify-center md:justify-start gap-2 text-[10px] uppercase font-mono tracking-widest text-amber-500">
-                    <span>★ THE MACRO TELETYPE DISPATCH ★</span>
-                    <span>·</span>
-                    <span>VOL. XXVI · NO. 301</span>
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-headline font-extrabold tracking-tight text-amber-400 amber-glow">
-                    MACRO PULSE FINANCIAL TERMINAL
-                </h1>
-                <p class="text-xs text-zinc-400 font-typewriter">
-                    Global Liquidity Surveillance · US Equities · Crypto Assets · Indonesian Sovereign Spillover
-                </p>
+    <!-- TOP ANNOUNCEMENT TICKER -->
+    <header class="bg-forest-900 text-linen-100 text-xs border-b border-forest-800 py-2 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+            <!-- Brand & Tagline -->
+            <div class="flex items-center gap-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-sprout animate-ping"></span>
+                <span class="font-bold tracking-wide uppercase text-sprout">Macro Pulse · Natural Horizon</span>
+                <span class="text-sage-300 hidden sm:inline">|</span>
+                <span class="text-sage-200 hidden sm:inline">US Sectors, Global Liquidity & Indonesia Transmission</span>
             </div>
 
-            <!-- DUAL LIVE CLOCKS -->
-            <div class="flex items-center gap-4 bg-terminal-900 border border-amber-500/30 p-2.5 rounded-none text-xs">
-                <div class="text-right px-2 border-r border-amber-500/20">
-                    <div class="text-[10px] text-zinc-400 uppercase">Jakarta (WIB)</div>
-                    <div class="font-bold text-amber-400" id="clock-wib">--:--:-- WIB</div>
+            <!-- Live Market Clocks -->
+            <div class="flex items-center gap-4 text-xs font-mono">
+                <div class="flex items-center gap-1.5 bg-forest-800/80 px-3 py-1 rounded-full border border-forest-700">
+                    <span class="text-sage-300">WIB (JKT):</span>
+                    <span id="live-clock-wib" class="font-bold text-linen-50">--:--:--</span>
                 </div>
-                <div class="text-left px-2">
-                    <div class="text-[10px] text-zinc-400 uppercase">New York (EST)</div>
-                    <div class="font-bold text-zinc-200" id="clock-est">--:--:-- EST</div>
+                <div class="flex items-center gap-1.5 bg-forest-800/80 px-3 py-1 rounded-full border border-forest-700">
+                    <span class="text-sage-300">EST (NYC):</span>
+                    <span id="live-clock-est" class="font-bold text-linen-50">--:--:--</span>
+                </div>
+                <div id="market-session-pill" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-950 text-sprout border border-emerald-700/50">
+                    SESSION ACTIVE
                 </div>
             </div>
-
-        </div>
-
-        <!-- RETRO NAVIGATION MENU -->
-        <div class="max-w-7xl mx-auto mt-4 pt-3 border-t border-amber-500/20 flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs">
-            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all">
-                [1] Main Ledger
-            </button>
-            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all">
-                [2] Flow Projection
-            </button>
-            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all">
-                [3] Economic Calendar
-            </button>
-            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all">
-                [4] US 11 Sectors
-            </button>
-            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all">
-                [5] Indonesia & News Wire
-            </button>
-            <button onclick="switchTab('tab-whatsapp')" id="btn-tab-whatsapp" class="tab-btn px-3.5 py-1.5 border border-amber-500/30 font-bold uppercase tracking-wider transition-all text-emerald-400">
-                [6] WhatsApp Dispatch
-            </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-10">
-
-        <!-- RETRO MEMORANDUM BANNER -->
-        <section class="retro-card retro-double-border p-6 relative">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4 border-b border-amber-500/20">
-                <div class="space-y-1">
-                    <div class="text-[10px] uppercase tracking-widest text-amber-500 font-bold flex items-center gap-2">
-                        <span>[OFFICIAL MEMORANDUM · DESK COPY]</span>
-                        <span>·</span>
-                        <span class="text-zinc-400">{display_date}</span>
+    <!-- MAIN HERO & LIVESTREAM STRIP -->
+    <section class="bg-forest-700 text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800">
+        <div class="max-w-7xl mx-auto space-y-6">
+            
+            <!-- Hero Header Row -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-800/70 border border-forest-600 text-xs text-sprout font-medium">
+                        <svg class="w-3.5 h-3.5 text-sprout" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                        </svg>
+                        Sinkronisasi Terakhir: {display_date}
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-bold uppercase text-white font-headline">
-                        REGIME: {regime['title']}
-                    </h2>
-                    <p class="text-xs text-zinc-300 max-w-3xl leading-relaxed font-typewriter">
-                        {regime['summary']}
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                        Navigasi Makroekonomi & Arus Modal
+                    </h1>
+                    <p class="text-sage-200 text-sm sm:text-base leading-relaxed">
+                        Sistem pemantauan point-in-time Federal Reserve, rotasi sektor S&P 500, dinamika kripto, serta transmisi kebijakan dan nilai tukar ke pasar modal Indonesia.
                     </p>
                 </div>
 
-                <!-- EWS VINTAGE TALLY GAUGE -->
-                <div class="flex items-center gap-2 shrink-0 bg-terminal-950 p-3 border border-amber-500/40 font-mono text-center">
-                    <div class="px-3 border-r border-amber-500/20">
-                        <div class="text-xl font-bold text-rose-500">{regime['score_bahaya']}</div>
-                        <div class="text-[9px] uppercase text-zinc-400 tracking-wider">Bahaya</div>
-                    </div>
-                    <div class="px-3 border-r border-amber-500/20">
-                        <div class="text-xl font-bold text-amber-400">{regime['score_waspada']}</div>
-                        <div class="text-[9px] uppercase text-zinc-400 tracking-wider">Waspada</div>
-                    </div>
-                    <div class="px-3">
-                        <div class="text-xl font-bold text-emerald-400">{len(ews) - regime['score_bahaya'] - regime['score_waspada']}</div>
-                        <div class="text-[9px] uppercase text-zinc-400 tracking-wider">Aman</div>
-                    </div>
+                <!-- Action Controls -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="fetchLiveCryptoPrices()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                        <svg id="sync-icon" class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Refresh Live Data
+                    </button>
+                    <a href="#tab-wa" onclick="switchTab('tab-wa')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sprout hover:bg-white text-forest-900 text-xs font-bold transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.45 1.743 1.966 2.091.246.057.448.014.592-.043.144-.058.462-.534.592-.722.13-.188.26-.159.433-.087.173.072 1.097.518 1.285.612.188.094.318.144.364.223.046.079.046.462-.098.867z"/>
+                        </svg>
+                        Salin WhatsApp Broadcast
+                    </a>
                 </div>
             </div>
 
-            <!-- 4-STEP RETRO TRANSMISSION WIRE -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4 text-xs font-typewriter">
-                <div class="p-3 bg-terminal-950 border border-amber-500/20 space-y-1">
-                    <div class="text-[9px] text-amber-400 font-bold uppercase">[STEP 1 · PRIMARY CATALYST]</div>
-                    <div class="text-zinc-200">US10Y ({prices.get('^TNX', {}).get('close', 0):.2f}%) & WTI (${prices.get('CL=F', {}).get('close', 0):.2f})</div>
-                </div>
-                <div class="p-3 bg-terminal-950 border border-amber-500/20 space-y-1">
-                    <div class="text-[9px] text-amber-400 font-bold uppercase">[STEP 2 · CENTRAL BANK]</div>
-                    <div class="text-zinc-200">Real Yields Elevated -> Rate Cuts Delayed</div>
-                </div>
-                <div class="p-3 bg-terminal-950 border border-amber-500/20 space-y-1">
-                    <div class="text-[9px] text-amber-400 font-bold uppercase">[STEP 3 · SECTOR ROTATION]</div>
-                    <div class="text-zinc-200">Capital rotates to {', '.join(regime['favored_sectors'][:2])}</div>
-                </div>
-                <div class="p-3 bg-terminal-950 border border-amber-500/20 space-y-1">
-                    <div class="text-[9px] text-amber-400 font-bold uppercase">[STEP 4 · INDONESIA IMPACT]</div>
-                    <div class="text-zinc-200">USD/IDR Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f} [{indo_macro.get('kurs_status', 'WASPADA')}]</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 1: MAIN LEDGER (OVERVIEW) -->
-        <div id="tab-overview" class="tab-pane space-y-8">
-            
-            <!-- 8 RETRO LEDGER TICKERS (LIVE AUTO-UPDATING) -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
-                <div class="retro-card p-3 space-y-1" id="card-btc">
-                    <div class="text-[10px] text-amber-400 uppercase">BITCOIN (BTC)</div>
-                    <div class="text-base font-bold text-white font-mono" id="val-btc">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}">
-                        {prices.get('BTC-USD', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1 border-amber-500/50 bg-amber-500/[0.04]">
-                    <div class="text-[10px] text-amber-300 uppercase">EMAS (XAUUSD)</div>
-                    <div class="text-base font-bold text-amber-200 font-mono">${prices.get('GC=F', {}).get('close', 0):,.1f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('GC=F', {}).get('change_1d_pct', 0))}">
-                        {prices.get('GC=F', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1 border-amber-500/50 bg-amber-500/[0.04]">
-                    <div class="text-[10px] text-amber-300 uppercase">USD / IDR</div>
-                    <div class="text-base font-bold text-amber-200 font-mono">Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('USDIDR=X', {}).get('change_1d_pct', 0))}">
-                        {prices.get('USDIDR=X', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1">
-                    <div class="text-[10px] text-zinc-400 uppercase">S&P 500 (SPY)</div>
-                    <div class="text-base font-bold text-white font-mono">${prices.get('SPY', {}).get('close', 0):.2f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('SPY', {}).get('change_1d_pct', 0))}">
-                        {prices.get('SPY', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1">
-                    <div class="text-[10px] text-zinc-400 uppercase">US 10Y YIELD</div>
-                    <div class="text-base font-bold text-white font-mono">{prices.get('^TNX', {}).get('close', 0):.3f}%</div>
-                    <div class="text-[10px] text-zinc-400">Benchmark</div>
-                </div>
-                <div class="retro-card p-3 space-y-1">
-                    <div class="text-[10px] text-zinc-400 uppercase">DOLLAR (DXY)</div>
-                    <div class="text-base font-bold text-white font-mono">{prices.get('DX-Y.NYB', {}).get('close', 0):.2f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('DX-Y.NYB', {}).get('change_1d_pct', 0))}">
-                        {prices.get('DX-Y.NYB', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1">
-                    <div class="text-[10px] text-zinc-400 uppercase">WTI CRUDE</div>
-                    <div class="text-base font-bold text-white font-mono">${prices.get('CL=F', {}).get('close', 0):.2f}</div>
-                    <div class="text-[10px] {chg_color(prices.get('CL=F', {}).get('change_1d_pct', 0))}">
-                        {prices.get('CL=F', {}).get('change_1d_pct', 0):+.2f}% (1D)
-                    </div>
-                </div>
-                <div class="retro-card p-3 space-y-1">
-                    <div class="text-[10px] text-amber-400 uppercase">FED NET LIQ</div>
-                    <div class="text-base font-bold text-amber-300 font-mono">${net_liq.get('net_liquidity_bil', 0):,.1f}B</div>
-                    <div class="text-[10px] {chg_color(net_liq.get('change_4w_bil', 0))}">
-                        {net_liq.get('change_4w_bil', 0):+.1f}B 4W
-                    </div>
-                </div>
-            </div>
-
-            <!-- DUAL RETRO LEDGER: EWS & CORRELATION -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Real-time Live Price Cards (Binance Streamer + Macro) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
                 
-                <!-- Early Warning Signals -->
-                <div class="retro-card p-5 space-y-3">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-amber-500/20">
-                        <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider">
-                            ► EARLY WARNING SIGNALS (EWS)
-                        </h3>
-                        <span class="text-[10px] text-zinc-400 font-mono">10 GAUGES MONITORED</span>
+                <!-- BTC Live -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-btc">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-sprout"></span>BTC / USD
+                        </span>
+                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
                     </div>
-
-                    <div class="space-y-2">
-                        {"".join([f'''
-                        <div class="p-2.5 bg-terminal-950 border border-amber-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div class="space-y-0.5">
-                                <div class="text-xs font-semibold text-zinc-200">{item['name']}</div>
-                                <div class="text-[10px] text-zinc-400 font-typewriter">{item['context']}</div>
-                            </div>
-                            <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center font-mono">
-                                <span class="text-xs font-bold text-white">{item['value']}</span>
-                                {retro_badge(item['status'])}
-                            </div>
-                        </div>
-                        ''' for item in ews])}
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div id="live-btc" class="text-lg font-extrabold text-white font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
+                        <div id="live-btc-chg" class="text-xs font-semibold">{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
-                <!-- Cross-Asset Correlation Ledger -->
-                <div class="retro-card p-5 space-y-3">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-amber-500/20">
-                        <h3 class="text-xs font-bold uppercase text-amber-400 tracking-wider">
-                            ► CROSS-ASSET CORRELATION MATRIX
-                        </h3>
-                        <span class="text-[10px] text-zinc-400 font-mono">ROLLING 30-DAY PEARSON R</span>
+                <!-- ETH Live -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-eth">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>ETH / USD
+                        </span>
+                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
                     </div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div id="live-eth" class="text-lg font-extrabold text-white font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
+                        <div id="live-eth-chg" class="text-xs font-semibold">{chg_badge(prices.get('ETH-USD', {}).get('change_1d_pct', 0))}</div>
+                    </div>
+                </div>
 
-                    <div class="space-y-2">
-                        {"".join([f'''
-                        <div class="p-2.5 bg-terminal-950 border border-amber-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div class="space-y-0.5">
-                                <div class="text-xs font-semibold text-zinc-200">{c['pair_name']}</div>
-                                <div class="text-[10px] text-zinc-400 font-typewriter">{c['notes']} (Norm: {c['expected_range']})</div>
-                            </div>
-                            <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center font-mono">
-                                <span class="text-xs font-bold {chg_color(c['current_r'])}">{c['current_r']:+.2f}</span>
-                                <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase border {'border-rose-500 text-rose-400' if c['status'] == 'INVERT' else ('border-amber-500 text-amber-400' if c['status'] == 'BREAK' else 'border-emerald-500 text-emerald-400')}">[{c['status']}]</span>
-                            </div>
-                        </div>
-                        ''' for c in corrs])}
+                <!-- SOL Live -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600 transition-all hover:border-sprout/60" id="card-sol">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>SOL / USD
+                        </span>
+                        <span class="text-[10px] uppercase tracking-wide text-sage-300">Live</span>
+                    </div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div id="live-sol" class="text-lg font-extrabold text-white font-mono">${prices.get('SOL-USD', {}).get('close', 0):,.2f}</div>
+                        <div id="live-sol-chg" class="text-xs font-semibold">{chg_badge(prices.get('SOL-USD', {}).get('change_1d_pct', 0))}</div>
+                    </div>
+                </div>
+
+                <!-- USD / IDR -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold">USD / IDR</span>
+                        <span class="text-[10px] text-amber-300 font-semibold">{indo_macro.get('kurs_status', 'KURS')}</span>
+                    </div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div class="text-lg font-extrabold text-white font-mono">Rp {prices.get('USDIDR=X', {}).get('close', 18133):,.0f}</div>
+                        <div class="text-xs font-semibold">{chg_badge(prices.get('USDIDR=X', {}).get('change_1d_pct', 0))}</div>
+                    </div>
+                </div>
+
+                <!-- XAUUSD (Gold) -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold">Emas (XAUUSD)</span>
+                        <span class="text-[10px] text-amber-300 font-semibold">Spot</span>
+                    </div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div class="text-lg font-extrabold text-white font-mono">${prices.get('GC=F', {}).get('close', 4050):,.1f}</div>
+                        <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</div>
+                    </div>
+                </div>
+
+                <!-- US 10Y Yield -->
+                <div class="p-3.5 rounded-2xl bg-forest-800/80 border border-forest-600">
+                    <div class="flex items-center justify-between text-xs text-sage-200">
+                        <span class="font-bold">US 10Y Yield</span>
+                        <span class="text-[10px] text-rose-300 font-semibold">Risk Benchmark</span>
+                    </div>
+                    <div class="mt-2 flex items-baseline justify-between">
+                        <div class="text-lg font-extrabold text-white font-mono">{prices.get('^TNX', {}).get('close', 5.045):.3f}%</div>
+                        <div class="text-xs font-semibold">{chg_badge(prices.get('^TNX', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
             </div>
 
         </div>
+    </section>
 
-        <!-- TAB 2: FLOW PROJECTION (CAPITAL PATHS) -->
-        <div id="tab-flow" class="tab-pane hidden space-y-6">
-            <div class="retro-card p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-500/30">
-                    <div>
-                        <div class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">[FORWARD LIQUIDITY VECTOR]</div>
-                        <h3 class="text-lg font-headline font-bold text-white">Macro Capital Flow & Liquidity Projection</h3>
-                        <p class="text-xs text-zinc-400 font-typewriter">Pemetaan jalur perpindahan likuiditas modal lintas aset 7 hingga 30 hari ke depan</p>
+    <!-- NAVIGATION TABS (CLEAN NATURAL PILLS) -->
+    <nav class="sticky top-0 z-30 bg-[#F4F6F0]/95 backdrop-blur-md border-b border-linen-300 px-4 sm:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                1. Ringkasan & Status Rezim
+            </button>
+            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                2. Flow Projection (7–30 Hari)
+            </button>
+            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                3. Kalender Ekonomi & Dampak
+            </button>
+            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                4. Rotasi 11 Sektor US
+            </button>
+            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                5. Dampak Indonesia & Berita
+            </button>
+            <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+                6. WhatsApp Broadcast
+            </button>
+        </div>
+    </nav>
+
+    <!-- CONTENT BODY -->
+    <main class="max-w-7xl mx-auto w-full px-4 sm:px-8 py-8 flex-1 space-y-8">
+
+        <!-- TAB 1: RINGKASAN & STATUS REZIM -->
+        <div id="tab-overview" class="tab-pane space-y-6">
+            
+            <!-- Regime & EWS Hero Card -->
+            <div class="natural-card p-6 sm:p-8">
+                <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-linen-300">
+                    <div class="space-y-2">
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Status Rezim Makro Saat Ini</div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-forest-900 tracking-tight flex items-center gap-3">
+                            {regime['title']}
+                            {natural_badge(regime['regime_id'])}
+                        </h2>
+                        <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
+                            {regime['summary']}
+                        </p>
                     </div>
-                    <span class="px-3 py-1 text-xs border border-amber-500/40 text-amber-400 font-mono">
-                        Regime: {flow_proj.get('primary_flow_regime', 'ROTASI SIKLIKAL')}
+
+                    <!-- EWS Danger Gauge -->
+                    <div class="bg-linen-100 p-4 rounded-2xl border border-linen-300 flex items-center gap-4 min-w-[260px]">
+                        <div class="w-12 h-12 rounded-xl bg-forest-700 text-white flex items-center justify-center font-bold text-lg">
+                            {regime['score_bahaya']}/10
+                        </div>
+                        <div>
+                            <div class="text-xs font-semibold text-stone-500 uppercase">Early Warning Score</div>
+                            <div class="text-sm font-bold text-forest-900">
+                                {regime['score_bahaya']} Bahaya · {regime['score_waspada']} Waspada
+                            </div>
+                            <div class="text-[11px] text-stone-500">
+                                {'Tekanan makro tinggi' if regime['score_bahaya'] >= 3 else 'Kondisi makro stabil'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Causality Transmission Pathway -->
+                <div class="pt-6 space-y-4">
+                    <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Rantai Transmisi Kausalitas Makro</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
+                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">1</span>
+                                Pemicu Utama
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                Minyak WTI (${prices.get('CL=F', {}).get('close', 0):.2f}) & US10Y ({prices.get('^TNX', {}).get('close', 0):.2f}%) berada di elevasi tinggi.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
+                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">2</span>
+                                Respon Moneter
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                Ekspektasi inflasi alot -> The Fed terkunci pada suku bunga tinggi (Higher for Longer).
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
+                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">3</span>
+                                Transmisi Likuiditas
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                Suku Bunga Riil (TIPS) menekan rasio valuasi PE teknologi tinggi & menahan aliran modal kripto.
+                            </p>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
+                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">4</span>
+                                Dampak Aset & Sektor
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                Rotasi modal institusional ke sektor Energi (XLE) dan instrumen kas berbunga tinggi (T-Bills).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EWS Signals Table & Fed Net Liquidity -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- 10 EWS Signals (Span 2 cols) -->
+                <div class="lg:col-span-2 natural-card p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-linen-300">
+                        <div>
+                            <h3 class="text-base font-bold text-forest-900">10 Indikator Early Warning System (EWS)</h3>
+                            <p class="text-xs text-stone-500">Threshold risiko berbasis data historis & point-in-time Federal Reserve</p>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-linen-200 text-forest-800">
+                            10 Titik Pantau
+                        </span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-stone-500 border-b border-linen-200">
+                                    <th class="py-2.5 font-semibold">Indikator</th>
+                                    <th class="py-2.5 font-semibold">Nilai Terkini</th>
+                                    <th class="py-2.5 font-semibold">Konteks & Implikasi</th>
+                                    <th class="py-2.5 font-semibold text-right">Status Risiko</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-linen-100">
+                                {"".join([f'''
+                                <tr class="hover:bg-linen-50 transition-colors">
+                                    <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">{s['name']}</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">{s['value']}</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">{s.get('context', '')}</td>
+                                    <td class="py-3 text-right whitespace-nowrap">{natural_badge(s['status'])}</td>
+                                </tr>
+                                ''' for s in ews])}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Fed Net Liquidity & Tactical Playbook (Span 1 col) -->
+                <div class="space-y-6">
+                    
+                    <!-- Fed Net Liquidity Card -->
+                    <div class="natural-card p-6 space-y-4">
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Likuiditas Bersih The Fed</div>
+                        <div class="space-y-1">
+                            <div class="text-2xl font-extrabold text-forest-900 font-mono">
+                                ${net_liq.get('net_liquidity_bil', 0):,.1f} Miliar
+                            </div>
+                            <div class="text-xs font-semibold flex items-center gap-1.5 text-emerald-700">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Perubahan 4 Pekan: +${net_liq.get('change_4w_bil', 0):.1f} Miliar
+                            </div>
+                        </div>
+                        <div class="p-3 bg-linen-100 rounded-xl border border-linen-200 text-xs text-stone-600 leading-relaxed font-mono">
+                            Rumus: WALCL - WTREGEN - RRPONTSYD<br>
+                            Status: <b class="text-forest-800">Ekspansi Likuiditas Moderat</b>
+                        </div>
+                    </div>
+
+                    <!-- Tactical Playbook Card -->
+                    <div class="natural-card p-6 space-y-4">
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Rekomendasi Taktis & Siklus</div>
+                        <div class="space-y-3 text-xs text-stone-700">
+                            <div>
+                                <span class="font-bold text-forest-800">Sektor Diunggulkan (Overweight):</span>
+                                <div class="mt-1 flex flex-wrap gap-1.5">
+                                    {"".join([f'<span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 font-bold border border-emerald-200">{sec}</span>' for sec in regime['favored_sectors']])}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-bold text-rose-700">Sektor Dihindari (Underweight):</span>
+                                <div class="mt-1 flex flex-wrap gap-1.5">
+                                    {"".join([f'<span class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 font-bold border border-rose-200">{sec}</span>' for sec in regime['lagging_sectors']])}
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-linen-200">
+                                <span class="font-bold text-stone-800">Sikap Pasar Kripto:</span>
+                                <div class="mt-1 p-2 rounded-xl bg-linen-100 font-medium text-forest-900">
+                                    {regime['crypto_stance']}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 2: FLOW PROJECTION (7-30 HARI) -->
+        <div id="tab-flow" class="tab-pane hidden space-y-6">
+            
+            <div class="natural-card p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Proyeksi Dinamika Modal 7–30 Hari</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Capital Flow & Liquidity Drainage Paths</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Simulasi transmisi likuiditas The Fed, tekanan suku bunga riil, dan rotasi antar kelas aset</p>
+                    </div>
+                    <span class="px-3 py-1.5 text-xs rounded-xl bg-sprout/60 text-forest-900 font-bold border border-forest-600/30">
+                        Status Aliran: {flow_proj.get('primary_flow_regime', 'ROTASI SIKLIKAL')}
                     </span>
                 </div>
 
-                <!-- 2-COL PIPELINE: INFLOWS VS DRAINAGE -->
+                <!-- Inflows vs Drainage Source Matrix -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
-                    <div class="p-4 bg-terminal-950 border border-emerald-500/30 space-y-3">
-                        <div class="text-xs font-bold uppercase text-emerald-400 flex items-center gap-2 border-b border-emerald-500/20 pb-2">
-                            <span>▲ TUJUAN ARUS MODAL MASUK (CAPITAL INFLOWS)</span>
+                    <!-- Destination (Inflows) -->
+                    <div class="p-5 rounded-2xl bg-[#F0F6E9] border border-[#CDE1BE] space-y-3">
+                        <div class="flex items-center gap-2 text-forest-800 font-bold text-sm">
+                            <span class="w-6 h-6 rounded-full bg-forest-700 text-white flex items-center justify-center text-xs">⬇</span>
+                            Destinasi Aliran Modal Masuk (Inflow Destinations)
                         </div>
                         <div class="space-y-2">
                             {"".join([f'''
-                            <div class="p-3 bg-terminal-900 border border-emerald-500/10 space-y-1">
-                                <div class="font-bold text-xs text-white">{inf['asset']}</div>
-                                <div class="text-[11px] text-zinc-400 font-typewriter">{inf['rationale']}</div>
+                            <div class="p-3 bg-white rounded-xl border border-[#D5E6C6] space-y-1">
+                                <div class="text-xs font-bold text-forest-900">{inf['asset']}</div>
+                                <div class="text-xs text-stone-600 leading-relaxed">{inf['rationale']}</div>
                             </div>
                             ''' for inf in flow_proj.get('inflows', [])])}
                         </div>
                     </div>
 
-                    <div class="p-4 bg-terminal-950 border border-rose-500/30 space-y-3">
-                        <div class="text-xs font-bold uppercase text-rose-400 flex items-center gap-2 border-b border-rose-500/20 pb-2">
-                            <span>▼ SUMBER PENARIKAN LIKUIDITAS (CAPITAL DRAINAGE)</span>
+                    <!-- Sources (Drainages) -->
+                    <div class="p-5 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-3">
+                        <div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+                            <span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs">⬆</span>
+                            Sumber Penarikan Likuiditas (Drainage Sources)
                         </div>
                         <div class="space-y-2">
                             {"".join([f'''
-                            <div class="p-3 bg-terminal-900 border border-rose-500/10 space-y-1">
-                                <div class="font-bold text-xs text-white">{dr['asset']}</div>
-                                <div class="text-[11px] text-zinc-400 font-typewriter">{dr['rationale']}</div>
+                            <div class="p-3 bg-white rounded-xl border border-rose-200 space-y-1">
+                                <div class="text-xs font-bold text-rose-900">{drn['asset']}</div>
+                                <div class="text-xs text-stone-600 leading-relaxed">{drn['rationale']}</div>
                             </div>
-                            ''' for dr in flow_proj.get('drainages', [])])}
+                            ''' for drn in flow_proj.get('drainages', [])])}
                         </div>
                     </div>
 
                 </div>
 
-                <!-- 3-SCENARIO PROJECTION CARDS -->
-                <div class="space-y-3 pt-4 border-t border-amber-500/20">
-                    <div class="text-xs font-bold uppercase text-amber-400 tracking-wider">
-                        ► 3 JALUR PROYEKSI TRAJEKTORI (7–30 HARI KE DEPAN):
-                    </div>
-
-                    <div class="space-y-3">
+                <!-- 3 Trajectory Scenarios -->
+                <div class="space-y-4 pt-4">
+                    <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">3 Skenario Lintasan Modal (7–30 Hari ke Depan)</div>
+                    <div class="space-y-4">
                         {"".join([f'''
-                        <div class="p-4 bg-terminal-950 border border-amber-500/20 space-y-2.5">
-                            <div class="flex items-center justify-between pb-2 border-b border-white/[0.06]">
-                                <div class="font-bold text-sm text-amber-300">{scen['name']}</div>
-                                <div class="px-2 py-0.5 text-xs font-bold border border-amber-500/40 text-amber-400">Probabilitas: {scen['prob']}</div>
+                        <div class="p-5 rounded-2xl bg-linen-50 border border-linen-300 space-y-3 hover:border-forest-600/40 transition-all">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-linen-200">
+                                <div class="font-bold text-base text-forest-900">{scen['name']}</div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold bg-linen-200 text-forest-800 border border-linen-300">
+                                    Probabilitas: {scen['prob']}
+                                </span>
                             </div>
-                            <div class="text-[11px] text-zinc-300 font-typewriter"><b class="text-amber-400">Pemicu Kunci:</b> {scen['trigger']}</div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px] font-typewriter pt-1">
-                                <div class="p-2.5 bg-terminal-900 border border-white/5 space-y-1">
-                                    <div class="text-[9px] uppercase font-bold text-cyan-400">Sektor US</div>
-                                    <div class="text-zinc-300">{scen['us_sectors_path']}</div>
+                            <div class="text-xs text-stone-700"><b class="text-forest-800">Katalis Pemicu:</b> {scen['trigger']}</div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                                <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                                    <div class="text-[11px] font-bold uppercase text-forest-700">Sektor US</div>
+                                    <div class="text-stone-600">{scen['us_sectors_path']}</div>
                                 </div>
-                                <div class="p-2.5 bg-terminal-900 border border-white/5 space-y-1">
-                                    <div class="text-[9px] uppercase font-bold text-amber-400">Pasar Crypto</div>
-                                    <div class="text-zinc-300">{scen['crypto_path']}</div>
+                                <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                                    <div class="text-[11px] font-bold uppercase text-amber-700">Pasar Kripto</div>
+                                    <div class="text-stone-600">{scen['crypto_path']}</div>
                                 </div>
-                                <div class="p-2.5 bg-terminal-900 border border-white/5 space-y-1">
-                                    <div class="text-[9px] uppercase font-bold text-emerald-400">Indonesia & Rupiah</div>
-                                    <div class="text-zinc-300">{scen['indonesia_path']}</div>
+                                <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                                    <div class="text-[11px] font-bold uppercase text-emerald-800">Indonesia & Rupiah</div>
+                                    <div class="text-stone-600">{scen['indonesia_path']}</div>
                                 </div>
                             </div>
                         </div>
@@ -485,224 +583,234 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
             </div>
+
         </div>
 
-        <!-- TAB 3: ECONOMIC CALENDAR (PEKAN INI & DAMPAK) -->
+        <!-- TAB 3: ECONOMIC CALENDAR & IMPACT MATRIX -->
         <div id="tab-calendar" class="tab-pane hidden space-y-6">
-            <div class="retro-card p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-500/30">
+            
+            <div class="natural-card p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
                     <div>
-                        <div class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">[ONE-WEEK MACRO HORIZON]</div>
-                        <h3 class="text-lg font-headline font-bold text-white">Kalender Ekonomi Krusial Pekan Ini & Dampak Skenario</h3>
-                        <p class="text-xs text-zinc-400 font-typewriter">Jadwal rilis data makro berbobot tinggi beserta transmisi skenario ke Sektor US, Crypto, & Rupiah</p>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Horizon Makro Pekan Ini</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Kalender Ekonomi Krusial & Matriks Dampak Skenario</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Jadwal rilis data berbobot tinggi beserta transmisi skenario ke Sektor US, Kripto, dan Rupiah</p>
                     </div>
-                    <span class="px-3 py-1 text-xs border border-amber-500/40 text-amber-400 font-mono">
-                        Timezone: Waktu Indonesia Barat (WIB)
+                    <span class="px-3 py-1.5 text-xs rounded-xl bg-linen-100 text-stone-700 font-mono border border-linen-300">
+                        Waktu: Waktu Indonesia Barat (WIB)
                     </span>
                 </div>
 
                 <div class="space-y-4">
                     {"".join([f'''
-                    <div class="p-4 bg-terminal-950 border border-amber-500/20 space-y-3 hover:border-amber-500/40 transition-all">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-white/[0.06]">
+                    <div class="p-5 rounded-2xl bg-linen-50 border border-linen-200 space-y-4 hover:border-forest-600/40 transition-all">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-linen-200">
                             <div class="flex items-center gap-3">
-                                <span class="px-2 py-0.5 text-xs font-bold border border-amber-500/40 text-amber-400 bg-amber-500/10 font-mono">{ev['country']}</span>
-                                <span class="font-bold text-white text-sm">{ev['event']}</span>
-                                <span class="text-[10px] font-mono font-semibold {'text-rose-400' if 'KRUSIAL' in ev['importance'] else 'text-amber-400'}">[{ev['importance']}]</span>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-forest-900 border border-linen-300 font-mono">{ev['country']}</span>
+                                <h4 class="font-bold text-forest-900 text-sm sm:text-base">{ev['event']}</h4>
+                                <span class="text-xs font-bold {'text-rose-600' if 'KRUSIAL' in ev['importance'] else 'text-amber-700'}">[{ev['importance']}]</span>
                             </div>
-                            <div class="text-xs font-mono text-zinc-400">
-                                📅 {ev['day']}, {ev['date']} · <b class="text-amber-300">{ev['time_wib']}</b>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-typewriter">
-                            <div class="p-2.5 bg-terminal-900 border border-white/5 space-y-1">
-                                <div class="text-[9px] uppercase font-bold text-zinc-400">Konsensus Pasar</div>
-                                <div class="text-zinc-200">Sebelumnya: <b>{ev['prev']}</b> | Konsensus: <b class="text-amber-400">{ev['cons']}</b></div>
-                            </div>
-                            <div class="p-2.5 bg-terminal-900 border border-rose-500/20 space-y-1">
-                                <div class="text-[9px] uppercase font-bold text-rose-400">Skenario Hot (> Konsensus)</div>
-                                <div class="text-zinc-300 leading-relaxed text-[11px]">{ev['impact_hot']}</div>
-                            </div>
-                            <div class="p-2.5 bg-terminal-900 border border-emerald-500/20 space-y-1">
-                                <div class="text-[9px] uppercase font-bold text-emerald-400">Skenario Cool (< Konsensus)</div>
-                                <div class="text-zinc-300 leading-relaxed text-[11px]">{ev['impact_cool']}</div>
+                            <div class="text-xs font-medium text-stone-500">
+                                📅 {ev['day']}, {ev['date']} · <b class="text-forest-800">{ev['time_wib']}</b>
                             </div>
                         </div>
 
-                        <div class="text-[11px] text-amber-300 font-mono pt-1 flex items-center gap-2">
-                            <span class="text-zinc-400">Aset Prioritas Respon:</span>
-                            <span class="border border-amber-500/30 px-2 py-0.5 bg-amber-500/5">{ev['favored_asset']}</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
+                                <div class="text-[10px] uppercase font-bold text-stone-500">Konsensus Pasar</div>
+                                <div class="font-mono text-stone-800">Sebelumnya: {ev['prev']}</div>
+                                <div class="font-mono font-bold text-forest-800">Ekspektasi: {ev['cons']}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-rose-200 space-y-1">
+                                <div class="text-[10px] uppercase font-bold text-rose-700">Dampak Hot (Hawkish)</div>
+                                <div class="text-stone-700 leading-relaxed">{ev['impact_hot']}</div>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-emerald-200 space-y-1">
+                                <div class="text-[10px] uppercase font-bold text-emerald-800">Dampak Cool (Dovish)</div>
+                                <div class="text-stone-700 leading-relaxed">{ev['impact_cool']}</div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs pt-1 border-t border-linen-200 text-stone-600">
+                            <div><b class="text-forest-800">Aset Pilihan:</b> {ev['favored_asset']}</div>
                         </div>
                     </div>
                     ''' for ev in weekly_cal])}
                 </div>
+
             </div>
+
         </div>
 
-        <!-- TAB 4: US 11 SECTORS LEDGER -->
+        <!-- TAB 4: ROTASI 11 SEKTOR US & CRYPTO -->
         <div id="tab-sectors" class="tab-pane hidden space-y-6">
-            <div class="retro-card p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-500/30">
+            
+            <!-- Sector Scorecard -->
+            <div class="natural-card p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
                     <div>
-                        <div class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">[S&P 500 SELECT SECTOR SPDR]</div>
-                        <h3 class="text-lg font-headline font-bold text-white">S&P 500 11 Sectors Momentum & Tactical Ledger</h3>
-                        <p class="text-xs text-zinc-400 font-typewriter">Skor momentum berkala dan bobot alokasi taktis berbasis keselarasan siklus makro</p>
-                    </div>
-                    <div class="flex items-center gap-2 text-[10px] font-mono">
-                        <span class="px-2 py-1 border border-emerald-500 text-emerald-400">[OW] OVERWEIGHT</span>
-                        <span class="px-2 py-1 border border-zinc-600 text-zinc-400">[N] NEUTRAL</span>
-                        <span class="px-2 py-1 border border-rose-500 text-rose-400">[UW] UNDERWEIGHT</span>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Rotasi Relatif & Momentum</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Scorecard 11 Sektor S&P 500</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Diurutkan berdasarkan skor momentum gabungan (1D, 5D, 20D, Volatilitas & Sensitivitas Rezim)</p>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs font-mono">
-                        <thead class="text-[10px] text-amber-400 uppercase tracking-wider border-b border-amber-500/30 bg-terminal-950">
-                            <tr>
-                                <th class="p-3 font-semibold">Ticker & Sektor</th>
-                                <th class="p-3 font-semibold">Profil Karakter</th>
-                                <th class="p-3 font-semibold text-right">Harga</th>
-                                <th class="p-3 font-semibold text-right">1D %</th>
-                                <th class="p-3 font-semibold text-right">5D %</th>
-                                <th class="p-3 font-semibold text-right">20D %</th>
-                                <th class="p-3 font-semibold text-right">Momentum</th>
-                                <th class="p-3 font-semibold text-right">Rekomendasi</th>
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="text-stone-500 border-b border-linen-200">
+                                <th class="py-3 font-semibold">Ticker / Sektor</th>
+                                <th class="py-3 font-semibold">Harga Terkini</th>
+                                <th class="py-3 font-semibold">1D Return</th>
+                                <th class="py-3 font-semibold">5D Return</th>
+                                <th class="py-3 font-semibold">20D Return</th>
+                                <th class="py-3 font-semibold">Momentum Score</th>
+                                <th class="py-3 font-semibold text-right">Rekomendasi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-amber-500/10">
+                        <tbody class="divide-y divide-linen-100">
                             {"".join([f'''
-                            <tr class="hover:bg-amber-500/[0.03] transition-colors">
-                                <td class="p-3 font-bold text-white flex items-center gap-2">
-                                    <span class="px-1.5 py-0.5 border border-amber-500/40 text-amber-400 text-xs font-bold">{s['ticker']}</span>
-                                    <span class="text-zinc-200">{s['name']}</span>
+                            <tr class="hover:bg-linen-50 transition-colors">
+                                <td class="py-3.5">
+                                    <div class="font-bold text-forest-900">{s['ticker']}</div>
+                                    <div class="text-stone-500 text-[11px]">{s['name']}</div>
                                 </td>
-                                <td class="p-3 text-zinc-400 font-typewriter text-[11px]">{s['profile']}</td>
-                                <td class="p-3 text-right font-bold text-white">${s['close']:.2f}</td>
-                                <td class="p-3 text-right {chg_color(s['chg_1d'])}">{s['chg_1d']:+.2f}%</td>
-                                <td class="p-3 text-right {chg_color(s['chg_5d'])}">{s['chg_5d']:+.2f}%</td>
-                                <td class="p-3 text-right {chg_color(s['chg_20d'])}">{s['chg_20d']:+.2f}%</td>
-                                <td class="p-3 text-right font-bold text-white">{s['momentum_score']:+.2f}</td>
-                                <td class="p-3 text-right">
-                                    <span class="px-2 py-0.5 text-[10px] font-bold border {'border-emerald-500 text-emerald-400' if 'OVERWEIGHT' in s['recommendation'] else ('border-rose-500 text-rose-400' if 'UNDERWEIGHT' in s['recommendation'] else 'border-zinc-600 text-zinc-400')}">
-                                        {s['recommendation']}
-                                    </span>
-                                </td>
+                                <td class="py-3.5 font-mono font-bold text-forest-800">${s['close']:.2f}</td>
+                                <td class="py-3.5 font-mono">{chg_badge(s['chg_1d'])}</td>
+                                <td class="py-3.5 font-mono">{chg_badge(s['chg_5d'])}</td>
+                                <td class="py-3.5 font-mono">{chg_badge(s['chg_20d'])}</td>
+                                <td class="py-3.5 font-mono font-bold text-stone-800">{s['momentum_score']:+.1f}</td>
+                                <td class="py-3.5 text-right whitespace-nowrap">{natural_badge(s['recommendation'])}</td>
                             </tr>
                             ''' for s in sectors])}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
 
-        <!-- TAB 5: INDONESIA & NEWS WIRE -->
-        <div id="tab-indonesia" class="tab-pane hidden space-y-8">
-            
-            <!-- Indonesia Macro Spillover Hero -->
-            <div class="retro-card p-6 space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-500/30">
+            <!-- Crypto Asset Matrix -->
+            <div class="natural-card p-6 sm:p-8 space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-linen-300">
                     <div>
-                        <div class="text-[10px] uppercase tracking-wider text-amber-500 font-bold">[DOMESTIC SOVEREIGN RADAR]</div>
-                        <h3 class="text-lg font-headline font-bold text-white">Transmisi Makro Global ke Pasar Finansial Indonesia</h3>
-                        <p class="text-xs text-zinc-400 font-typewriter">Saluran transmisi yield obligasi AS, Dolar DXY, dan Minyak terhadap ekonomi domestik</p>
-                    </div>
-                    <span class="px-3 py-1 text-xs border border-amber-500/40 text-amber-400 font-mono">
-                        USD/IDR: Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f}
-                    </span>
-                </div>
-
-                <!-- 4 Pillars Grid for Indonesia -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-terminal-950 p-4 border border-amber-500/20 space-y-2">
-                        <div class="text-[10px] text-zinc-400 uppercase font-bold">Tekanan Nilai Tukar Rupiah</div>
-                        <div class="font-mono text-sm font-bold text-white">USD/IDR Rp {prices.get('USDIDR=X', {}).get('close', 0):,.0f}</div>
-                        <div>{retro_badge(indo_macro.get('kurs_status', 'WASPADA'))}</div>
-                        <p class="text-[11px] text-zinc-400 font-typewriter">{indo_macro.get('kurs_desc', '')}</p>
-                    </div>
-
-                    <div class="bg-terminal-950 p-4 border border-amber-500/20 space-y-2">
-                        <div class="text-[10px] text-zinc-400 uppercase font-bold">Sikap Bank Indonesia (BI-Rate)</div>
-                        <div class="font-mono text-sm font-bold text-amber-400">Triple Intervention</div>
-                        <div>{retro_badge(indo_macro.get('bi_status', 'HAWKISH'))}</div>
-                        <p class="text-[11px] text-zinc-400 font-typewriter">{indo_macro.get('bi_desc', '')}</p>
-                    </div>
-
-                    <div class="bg-terminal-950 p-4 border border-amber-500/20 space-y-2">
-                        <div class="text-[10px] text-zinc-400 uppercase font-bold">Beban Subsidi APBN (Energi)</div>
-                        <div class="font-mono text-sm font-bold text-white">WTI ${prices.get('CL=F', {}).get('close', 0):.2f}/bbl</div>
-                        <div>{retro_badge(indo_macro.get('apbn_status', 'BEBAN MENINGKAT'))}</div>
-                        <p class="text-[11px] text-zinc-400 font-typewriter">{indo_macro.get('apbn_desc', '')}</p>
-                    </div>
-
-                    <div class="bg-terminal-950 p-4 border border-amber-500/20 space-y-2">
-                        <div class="text-[10px] text-zinc-400 uppercase font-bold">Spillover IHSG (EIDO ETF)</div>
-                        <div class="font-mono text-sm font-bold text-white">EIDO ${prices.get('EIDO', {}).get('close', 10.45):.2f}</div>
-                        <div>{retro_badge(indo_macro.get('ihsg_status', 'RISK-OFF'))}</div>
-                        <p class="text-[11px] text-zinc-400 font-typewriter">{indo_macro.get('ihsg_desc', '')}</p>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Aset Digital & Likuiditas</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Crypto Risk-On Matrix</h3>
                     </div>
                 </div>
 
-                <div class="p-4 bg-terminal-950 border border-amber-500/20 space-y-1">
-                    <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">[SINTESIS TRANSMISI DOMESTIK]:</div>
-                    <p class="text-xs text-zinc-300 font-typewriter leading-relaxed">{indo_macro.get('summary', '')}</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {"".join([f'''
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-forest-900">{c['ticker']} <span class="text-stone-500 font-normal text-xs">({c['name']})</span></span>
+                            <span class="text-xs font-semibold">{chg_badge(c['chg_1d'])}</span>
+                        </div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">${c['close']:,.2f}</div>
+                        <div class="text-xs text-stone-600 flex justify-between">
+                            <span>20D Return: {chg_badge(c['chg_20d'])}</span>
+                            <span>5D Return: {chg_badge(c['chg_5d'])}</span>
+                        </div>
+                        <div class="pt-2 text-right">
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-linen-200 font-semibold text-forest-800">{c.get('category', 'Layer 1')}</span>
+                        </div>
+                    </div>
+                    ''' for c in crypto])}
                 </div>
             </div>
 
-            <!-- 2-COL REAL VERIFIED NEWS WIRE -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        </div>
+
+        <!-- TAB 5: INDONESIA MACRO & VERIFIED NEWS WIRE -->
+        <div id="tab-indonesia" class="tab-pane hidden space-y-6">
+            
+            <!-- Indonesia Transmission Radar -->
+            <div class="natural-card p-6 sm:p-8 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Transmisi Makro Global ke Indonesia</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Saluran Valas, Obligasi, & Sektor IHSG</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Efek spillover dari pergerakan DXY, US 10Y Yield, dan Lonjakan Komoditas Energi</p>
+                    </div>
+                    {natural_badge(indo_macro.get('kurs_status', 'WASPADA'))}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
+                        <div class="text-[11px] font-bold uppercase text-stone-500">Nilai Tukar USD / IDR</div>
+                        <div class="text-xl font-extrabold text-forest-900 font-mono">Rp {indo_macro.get('usdidr_val', 18133):,.0f}</div>
+                        <div class="text-xs text-stone-600">{indo_macro.get('kurs_status', 'Waspada')}</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
+                        <div class="text-[11px] font-bold uppercase text-stone-500">MSCI Indonesia (EIDO)</div>
+                        <div class="text-xl font-extrabold text-forest-900 font-mono">${indo_macro.get('eido_val', 10.45):.2f}</div>
+                        <div class="text-xs text-stone-600">{indo_macro.get('eido_status', 'Netral')}</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
+                        <div class="text-[11px] font-bold uppercase text-stone-500">Arah Kebijakan Bank Indonesia</div>
+                        <div class="text-base font-extrabold text-forest-900">{indo_macro.get('bi_rate_stance', 'Hawkish')}</div>
+                        <div class="text-xs text-stone-600">Fokus stabilitas nilai tukar valas</div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
+                        <div class="text-[11px] font-bold uppercase text-stone-500">Tekanan Subsidi & Fiskal APBN</div>
+                        <div class="text-base font-extrabold text-forest-900">{indo_macro.get('apbn_pressure', 'Meningkat')}</div>
+                        <div class="text-xs text-stone-600">Beban subsidi impor BBM</div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-linen-100 border border-linen-200 text-xs sm:text-sm text-stone-700 leading-relaxed">
+                    <b class="text-forest-900">Konteks Analisis:</b> {indo_macro.get('narrative', '')}
+                </div>
+            </div>
+
+            <!-- Verified News Feed (Global & Indonesia) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
                 <!-- Global Macro Wire -->
-                <div class="retro-card p-5 space-y-4">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-amber-500/20">
-                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                            <span>► GLOBAL MACRO TELETYPE WIRE (48 JAM)</span>
-                        </h4>
-                        <span class="text-[10px] text-zinc-400 font-mono">VERIFIED DISPATCH</span>
+                <div class="natural-card p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-linen-300">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-forest-700"></span>
+                            <h4 class="font-bold text-forest-900 text-sm">Global Macro Wire</h4>
+                        </div>
+                        <span class="text-xs text-stone-500">Sumber Terverifikasi</span>
                     </div>
 
-                    <div class="space-y-2.5">
+                    <div class="space-y-3">
                         {"".join([f'''
-                        <div class="p-3 bg-terminal-950 border border-amber-500/10 space-y-1.5 hover:border-amber-500/40 transition-all">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="px-1.5 py-0.5 text-[9px] font-bold border border-amber-500/40 text-amber-400 font-mono">{n.get('source', 'Media')}</span>
-                                <span class="text-[10px] text-zinc-500 font-mono">{n.get('pub_date', '')[:16]}</span>
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">{item.get('source', 'News')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('published', '')}</span>
                             </div>
-                            <div class="text-xs font-semibold text-zinc-200 leading-snug">{n.get('title', '')}</div>
-                            <div class="pt-1">
-                                <a href="{n.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-amber-400 hover:underline">
-                                    [BUKA SUMBER RESMI ↗]
-                                </a>
-                            </div>
+                            <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
+                                {item.get('title', '')}
+                            </a>
                         </div>
-                        ''' for n in global_news]) if global_news else '<div class="text-xs text-zinc-500 py-4">Belum ada transmisi kawat berita.</div>'}
+                        ''' for item in global_news[:5]])}
                     </div>
                 </div>
 
                 <!-- Indonesia Financial Wire -->
-                <div class="retro-card p-5 space-y-4">
-                    <div class="flex items-center justify-between pb-2.5 border-b border-amber-500/20">
-                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                            <span>► INDONESIA FINANCIAL & MARKET WIRE</span>
-                        </h4>
-                        <span class="text-[10px] text-zinc-400 font-mono">IHSG, BI & RUPIAH</span>
+                <div class="natural-card p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-linen-300">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                            <h4 class="font-bold text-forest-900 text-sm">Indonesia Financial Wire</h4>
+                        </div>
+                        <span class="text-xs text-stone-500">Sumber Domestik</span>
                     </div>
 
-                    <div class="space-y-2.5">
+                    <div class="space-y-3">
                         {"".join([f'''
-                        <div class="p-3 bg-terminal-950 border border-emerald-500/10 space-y-1.5 hover:border-emerald-500/40 transition-all">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="px-1.5 py-0.5 text-[9px] font-bold border border-emerald-500/40 text-emerald-400 font-mono">{n.get('source', 'Media')}</span>
-                                <span class="text-[10px] text-zinc-500 font-mono">{n.get('pub_date', '')[:16]}</span>
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">{item.get('source', 'Domestik')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('published', '')}</span>
                             </div>
-                            <div class="text-xs font-semibold text-zinc-200 leading-snug">{n.get('title', '')}</div>
-                            <div class="pt-1">
-                                <a href="{n.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-emerald-400 hover:underline">
-                                    [BACA ARTIKEL ASLI ↗]
-                                </a>
-                            </div>
+                            <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
+                                {item.get('title', '')}
+                            </a>
                         </div>
-                        ''' for n in indonesia_news]) if indonesia_news else '<div class="text-xs text-zinc-500 py-4">Belum ada transmisi berita domestik.</div>'}
+                        ''' for item in indonesia_news[:5]])}
                     </div>
                 </div>
 
@@ -710,140 +818,181 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
         </div>
 
-        <!-- TAB 6: WHATSAPP DISPATCH -->
-        <div id="tab-whatsapp" class="tab-pane hidden space-y-6">
-            <div class="retro-card p-6 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-amber-500/30">
+        <!-- TAB 6: WHATSAPP BROADCAST (ONE-CLICK COPY) -->
+        <div id="tab-wa" class="tab-pane hidden space-y-6">
+            
+            <div class="natural-card p-6 sm:p-8 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
                     <div>
-                        <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">[TELEGRAM & WHATSAPP WIRE]</div>
-                        <h3 class="text-lg font-headline font-bold text-white">Investment Committee WhatsApp Dispatch</h3>
-                        <p class="text-xs text-zinc-400 font-typewriter">Rantai kausalitas dan ringkasan kalender mingguan siap salin ke grup investor</p>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Distribusi Komunikasi</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Salin Naskah WhatsApp / Telegram</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Format ringkas siap sebar ke grup riset, tim treasury, atau komunitas investor</p>
                     </div>
-                    <button onclick="copyToClipboard()" id="copy-btn" class="px-4 py-2 border border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs font-bold font-mono transition-all">
-                        📋 COPY DISPATCH TO CLIPBOARD
+                    <button onclick="copyWhatsAppBroadcast()" id="copy-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs font-bold transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                        </svg>
+                        Salin Seluruh Teks
                     </button>
                 </div>
 
                 <div class="relative">
-                    <textarea id="wa-text" readonly rows="28" class="w-full bg-terminal-950 border border-amber-500/30 p-4 font-mono text-xs text-amber-200/90 leading-relaxed focus:outline-none focus:border-amber-400 resize-y">{whatsapp_text}</textarea>
+                    <pre id="wa-text-content" class="p-6 rounded-2xl bg-linen-50 border border-linen-300 text-stone-800 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed max-h-[600px] overflow-y-auto">{whatsapp_text}</pre>
                 </div>
             </div>
+
         </div>
 
     </main>
 
-    <!-- RETRO FOOTER -->
-    <footer class="max-w-7xl mx-auto px-4 sm:px-8 py-8 border-t border-amber-500/30 text-center text-[10px] text-zinc-500 font-mono">
-        ★ MACRO PULSE FINANCIAL TERMINAL · POINT-IN-TIME SURVEILLANCE ENGINE · NEW YORK · JAKARTA · LONDON ★
+    <!-- FOOTER -->
+    <footer class="bg-forest-900 text-sage-300 text-xs py-8 px-4 sm:px-8 border-t border-forest-800 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <div class="font-bold text-white text-sm">Macro Pulse · Natural Horizon</div>
+                <div class="text-[11px] text-sage-400 mt-0.5">Dirancang dengan palet ramah lanskap & tipografi geometris terbuka</div>
+            </div>
+            <div class="text-[11px] text-sage-400">
+                Pembaruan data otomatis via GitHub Actions · Open Source Quantitative Engine
+            </div>
+        </div>
     </footer>
 
-    <!-- INTERACTIVE SCRIPTS: TABS, LIVE CLOCK & REAL-TIME WEBSOCKET/API POLLING -->
+    <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING -->
     <script>
+        // 1. Tab Switcher
         function switchTab(tabId) {{
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             
-            const target = document.getElementById(tabId);
-            if (target) target.classList.remove('hidden');
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.classList.remove('hidden');
             
-            const btn = document.getElementById('btn-' + tabId);
-            if (btn) btn.classList.add('active');
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (targetBtn) targetBtn.classList.add('active');
+            
+            window.scrollTo({{ top: 0, behavior: 'smooth' }});
         }}
 
-        function copyToClipboard() {{
-            const copyText = document.getElementById("wa-text");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            
-            const btn = document.getElementById("copy-btn");
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "✅ DISPATCH COPIED!";
-            btn.classList.add("bg-emerald-500", "text-black");
-            
-            setTimeout(() => {{
-                btn.innerHTML = originalText;
-                btn.classList.remove("bg-emerald-500", "text-black");
-            }}, 2500);
-        }}
-
-        // DUAL LIVE CLOCK ENGINE (WIB & EST)
-        function updateClocks() {{
+        // 2. Dual Real-time Clocks (WIB & EST)
+        function updateLiveClocks() {{
             const now = new Date();
             
-            // WIB (UTC+7)
-            const wibString = now.toLocaleTimeString('en-GB', {{ timeZone: 'Asia/Jakarta' }});
-            const clockWib = document.getElementById('clock-wib');
-            if (clockWib) clockWib.innerText = wibString + ' WIB';
+            // WIB (Jakarta: UTC+7)
+            const wibStr = new Intl.DateTimeFormat('id-ID', {{
+                timeZone: 'Asia/Jakarta',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            }}).format(now);
+            const elWib = document.getElementById('live-clock-wib');
+            if (elWib) elWib.textContent = wibStr + ' WIB';
 
-            // EST (America/New_York)
-            const estString = now.toLocaleTimeString('en-US', {{ timeZone: 'America/New_York', hour12: false }});
-            const clockEst = document.getElementById('clock-est');
-            if (clockEst) clockEst.innerText = estString + ' EST';
+            // EST (New York: America/New_York)
+            const estStr = new Intl.DateTimeFormat('en-US', {{
+                timeZone: 'America/New_York',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            }}).format(now);
+            const elEst = document.getElementById('live-clock-est');
+            if (elEst) elEst.textContent = estStr + ' EST';
 
-            // Market status check (NYSE 09:30 - 16:00 EST on weekdays)
-            const estHour = parseInt(estString.split(':')[0], 10);
-            const estMin = parseInt(estString.split(':')[1], 10);
-            const estDay = now.getDay();
-            const isOpen = (estDay >= 1 && estDay <= 5) && (estHour > 9 || (estHour === 9 && estMin >= 30)) && (estHour < 16);
-            
-            const badge = document.getElementById('market-status-badge');
-            if (badge) {{
-                badge.innerText = isOpen ? '[NYSE: OPEN 🟢]' : '[NYSE: CLOSED 🔴]';
-                badge.className = isOpen ? 'text-emerald-400 font-bold' : 'text-zinc-500';
-            }}
-        }}
-        setInterval(updateClocks, 1000);
-        updateClocks();
-
-        // REAL-TIME CLIENT-SIDE PRICE STREAMER (BINANCE PUBLIC API)
-        let lastPrices = {{ btc: 0, eth: 0, sol: 0 }};
-
-        async function fetchLiveCryptoPrices() {{
-            try {{
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=["BTCUSDT","ETHUSDT","SOLUSDT"]');
-                if (res.ok) {{
-                    const data = await res.json();
-                    data.forEach(item => {{
-                        const price = parseFloat(item.price);
-                        if (item.symbol === 'BTCUSDT') {{
-                            const el = document.getElementById('val-btc');
-                            const tape = document.getElementById('live-tape-btc');
-                            const card = document.getElementById('card-btc');
-                            if (el) el.innerText = '$' + price.toLocaleString('en-US', {{ maximumFractionDigits: 0 }});
-                            if (tape) tape.innerText = '$' + price.toLocaleString('en-US', {{ maximumFractionDigits: 0 }});
-                            if (lastPrices.btc > 0 && card) {{
-                                card.classList.remove('ticker-flash-up', 'ticker-flash-down');
-                                void card.offsetWidth; // trigger reflow
-                                card.classList.add(price >= lastPrices.btc ? 'ticker-flash-up' : 'ticker-flash-down');
-                            }}
-                            lastPrices.btc = price;
-                        }} else if (item.symbol === 'ETHUSDT') {{
-                            const tape = document.getElementById('live-tape-eth');
-                            if (tape) tape.innerText = '$' + price.toLocaleString('en-US', {{ maximumFractionDigits: 0 }});
-                            lastPrices.eth = price;
-                        }} else if (item.symbol === 'SOLUSDT') {{
-                            const tape = document.getElementById('live-tape-sol');
-                            if (tape) tape.innerText = '$' + price.toFixed(2);
-                            lastPrices.sol = price;
-                        }}
-                    }});
+            // Session check (NY Cash 09:30 - 16:00 EST)
+            const nyHour = parseInt(estStr.split(':')[0]);
+            const nyMin = parseInt(estStr.split(':')[1]);
+            const pill = document.getElementById('market-session-pill');
+            if (pill) {{
+                if (nyHour >= 9 && nyHour < 16) {{
+                    pill.textContent = 'NY CASH OPEN';
+                    pill.className = 'hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-950 text-sprout border border-emerald-700/50';
+                }} else {{
+                    pill.textContent = 'ASIA / AFTER-HOURS';
+                    pill.className = 'hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-forest-800 text-sage-200 border border-forest-600';
                 }}
-            }} catch (e) {{
-                // Fallback silently if offline or blocked
+            }}
+        }}
+        setInterval(updateLiveClocks, 1000);
+        updateLiveClocks();
+
+        // 3. Live Client-Side Crypto Poller via Binance Public API
+        let previousCrypto = {{}};
+        async function fetchLiveCryptoPrices() {{
+            const syncIcon = document.getElementById('sync-icon');
+            if (syncIcon) syncIcon.classList.add('animate-spin');
+
+            try {{
+                const symbols = '["BTCUSDT","ETHUSDT","SOLUSDT"]';
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbols=${{symbols}}`);
+                if (!res.ok) throw new Error('Network error');
+                const data = await res.json();
+                
+                data.forEach(item => {{
+                    const sym = item.symbol;
+                    const price = parseFloat(item.price);
+                    
+                    if (sym === "BTCUSDT") updatePriceCard("btc", price);
+                    if (sym === "ETHUSDT") updatePriceCard("eth", price);
+                    if (sym === "SOLUSDT") updatePriceCard("sol", price);
+                }});
+            }} catch (err) {{
+                console.warn("Binance ticker poll:", err);
+            }} finally {{
+                if (syncIcon) setTimeout(() => syncIcon.classList.remove('animate-spin'), 600);
             }}
         }}
 
-        // Poll live price every 10 seconds for real-time live trading desk feel!
+        function updatePriceCard(key, price) {{
+            const elVal = document.getElementById(`live-${{key}}`);
+            const card = document.getElementById(`card-${{key}}`);
+            if (!elVal) return;
+
+            const prev = previousCrypto[key] || price;
+            previousCrypto[key] = price;
+
+            // Format price string
+            if (key === 'sol') {{
+                elVal.textContent = '$' + price.toLocaleString('en-US', {{ minimumFractionDigits: 2, maximumFractionDigits: 2 }});
+            }} else {{
+                elVal.textContent = '$' + Math.round(price).toLocaleString('en-US');
+            }}
+
+            if (card) {{
+                card.classList.remove('flash-up', 'flash-down');
+                void card.offsetWidth; // trigger reflow
+                if (price > prev) {{
+                    card.classList.add('flash-up');
+                }} else if (price < prev) {{
+                    card.classList.add('flash-down');
+                }}
+            }}
+        }}
+
+        // Poll crypto every 10 seconds live
         setInterval(fetchLiveCryptoPrices, 10000);
-        fetchLiveCryptoPrices();
+        setTimeout(fetchLiveCryptoPrices, 1500);
+
+        // 4. One-Click Copy for WhatsApp Broadcast
+        function copyWhatsAppBroadcast() {{
+            const text = document.getElementById('wa-text-content').textContent;
+            navigator.clipboard.writeText(text).then(() => {{
+                const btn = document.getElementById('copy-btn');
+                const orig = btn.innerHTML;
+                btn.innerHTML = '✓ Berhasil Disalin!';
+                btn.classList.add('bg-emerald-600');
+                setTimeout(() => {{
+                    btn.innerHTML = orig;
+                    btn.classList.remove('bg-emerald-600');
+                }}, 2500);
+            }}).catch(err => {{
+                alert('Gagal menyalin: ' + err);
+            }});
+        }}
     </script>
 </body>
-</html>
-"""
+</html>"""
+
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    print(f"Rendered Retro Classic report to {output_path}")
+    print(f"Rendered Natural Landscape report to {output_path}")
     
     # Also write to index.html for instant root localhost:8080 viewing and github pages deployment
     index_path = os.path.join(os.path.dirname(os.path.abspath(output_path)), "index.html")
@@ -851,25 +1000,3 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         f.write(html_content)
         
     return os.path.abspath(output_path)
-
-if __name__ == "__main__":
-    from data_fetcher import get_latest_snapshot
-    from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment
-    from calendar_engine import get_weekly_economic_calendar, compute_macro_flow_projections
-    from narrative_generator import generate_report_payload
-    
-    snapshot = get_latest_snapshot()
-    price_df = load_price_history()
-    ews = evaluate_ews(snapshot)
-    regime = classify_macro_regime(snapshot, ews)
-    corrs = compute_correlation_matrix(price_df)
-    sectors = compute_sector_scorecard(snapshot, regime)
-    crypto_data, eth_btc = compute_crypto_scorecard(snapshot)
-    indo_macro = analyze_indonesia_macro_sentiment(snapshot, ews, regime)
-    
-    weekly_cal = get_weekly_economic_calendar()
-    flow_proj = compute_macro_flow_projections(snapshot, regime, ews)
-    
-    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, weekly_cal, flow_proj)
-    path = render_html_report(payload)
-    print("HTML Generator verified:", path)
