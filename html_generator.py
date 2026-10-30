@@ -1041,9 +1041,9 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             <div class="natural-card p-6 sm:p-8 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-linen-300">
                     <div>
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Distribusi Komunikasi</div>
-                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Salin Naskah WhatsApp / Telegram</h3>
-                        <p class="text-xs sm:text-sm text-stone-600">Format ringkas siap sebar ke grup riset, tim treasury, atau komunitas investor</p>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Distribusi Komunikasi & Morning Intelligence</div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-forest-900">Morning Briefing & Transisi Intra-Week</h3>
+                        <p class="text-xs sm:text-sm text-stone-600">Rantai sentimen harian (update otomatis tiap 06:00 WIB) memetakan katalis Big Tech, dinamika kripto, kalender ekonomi berdampak, dan transmisi pasar modal.</p>
                     </div>
                     <button onclick="copyWhatsAppBroadcast()" id="copy-btn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-forest-700 hover:bg-forest-800 text-white text-xs font-bold transition-all shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

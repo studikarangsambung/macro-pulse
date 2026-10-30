@@ -3,6 +3,8 @@ name: Update Macro Monitor & Deploy to GitHub Pages
 on:
   schedule:
     # Hari Kerja (Senin-Jumat): Update berkala mengikuti sesi pasar dunia
+    # 23:00 UTC = 06:00 WIB (PAGI HARI: Morning Briefing & Transisi Intra-Week Pasca Tutup Wall Street)
+    - cron: '0 23 * * 1-5'
     # 00:00 UTC = 07:00 WIB (Pagi hari Asia & persiapan pasar)
     - cron: '0 0 * * 1-5'
     # 02:00 UTC = 09:00 WIB (Pembukaan pasar Asia & IHSG Sesi 1)
