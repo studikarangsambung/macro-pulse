@@ -34,6 +34,15 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
     # Compute dynamic Net Liquidity status & impact
     net_liq_chg = net_liq.get('change_4w_bil', 0)
+    if net_liq_chg >= 0:
+        chg_liq_str = f"+${net_liq_chg:,.1f} Miliar"
+        chg_liq_color = "text-emerald-700"
+        chg_liq_dot = "bg-emerald-500"
+    else:
+        chg_liq_str = f"-${abs(net_liq_chg):,.1f} Miliar"
+        chg_liq_color = "text-rose-700"
+        chg_liq_dot = "bg-rose-500"
+
     if net_liq_chg > 50:
         liq_status = "Ekspansi Likuiditas Kuat"
         liq_impact = "Menopang valuasi ekuitas secara luas dan memicu selera risiko tinggi (risk-on) pada saham teknologi & reli kripto."
@@ -589,9 +598,9 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             <div class="text-2xl font-extrabold text-forest-900 font-mono">
                                 ${net_liq.get('net_liquidity_bil', 0):,.1f} Miliar
                             </div>
-                            <div class="text-xs font-semibold flex items-center gap-1.5 text-emerald-700">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                Perubahan 4 Pekan: +${net_liq.get('change_4w_bil', 0):.1f} Miliar
+                            <div class="text-xs font-semibold flex items-center gap-1.5 {chg_liq_color}">
+                                <span class="w-2 h-2 rounded-full {chg_liq_dot}"></span>
+                                Perubahan 4 Pekan: {chg_liq_str}
                             </div>
                         </div>
                         <div class="p-3.5 bg-linen-100 rounded-xl border border-linen-200 text-xs text-stone-700 leading-relaxed space-y-2">

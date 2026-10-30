@@ -14,7 +14,23 @@ def get_wib_now():
 
 def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, crypto_data, eth_btc_ratio, indo_macro=None, weekly_calendar=None, flow_proj=None, market_drivers=None):
     wib_now = get_wib_now()
-    now_str = wib_now.strftime("%A, %d %b %Y · %H:%M WIB")
+    
+    # Indonesian date translation
+    indo_days = {
+        "Monday": "Senin", "Tuesday": "Selasa", "Wednesday": "Rabu",
+        "Thursday": "Kamis", "Friday": "Jumat", "Saturday": "Sabtu", "Sunday": "Minggu"
+    }
+    indo_months = {
+        "January": "Januari", "February": "Februari", "March": "Maret", "April": "April",
+        "May": "Mei", "June": "Juni", "July": "Juli", "August": "Agustus",
+        "September": "September", "October": "Oktober", "November": "November", "December": "Desember"
+    }
+    eng_day = wib_now.strftime("%A")
+    eng_month = wib_now.strftime("%B")
+    day_str = indo_days.get(eng_day, eng_day)
+    month_str = indo_months.get(eng_month, eng_month)
+    trade_date_str = f"{day_str}, {wib_now.day} {month_str} {wib_now.year}"
+    
     prices = snapshot.get("prices", {})
     net_liq = snapshot.get("net_liquidity", {})
     crypto_news = snapshot.get("crypto_news", [])
@@ -34,7 +50,6 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     
     us10y = prices.get("^TNX", {}).get("close", 0)
     us10y_chg = prices.get("^TNX", {}).get("change_1d_pct", 0)
-    vix = prices.get("^VIX", {}).get("close", 0)
     oil = prices.get("CL=F", {}).get("close", 0)
     oil_chg = prices.get("CL=F", {}).get("change_1d_pct", 0)
     gold = prices.get("GC=F", {}).get("close", 0)
@@ -48,48 +63,90 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     # Net Liquidity
     net_liq_val = net_liq.get("net_liquidity_bil", 0)
     net_liq_chg = net_liq.get("change_4w_bil", 0)
+    if net_liq_chg > 50:
+        liq_status = "Ekspansi Kuat"
+    elif net_liq_chg > 0:
+        liq_status = "Ekspansi Moderat"
+    elif net_liq_chg > -50:
+        liq_status = "Kontraksi Ringan"
+    else:
+        liq_status = "Penarikan Likuiditas Agresif"
     
-    # EWS counts
-    bahaya_count = sum(1 for s in ews_signals if s["status"] == "BAHAYA")
-    waspada_count = sum(1 for s in ews_signals if s["status"] == "WASPADA")
-    aman_count = sum(1 for s in ews_signals if s["status"] == "AMAN")
-    
-    # Sector Leaders & Laggards
-    top_3 = sectors[:3]
-    bottom_3 = sectors[-3:]
+    # Altseason Status
+    if eth_btc_ratio < 0.035:
+        altseason_status = f"Dominasi Bitcoin Kuat (Altseason Tertahan) [Rasio ETH/BTC: {eth_btc_ratio:.4f}]"
+    elif eth_btc_ratio < 0.05:
+        altseason_status = f"Konsolidasi Pasangan ETH/BTC [Rasio ETH/BTC: {eth_btc_ratio:.4f}]"
+    else:
+        altseason_status = f"Altseason Aktif (Likuiditas Meluas ke Altcoins) [Rasio ETH/BTC: {eth_btc_ratio:.4f}]"
     
     # Extract unique sources for transparent attribution
     raw_sources = [n.get('source') for n in (snapshot.get('global_news', []) + snapshot.get('geopolitics_news', []) + snapshot.get('crypto_news', []) + snapshot.get('indonesia_news', [])) if n.get('source')]
     unique_sources = sorted(list(set(raw_sources)))
     sources_str = ", ".join(unique_sources[:6]) if unique_sources else "Reuters, CoinDesk, Bloomberg, CNBC Indonesia, FXStreet"
 
-    # Dynamic 5-Stage Intra-Week Sentiment Chain
+    # Top Section: Sentiment Chain (Without Emojis, Clean Arrow Flow)
     xlk_chg = prices.get("XLK", {}).get("change_1d_pct", 0)
     xle_chg = prices.get("XLE", {}).get("change_1d_pct", 0)
+    xlv_chg = prices.get("XLV", {}).get("change_1d_pct", 0)
+    xlc_chg = prices.get("XLC", {}).get("change_1d_pct", 0)
     
-    if btc_chg < -2.0 or qqq_chg < -0.8:
-        chain_1 = "Musim Laporan Keuangan Big Tech (Earnings Miss / AI Capex Fear) memicu kekhawatiran valuasi dan efisiensi belanja komputasi awan."
-        chain_2 = f"Aksi jual serentak pada saham High-Beta Growth (QQQ {qqq_chg:+.2f}%, XLK {xlk_chg:+.2f}%) memicu 'Risk-Off' rotasi modal ke sektor defensif & energi (XLE {xle_chg:+.2f}%)."
-        chain_3 = f"Pelarian likuiditas ke obligasi AS membuat yield 10Y bergerak fluktuatif ({us10y:.3f}%), namun suku bunga riil tetap ketat menyedot likuiditas pasar."
-        chain_4 = f"Institusi melikuidasi eksposur berisiko tinggi (High-Beta Tech Proxy), memicu likuidasi berantai derivatif sehingga Bitcoin terkoreksi ke ${btc:,.0f} ({btc_chg:+.2f}%)."
-        chain_5 = f"Penguatan Dolar (DXY {dxy:.2f}) dan harga minyak (${oil:.2f}) membebani nilai tukar Rupiah (Rp {usdidr:,.0f}) serta menahan laju IHSG."
-    else:
-        chain_1 = f"Tarik-menarik data makro (Minyak ${oil:.2f} & US10Y {us10y:.3f}%) menguji ketahanan laba korporasi AS."
-        chain_2 = f"Pasar saham bergerak selektif (SPY {spx_chg:+.2f}%, QQQ {qqq_chg:+.2f}%); modal terkonsentrasi pada emiten dengan arus kas kuat ({top_3[0]['ticker']})."
-        chain_3 = f"Likuiditas The Fed (${net_liq_val:,.1f}B) menjadi bantalan penahan penurunan agresif di pasar obligasi."
-        chain_4 = f"Pasar kripto berkonsolidasi di kisaran ${btc:,.0f}; trader derivatif bersiap mengantisipasi rilis data inflasi dan tenaga kerja AS."
-        chain_5 = f"Bank Indonesia bersiaga menstabilkan Rupiah di Rp {usdidr:,.0f} guna mengantisipasi transmisi imported inflation."
+    if btc_chg < -1.5 or qqq_chg < -0.5:
+        chain_section = f"""Musim Laporan Keuangan Big Tech & Evaluasi AI Capex
+↓
+AI Capex Fear & Risk-Off di Growth Stocks
+(Pasar mencermati valuasi dan efisiensi belanja infrastruktur komputasi awan)
+↓
+Tekanan pada Sektor Teknologi & Komunikasi
 
-    # Top Crypto News block
+Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%)
+Sektor Tertinggal: XLK {xlk_chg:+.2f}%, XLC {xlc_chg:+.2f}%
+Sektor Defensif: XLE {xle_chg:+.2f}%, XLV {xlv_chg:+.2f}%
+↓
+Dinamika Minyak Mentah & Pasokan Energi
+(Premi risiko geopolitik kawasan dan disiplin kuota produksi OPEC+)
+Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)
+↓
+Risk Appetite Global & Pasar Kripto
+Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)
+Likuidasi kontrak leverage di pasar derivatif seiring de-risking aset teknologi
+↓
+Keseimbangan Yield & Logam Mulia
+US 10-Year Yield di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar tunggu The Fed)
+Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
+    else:
+        chain_section = f"""Anthropic IPO Filing + Chip Optimism
+↓
+AI Sentiment Berbalik Positif
+(Menghapus kepanikan belanja infrastruktur AI pekan lalu)
+↓
+Tech & Semikonduktor Rebound Kuat
+
+Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%) naik dipimpin sektor cip
+Sektor Unggulan: XLK {xlk_chg:+.2f}%, XLC {xlc_chg:+.2f}%
+↓
+Minyak Mentah Moderat
+(Ekspektasi diplomasi kawasan dan pasokan energi fisik)
+Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)
+↓
+Risk Appetite Global Meningkat
+Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)
+Penambang Bitcoin bertransformasi menyediakan daya komputasi AI
+↓
+Keseimbangan Yield & Logam Mulia
+US 10-Year Yield di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar tunggu The Fed)
+Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
+
+    # Crypto News Wire block
     crypto_news_lines = []
     if crypto_news:
         for it in crypto_news[:3]:
-            crypto_news_lines.append(f"  • {it.get('title', '')} _{it.get('source', 'Crypto Wire')}_")
+            crypto_news_lines.append(f"• {it.get('title', '')} ({it.get('source', 'Crypto Wire')})")
     else:
-        crypto_news_lines.append(f"  • Penyesuaian posisi derivatif & arus ETF Spot di tengah tingginya yield obligasi AS.")
+        crypto_news_lines.append("• Arus masuk ETF Spot dan penyesuaian posisi hedge fund di pasar derivatif.")
     crypto_news_str = "\n".join(crypto_news_lines)
 
-    # Weekly Calendar block text: prioritize upcoming & today's events!
+    # Weekly Calendar block text: concise without emojis
     cal_block = ""
     if weekly_calendar:
         today_iso = wib_now.strftime("%Y-%m-%d")
@@ -100,105 +157,67 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
         for e in display_events:
             date_iso = e.get("date_iso", "")
             if date_iso == today_iso:
-                status_label = "🔴 [HARI INI]"
+                status_tag = "[HARI INI]"
             elif date_iso > today_iso:
-                status_label = "⏳ [MENDATANG]"
+                status_tag = "[MENDATANG]"
             else:
-                status_label = "✓ [TELAH RILIS]"
+                status_tag = "[TELAH RILIS]"
                 
+            clean_country = e.get("country", "US").replace("🇺🇸", "").replace("🇮🇩", "").strip()
+            clean_importance = e.get("importance", "TINGGI").replace("🔴", "").replace("🟡", "").replace("🟢", "").strip()
+            
             cal_items.append(
-                f"• *{e['day']}, {e['date']} {e['time_wib']}* {status_label} [{e['country']}]:\n"
-                f"  *{e['event']}* ({e['importance']})\n"
-                f"  ↳ *Dampak Hot:* {e['impact_hot']}\n"
-                f"  ↳ *Aset Pilihan:* {e['favored_asset']}"
+                f"• {e['day']}, {e['date']} {e['time_wib']} {status_tag} [{clean_country}]: {e['event']} [{clean_importance}]\n"
+                f"  - Dampak Hot: {e['impact_hot']}\n"
+                f"  - Aset Pilihan: {e['favored_asset']}"
             )
             
-        past_events = [e for e in weekly_calendar if e.get("date_iso", "") < today_iso]
-        recap_line = ""
-        if past_events:
-            last_past = past_events[-1]
-            recap_line = f"\n📌 *Kilas Rilis Kemarin:* {last_past['event']} ({last_past['date']}) -> Mengonfirmasi bertahannya suku bunga tinggi."
-
         cal_block = f"""
 ━━━━━━━━━━━━━━━━━━━━━
-📅 *KATALIS KALENDER EKONOMI (FOKUS HARI INI & MENDATANG):*
-{chr(10).join(cal_items)}{recap_line}"""
+KATALIS KALENDER EKONOMI (FOKUS HARI INI & MENDATANG)
+{chr(10).join(cal_items)}"""
 
     # Indonesia block text
     indo_block = ""
     if indo_macro:
         indo_block = f"""
 ━━━━━━━━━━━━━━━━━━━━━
-🇮🇩 *TRANSMISI MAKRO GLOBAL KE INDONESIA:*
-• *USD / IDR Spot:* Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) [{indo_macro['kurs_status']}]
-• *MSCI Indonesia (EIDO):* ${eido:.2f} ({eido_chg:+.2f}%) [{indo_macro['ihsg_status']}]
-• *Sikap Kebijakan Bank Indonesia:* {indo_macro['bi_status']}
-• *Catatan APBN & Saham Domestik:* {indo_macro['summary']}"""
+TRANSMISI KE PASAR MODAL INDONESIA
+• USD / IDR Spot: Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) [{indo_macro['kurs_status']}]
+• MSCI Indonesia (EIDO): US$ {eido:.2f} ({eido_chg:+.2f}%) [{indo_macro['ihsg_status']}]
+• Kebijakan Bank Indonesia: {indo_macro['bi_status']}
+• Analisis: {indo_macro['summary']}"""
 
-    msg = f"""🌐 *MACRO PULSE | TRANSISI INTRA-WEEK & MORNING BRIEFING*
-📅 Edisi: {now_str} (Update Harian 06:00 WIB)
-🏛 *Rezim Makro Aktif:* {regime['title']} [{regime['regime_id']}]
-⚠️ *Status EWS:* 🔴 {bahaya_count} Bahaya | 🟡 {waspada_count} Waspada | 🟢 {aman_count} Aman
+    msg = f"""Global Market Review
+(Update Perdagangan: {trade_date_str})
 
-━━━━━━━━━━━━━━━━━━━━━
-⚡ *RANTAI SENTIMEN & TRANSMISI INTRA-WEEK:*
-1️⃣ *Katalis Mikro & Sektoral:*
-   {chain_1}
-   ⬇️
-2️⃣ *Reaksi Pasar Ekuitas & Sektoral US:*
-   {chain_2}
-   ⬇️
-3️⃣ *Rotasi Likuiditas & Imbal Hasil Obligasi:*
-   {chain_3}
-   ⬇️
-4️⃣ *Transmisi ke Kripto (Tech Proxy):*
-   {chain_4}
-   ⬇️
-5️⃣ *Dampak ke Pasar Modal Indonesia:*
-   {chain_5}
+{chain_section}
 
 ━━━━━━━━━━━━━━━━━━━━━
-📊 *PERGERAKAN TERBARU STOCK US & MAKRO:*
-• *S&P 500 (SPY):* ${spx:.2f} ({spx_chg:+.2f}%)
-• *Nasdaq 100 (QQQ):* ${qqq:.2f} ({qqq_chg:+.2f}%)
-• *US 10Y Treasury Yield:* {us10y:.3f}% ({us10y_chg:+.2f}%)
-• *Dollar Index (DXY):* {dxy:.2f}
-• *Minyak Mentah WTI:* ${oil:.2f} ({oil_chg:+.2f}%)
-• *Emas Spot (XAUUSD):* ${gold:,.1f}/oz ({gold_chg:+.2f}%)
-• *Fed Net Liquidity:* ${net_liq_val:,.1f}B ({net_liq_chg:+.1f}B 4W)
+LIKUIDITAS THE FED (H.4.1 BALANCE SHEET)
+• Likuiditas Bersih: US$ {net_liq_val:,.1f} Miliar
+• Perubahan 4 Pekan: {net_liq_chg:+.1f} Miliar ({liq_status})
+• Komponen Neraca: Total Aset Fed (WALCL) - Saldo Depkeu (TGA) - Reverse Repo (RRP)
+• Catatan Pembaruan: Rilis resmi mingguan setiap Kamis sore waktu US (Jumat ~03:30 WIB)
 
 ━━━━━━━━━━━━━━━━━━━━━
-🏆 *ROTASI 11 SEKTOR S&P 500 (1D & 20D):*
-🟢 *Top Outperformers (Overweight):*
-{chr(10).join([f"  • *{s['ticker']}* ({s['name']}): Score {s['momentum_score']:+.1f} | 1D: {s['chg_1d']:+.2f}% | 20D: {s['chg_20d']:+.2f}%" for s in top_3])}
-
-🔴 *Bottom Laggards (Underweight):*
-{chr(10).join([f"  • *{s['ticker']}* ({s['name']}): Score {s['momentum_score']:+.1f} | 1D: {s['chg_1d']:+.2f}% | 20D: {s['chg_20d']:+.2f}%" for s in bottom_3])}
-
-━━━━━━━━━━━━━━━━━━━━━
-🪙 *DYNAMICS & CRYPTO NEWS WIRE:*
-• *Bitcoin (BTC):* ${btc:,.0f} (1D: {btc_chg:+.2f}% | 20D: {btc_20d:+.2f}%)
-• *Ethereum (ETH):* ${eth:,.0f} (1D: {eth_chg:+.2f}%)
-• *Solana (SOL):* ${sol:,.2f} (1D: {sol_chg:+.2f}%)
-• *ETH/BTC Ratio:* {eth_btc_ratio:.4f} {'(Dominasi BTC / Altseason Tertahan)' if eth_btc_ratio < 0.05 else '(Altcoins Risk-On)'}
-• *Kawat Berita Kripto Terkini:*
+DYNAMICS & CRYPTO NEWS WIRE
+• Bitcoin (BTC): US$ {btc:,.0f} (1D: {btc_chg:+.2f}% | 20D: {btc_20d:+.2f}%)
+• Ethereum (ETH): US$ {eth:,.0f} (1D: {eth_chg:+.2f}%)
+• Solana (SOL): US$ {sol:.2f} (1D: {sol_chg:+.2f}%)
+• Status Altseason: {altseason_status}
+• Berita & Analisis Hedge Fund:
 {crypto_news_str}
 {cal_block}
 {indo_block}
 
 ━━━━━━━━━━━━━━━━━━━━━
-💡 *TACTICAL ACTION & SIKLUS MAKRO:*
-• *Fokus Sektoral:* Overweight {', '.join(regime['favored_sectors'])} | Kurangi {', '.join(regime['lagging_sectors'])}
-• *Sikap Kripto:* {regime['crypto_stance']}
-• *Historical Analog:* Mirip siklus _{regime['analog']}_.
+SUMBER DATA & KAWAT BERITA TERVERIFIKASI
+• Pasar & Ekuitas: Yahoo Finance, S&P Dow Jones Indices, CBOE, Bank Indonesia & Binance API
+• Neraca & Likuiditas: Federal Reserve Bank of St. Louis (FRED® API)
+• Media & Kawat Berita: {sources_str}
 
-━━━━━━━━━━━━━━━━━━━━━
-📚 *SUMBER DATA & BERITA TERVERIFIKASI:*
-• *Data Pasar & Ekuitas:* Yahoo Finance, S&P Dow Jones Indices, CBOE, Bank Indonesia & Binance API
-• *Data Neraca & Likuiditas:* Federal Reserve Bank of St. Louis (FRED® API)
-• *Kawat Berita Terakreditasi:* {sources_str}
-
-_Disusun otomatis oleh Macro Pulse Engine · Siap sebar grup riset & treasury_"""
+Disusun oleh studikarangsambung-market pulse engine"""
     return msg.strip()
 
 def generate_report_payload(snapshot, ews_signals, regime, corrs, sectors, crypto_data, eth_btc_ratio, indo_macro=None, weekly_calendar=None, flow_proj=None, market_drivers=None):
