@@ -12,6 +12,126 @@ WIB_TZ = datetime.timezone(datetime.timedelta(hours=7))
 def get_wib_now():
     return datetime.datetime.now(WIB_TZ)
 
+def build_validated_sentiment_chain(prices, sectors, snapshot):
+    """
+    Constructs a 5-stage causal sentiment chain with strict validation:
+    1. Katalis Utama & Sentimen Ekuitas AS (Reflects actual SPY & QQQ signs)
+    2. Kinerja Sektoral Wall Street (Dynamically selects true outperformers & true laggards)
+    3. Pasar Energi & Komoditas (Reflects actual Oil WTI sign and level)
+    4. Dinamika Pasar Kripto (Accurately identifies divergence vs co-movement with Tech)
+    5. Keseimbangan Imbal Hasil Obligasi & Emas (Reflects actual US10Y & Gold trends)
+    """
+    spx = prices.get("SPY", {}).get("close", 0)
+    spx_chg = prices.get("SPY", {}).get("change_1d_pct", 0)
+    qqq = prices.get("QQQ", {}).get("close", 0)
+    qqq_chg = prices.get("QQQ", {}).get("change_1d_pct", 0)
+    
+    btc = prices.get("BTC-USD", {}).get("close", 0)
+    btc_chg = prices.get("BTC-USD", {}).get("change_1d_pct", 0)
+    eth = prices.get("ETH-USD", {}).get("close", 0)
+    eth_chg = prices.get("ETH-USD", {}).get("change_1d_pct", 0)
+    sol = prices.get("SOL-USD", {}).get("close", 0)
+    sol_chg = prices.get("SOL-USD", {}).get("change_1d_pct", 0)
+    
+    us10y = prices.get("^TNX", {}).get("close", 0)
+    us10y_chg = prices.get("^TNX", {}).get("change_1d_pct", 0)
+    oil = prices.get("CL=F", {}).get("close", 0)
+    oil_chg = prices.get("CL=F", {}).get("change_1d_pct", 0)
+    gold = prices.get("GC=F", {}).get("close", 0)
+    gold_chg = prices.get("GC=F", {}).get("change_1d_pct", 0)
+
+    # 1. Stage 1: Wall Street / Big Tech Catalyst
+    if qqq_chg >= 0.2 and spx_chg >= 0.1:
+        stage_1_title = "Resiliensi Ekuitas AS & Kinerja Laporan Keuangan"
+        stage_1_sub = "(Wall Street Menguat Selektif di Tengah Penyesuaian Valuasi)"
+    elif qqq_chg <= -0.4 or spx_chg <= -0.4:
+        stage_1_title = "Rotasi Defensif & Penyesuaian Valuasi Ekuitas AS"
+        stage_1_sub = "(Pasar Mencermati Dampak Suku Bunga Restriktif terhadap Laba Korporasi)"
+    else:
+        stage_1_title = "Konsolidasi Terbatas Pasar Saham Wall Street"
+        stage_1_sub = "(Pergerakan Fluktuatif Menanti Rilis Data Tenaga Kerja & Manufaktur)"
+
+    # 2. Stage 2: S&P 500 & Nasdaq Sector Reaction
+    # Dynamic sector selection strictly according to 1D returns
+    sorted_sectors = sorted(sectors, key=lambda s: s.get("chg_1d", 0), reverse=True)
+    top_2 = sorted_sectors[:2]
+    bottom_2 = sorted_sectors[-2:]
+    
+    top_str = ", ".join([f"{s['ticker']} {s['chg_1d']:+.2f}%" for s in top_2])
+    bottom_str = ", ".join([f"{s['ticker']} {s['chg_1d']:+.2f}%" for s in bottom_2])
+    
+    if qqq_chg >= 0:
+        stage_2_text = (
+            f"Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%) menguat.\n"
+            f"Sektor Unggulan: {top_str}\n"
+            f"Sektor Tertinggal: {bottom_str}"
+        )
+    else:
+        stage_2_text = (
+            f"Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%) terkoreksi.\n"
+            f"Sektor Tertinggal: {bottom_str}\n"
+            f"Sektor Defensif: {top_str}"
+        )
+
+    # 3. Stage 3: Crude Oil & Energy Dynamics
+    if oil_chg >= 0.8:
+        stage_3_title = "Minyak Mentah Menguat / Premi Risiko Pasokan"
+        stage_3_sub = "(Ketegangan geopolitik kawasan dan disiplin kuota pasokan fisik)"
+    elif oil_chg <= -0.8:
+        stage_3_title = "Minyak Mentah Terkoreksi Melandai"
+        stage_3_sub = "(Ekspektasi diplomasi kawasan dan pelepasan cadangan minyak)"
+    else:
+        stage_3_title = "Minyak Mentah Bertahan di Level Tinggi"
+        stage_3_sub = "(Konsolidasi harga energi bertahan di atas ambang batas $100/barel)"
+    stage_3_text = f"Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)"
+
+    # 4. Stage 4: Crypto Market (Divergence vs Co-movement check)
+    if btc_chg <= -1.5 and qqq_chg >= 0:
+        stage_4_title = "Divergensi Pasar Kripto (Tekanan Jual Mandiri)"
+        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
+        stage_4_desc = "Tekanan jual derivatif dan volatilitas ekosistem kripto terjadi di tengah bursa saham AS yang cenderung bertahan."
+    elif btc_chg <= -1.5 and qqq_chg < 0:
+        stage_4_title = "Risk-Off Global Menekan Pasar Kripto"
+        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
+        stage_4_desc = "Likuidasi posisi leverage di pasar derivatif sejalan dengan de-risking saham-saham teknologi Wall Street."
+    elif btc_chg >= 1.5 and qqq_chg >= 0:
+        stage_4_title = "Risk Appetite Meluas ke Pasar Kripto"
+        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
+        stage_4_desc = "Sentimen positif ekuitas mendorong aliran likuiditas ke aset digital."
+    else:
+        stage_4_title = "Konsolidasi Terbatas Pasar Kripto"
+        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
+        stage_4_desc = "Harga aset kripto berkonsolidasi di rentang sempit menunggu pemicu likuiditas baru."
+
+    # 5. Stage 5: Yield & Gold Balance
+    if us10y_chg >= 0.5:
+        yield_desc = f"US 10-Year Yield naik ke {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar menakar peluang suku bunga The Fed tetap ketat/hawkish)"
+    elif us10y_chg <= -0.5:
+        yield_desc = f"US 10-Year Yield melandai ke {us10y:.3f}% ({us10y_chg:+.2f}%) (konsolidasi pasar obligasi pasca rilis data makro)"
+    else:
+        yield_desc = f"US 10-Year Yield bertahan di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar obligasi memantau prospek kebijakan The Fed)"
+    
+    gold_desc = f"Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"
+
+    chain = f"""{stage_1_title}
+↓
+{stage_1_sub}
+↓
+{stage_2_text}
+↓
+{stage_3_title}
+{stage_3_sub}
+{stage_3_text}
+↓
+{stage_4_title}
+{stage_4_crypto}
+{stage_4_desc}
+↓
+Keseimbangan Yield & Logam Mulia
+{yield_desc}
+{gold_desc}"""
+    return chain
+
 def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, crypto_data, eth_btc_ratio, indo_macro=None, weekly_calendar=None, flow_proj=None, market_drivers=None):
     wib_now = get_wib_now()
     
@@ -36,10 +156,6 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     crypto_news = snapshot.get("crypto_news", [])
     
     # Key Price Numbers
-    spx = prices.get("SPY", {}).get("close", 0)
-    spx_chg = prices.get("SPY", {}).get("change_1d_pct", 0)
-    qqq = prices.get("QQQ", {}).get("close", 0)
-    qqq_chg = prices.get("QQQ", {}).get("change_1d_pct", 0)
     btc = prices.get("BTC-USD", {}).get("close", 0)
     btc_chg = prices.get("BTC-USD", {}).get("change_1d_pct", 0)
     btc_20d = prices.get("BTC-USD", {}).get("change_20d_pct", 0)
@@ -48,17 +164,12 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     sol = prices.get("SOL-USD", {}).get("close", 0)
     sol_chg = prices.get("SOL-USD", {}).get("change_1d_pct", 0)
     
-    us10y = prices.get("^TNX", {}).get("close", 0)
-    us10y_chg = prices.get("^TNX", {}).get("change_1d_pct", 0)
-    oil = prices.get("CL=F", {}).get("close", 0)
-    oil_chg = prices.get("CL=F", {}).get("change_1d_pct", 0)
-    gold = prices.get("GC=F", {}).get("close", 0)
-    gold_chg = prices.get("GC=F", {}).get("change_1d_pct", 0)
-    dxy = prices.get("DX-Y.NYB", {}).get("close", 0)
     usdidr = prices.get("USDIDR=X", {}).get("close", 18100)
     usdidr_chg = prices.get("USDIDR=X", {}).get("change_1d_pct", 0)
     eido = prices.get("EIDO", {}).get("close", 10.45)
     eido_chg = prices.get("EIDO", {}).get("change_1d_pct", 0)
+    ihsg = prices.get("^JKSE", {}).get("close", 0)
+    ihsg_chg = prices.get("^JKSE", {}).get("change_1d_pct", 0)
     
     # Net Liquidity
     net_liq_val = net_liq.get("net_liquidity_bil", 0)
@@ -85,68 +196,19 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     unique_sources = sorted(list(set(raw_sources)))
     sources_str = ", ".join(unique_sources[:6]) if unique_sources else "Reuters, CoinDesk, Bloomberg, CNBC Indonesia, FXStreet"
 
-    # Top Section: Sentiment Chain (Without Emojis, Clean Arrow Flow)
-    xlk_chg = prices.get("XLK", {}).get("change_1d_pct", 0)
-    xle_chg = prices.get("XLE", {}).get("change_1d_pct", 0)
-    xlv_chg = prices.get("XLV", {}).get("change_1d_pct", 0)
-    xlc_chg = prices.get("XLC", {}).get("change_1d_pct", 0)
-    
-    if btc_chg < -1.5 or qqq_chg < -0.5:
-        chain_section = f"""Musim Laporan Keuangan Big Tech & Evaluasi AI Capex
-↓
-AI Capex Fear & Risk-Off di Growth Stocks
-(Pasar mencermati valuasi dan efisiensi belanja infrastruktur komputasi awan)
-↓
-Tekanan pada Sektor Teknologi & Komunikasi
+    # Top Section: Validated 5-Stage Sentiment Chain
+    chain_section = build_validated_sentiment_chain(prices, sectors, snapshot)
 
-Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%)
-Sektor Tertinggal: XLK {xlk_chg:+.2f}%, XLC {xlc_chg:+.2f}%
-Sektor Defensif: XLE {xle_chg:+.2f}%, XLV {xlv_chg:+.2f}%
-↓
-Dinamika Minyak Mentah & Pasokan Energi
-(Premi risiko geopolitik kawasan dan disiplin kuota produksi OPEC+)
-Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)
-↓
-Risk Appetite Global & Pasar Kripto
-Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)
-Likuidasi kontrak leverage di pasar derivatif seiring de-risking aset teknologi
-↓
-Keseimbangan Yield & Logam Mulia
-US 10-Year Yield di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar tunggu The Fed)
-Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
-    else:
-        chain_section = f"""Anthropic IPO Filing + Chip Optimism
-↓
-AI Sentiment Berbalik Positif
-(Menghapus kepanikan belanja infrastruktur AI pekan lalu)
-↓
-Tech & Semikonduktor Rebound Kuat
-
-Nasdaq (QQQ {qqq_chg:+.2f}%) & S&P 500 (SPY {spx_chg:+.2f}%) naik dipimpin sektor cip
-Sektor Unggulan: XLK {xlk_chg:+.2f}%, XLC {xlc_chg:+.2f}%
-↓
-Minyak Mentah Moderat
-(Ekspektasi diplomasi kawasan dan pasokan energi fisik)
-Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)
-↓
-Risk Appetite Global Meningkat
-Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)
-Penambang Bitcoin bertransformasi menyediakan daya komputasi AI
-↓
-Keseimbangan Yield & Logam Mulia
-US 10-Year Yield di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar tunggu The Fed)
-Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
-
-    # Crypto News Wire block
+    # Crypto News Wire block (Accurate Label: Kawat Berita Pasar Kripto & Web3)
     crypto_news_lines = []
     if crypto_news:
         for it in crypto_news[:3]:
             crypto_news_lines.append(f"• {it.get('title', '')} ({it.get('source', 'Crypto Wire')})")
     else:
-        crypto_news_lines.append("• Arus masuk ETF Spot dan penyesuaian posisi hedge fund di pasar derivatif.")
+        crypto_news_lines.append("• Arus modal institusional dan penyesuaian posisi kontrak berjangka di pasar derivatif.")
     crypto_news_str = "\n".join(crypto_news_lines)
 
-    # Weekly Calendar block text: concise without emojis
+    # Weekly Calendar block text: concise without emojis, with DST indicator
     cal_block = ""
     if weekly_calendar:
         today_iso = wib_now.strftime("%Y-%m-%d")
@@ -165,9 +227,10 @@ Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
                 
             clean_country = e.get("country", "US").replace("🇺🇸", "").replace("🇮🇩", "").strip()
             clean_importance = e.get("importance", "TINGGI").replace("🔴", "").replace("🟡", "").replace("🟢", "").strip()
+            tz_tag = e.get("tz_tag", "")
             
             cal_items.append(
-                f"• {e['day']}, {e['date']} {e['time_wib']} {status_tag} [{clean_country}]: {e['event']} [{clean_importance}]\n"
+                f"• {e['day']}, {e['date']} {e['time_wib']} {status_tag} [{clean_country} {tz_tag}]: {e['event']} [{clean_importance}]\n"
                 f"  - Dampak Hot: {e['impact_hot']}\n"
                 f"  - Aset Pilihan: {e['favored_asset']}"
             )
@@ -177,13 +240,14 @@ Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"""
 KATALIS KALENDER EKONOMI (FOKUS HARI INI & MENDATANG)
 {chr(10).join(cal_items)}"""
 
-    # Indonesia block text
+    # Indonesia block text with live IHSG spot
     indo_block = ""
     if indo_macro:
+        ihsg_line = f"• IHSG Spot: {ihsg:,.2f} ({ihsg_chg:+.2f}%) [{indo_macro.get('ihsg_status', 'KONSOLIDASI')}]\n" if ihsg > 0 else ""
         indo_block = f"""
 ━━━━━━━━━━━━━━━━━━━━━
 TRANSMISI KE PASAR MODAL INDONESIA
-• USD / IDR Spot: Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) [{indo_macro['kurs_status']}]
+{ihsg_line}• USD / IDR Spot: Rp {usdidr:,.0f} ({usdidr_chg:+.2f}%) [{indo_macro['kurs_status']}]
 • MSCI Indonesia (EIDO): US$ {eido:.2f} ({eido_chg:+.2f}%) [{indo_macro['ihsg_status']}]
 • Kebijakan Bank Indonesia: {indo_macro['bi_status']}
 • Analisis: {indo_macro['summary']}"""
@@ -206,7 +270,7 @@ DYNAMICS & CRYPTO NEWS WIRE
 • Ethereum (ETH): US$ {eth:,.0f} (1D: {eth_chg:+.2f}%)
 • Solana (SOL): US$ {sol:.2f} (1D: {sol_chg:+.2f}%)
 • Status Altseason: {altseason_status}
-• Berita & Analisis Hedge Fund:
+• Kawat Berita Pasar Kripto & Web3:
 {crypto_news_str}
 {cal_block}
 {indo_block}

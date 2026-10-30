@@ -196,7 +196,7 @@ def evaluate_ews(snapshot):
     gold = prices.get("GC=F", {}).get("close", 0)
     if gold > 3800:
         status = "WASPADA" if tnx > 4.5 else "AMAN"
-        ctx = f"Emas XAUUSD di level rekor ${gold:,.1f}/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global."
+        ctx = f"Emas XAUUSD bertahan tinggi di ${gold:,.1f}/oz mencerminkan lindung nilai geopolitik & de-dolarisasi global."
     else:
         status = "AMAN"
         ctx = f"Emas XAUUSD di level ${gold:,.1f}/oz stabil."
@@ -387,6 +387,8 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
     usdidr_chg = prices.get("USDIDR=X", {}).get("change_1d_pct", 0)
     eido = prices.get("EIDO", {}).get("close", 10.45)
     eido_chg = prices.get("EIDO", {}).get("change_1d_pct", 0)
+    ihsg = prices.get("^JKSE", {}).get("close", 0)
+    ihsg_chg = prices.get("^JKSE", {}).get("change_1d_pct", 0)
     us10y = prices.get("^TNX", {}).get("close", 5.0)
     dxy = prices.get("DX-Y.NYB", {}).get("close", 102.0)
     oil = prices.get("CL=F", {}).get("close", 100.0)
@@ -405,7 +407,7 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
     # 2. Bank Indonesia Policy Room
     if us10y > 4.6 or usdidr > 17500:
         bi_status = "HAWKISH / INTERVENSI AGRESIF"
-        bi_desc = "Ruang pelonggaran BI-Rate terkunci. BI diwajibkan melakukan intervensi 'Triple Intervention' (DNDF, spot, SBN) dan mengerek instrumen SRBI/SVBI untuk menahan capital flight."
+        bi_desc = "Ruang pelonggaran BI-Rate terkunci. BI mempertahankan suku bunga acuan dan intervensi 'Triple Intervention' (DNDF, spot, SBN) guna meredam imported inflation & volatilitas kurs."
     else:
         bi_status = "NETRAL / AKOMODATIF"
         bi_desc = "Ruang pemangkasan suku bunga terbuka jika inflasi domestik terjaga."
@@ -413,24 +415,34 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
     # 3. Beban Fiskal APBN & Energi
     if oil > 90.0:
         apbn_status = "BEBAN SUBSIDI MENINGKAT"
-        apbn_desc = f"Harga minyak WTI (${oil:.2f}/bbl) jauh melampaui asumsi ICP APBN, memperlebar defisit subsidi energi dan menekan neraca perdagangan migas."
+        apbn_desc = f"Harga minyak WTI (${oil:.2f}/bbl) melampaui asumsi ICP APBN, memperlebar defisit subsidi energi dan menekan neraca migas."
     else:
         apbn_status = "TERKENDALI"
         apbn_desc = f"Harga minyak ${oil:.2f}/bbl masih dalam batas toleransi fiskal."
         
     # 4. Transmisi ke IHSG & Arus Asing (EIDO)
-    if us10y > 4.8 and dxy > 102.0:
-        ihsg_status = "RISK-OFF ASING / UNDERPERFORM"
-        ihsg_desc = f"EIDO ({eido_chg:+.2f}%) mencerminkan de-risking investor asing dari saham perbankan big-cap (BBCA, BBRI, BMRI). Hanya emiten komoditas energi yang mampu bertahan."
+    if ihsg > 0:
+        if ihsg_chg < -1.5:
+            ihsg_status = "KOREKSI BERAT"
+        elif ihsg_chg < 0:
+            ihsg_status = "KONSOLIDASI MELEMAH"
+        else:
+            ihsg_status = "REBOUND SELEKTIF"
+        ihsg_desc = f"IHSG berada di level {ihsg:,.2f} ({ihsg_chg:+.2f}%), dengan EIDO {eido_chg:+.2f}% mencerminkan dinamika foreign flow di bursa domestik."
     else:
-        ihsg_status = "NETRAL / INFLOW SELEKTIF"
-        ihsg_desc = "Arus modal asing selektif masuk ke saham domestik."
+        if us10y > 4.8 and dxy > 102.0:
+            ihsg_status = "RISK-OFF ASING"
+            ihsg_desc = f"EIDO ({eido_chg:+.2f}%) mencerminkan de-risking investor asing dari saham perbankan big-cap."
+        else:
+            ihsg_status = "NETRAL / INFLOW SELEKTIF"
+            ihsg_desc = "Arus modal asing selektif masuk ke saham domestik."
         
+    ihsg_str_part = f"IHSG di {ihsg:,.2f} ({ihsg_chg:+.2f}%), " if ihsg > 0 else ""
     summary_paragraph = (
-        f"Kombinasi US10Y di level {us10y:.3f}%, DXY {dxy:.2f}, dan WTI Crude ${oil:.2f} memicu transmisi negatif ke Indonesia lewat "
-        f"dua saluran utama: depresiasi nilai tukar (USD/IDR Rp {usdidr:,.0f}) dan ancaman 'imported inflation' dari energi. "
-        f"Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga likuiditas valas, yang berdampak menekan valuasi perbankan "
-        f"dan saham blue-chip IHSG, meskipun emiten tambang & batubara mendapat kompensasi dari tingginya harga komoditas."
+        f"Kombinasi US10Y di level {us10y:.3f}%, DXY {dxy:.2f}, dan WTI Crude ${oil:.2f} memicu transmisi ke Indonesia lewat "
+        f"depresiasi nilai tukar (USD/IDR Rp {usdidr:,.0f}) dan risiko imported inflation energi. {ihsg_str_part}"
+        f"Bank Indonesia dipaksa menahan BI-Rate tetap tinggi dan menjaga stabilitas valas, yang berdampak menekan valuasi perbankan "
+        f"IHSG, meskipun emiten komoditas energi mendapat kompensasi dari tingginya harga komoditas global."
     )
     
     return {
@@ -438,6 +450,8 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
         "usdidr_chg": usdidr_chg,
         "eido_val": eido,
         "eido_chg": eido_chg,
+        "ihsg_val": ihsg,
+        "ihsg_chg": ihsg_chg,
         "kurs_status": kurs_status,
         "kurs_desc": kurs_desc,
         "bi_status": bi_status,

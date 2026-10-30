@@ -25,6 +25,7 @@ TICKERS_MACRO = {
     "GC=F": "Emas / XAUUSD ($/oz)",
     "USDIDR=X": "USD / IDR (Rupiah)",
     "EIDO": "iShares MSCI Indonesia ETF",
+    "^JKSE": "IHSG (Indeks Harga Saham Gabungan)",
     "HG=F": "Copper Futures ($/lb)",
     "SPY": "S&P 500 ETF",
     "QQQ": "Nasdaq 100 ETF",

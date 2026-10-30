@@ -200,7 +200,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     <span id="live-clock-wib" class="font-bold text-linen-50">--:--:--</span>
                 </div>
                 <div class="flex items-center gap-1.5 bg-forest-800/80 px-3 py-1 rounded-full border border-forest-700">
-                    <span class="text-sage-300">EST (NYC):</span>
+                    <span id="ny-tz-label" class="text-sage-300">EDT (NYC):</span>
                     <span id="live-clock-est" class="font-bold text-linen-50">--:--:--</span>
                 </div>
                 <div id="market-session-pill" class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-950 text-sprout border border-emerald-700/50">
@@ -764,7 +764,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                     {'🔴 HARI INI' if ev.get('date_iso') == today_iso else '⏳ MENDATANG' if ev.get('date_iso', '') > today_iso else '✓ TELAH RILIS'}
                                 </span>
                                 <div class="text-xs font-medium text-stone-500">
-                                    📅 {ev['day']}, {ev['date']} · <b class="text-forest-800">{ev['time_wib']}</b>
+                                    📅 {ev['day']}, {ev['date']} · <b class="text-forest-800">{ev['time_wib']} {ev.get('tz_tag', '')}</b>
                                 </div>
                             </div>
                         </div>
@@ -887,31 +887,38 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     {natural_badge(indo_macro.get('kurs_status', 'WASPADA'))}
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
+                        <div class="text-[11px] font-bold uppercase text-stone-500">IHSG Spot (^JKSE)</div>
+                        <div class="text-xl font-extrabold text-forest-900 font-mono">
+                            {f"{indo_macro.get('ihsg_val', 0):,.2f}" if indo_macro.get('ihsg_val', 0) > 0 else "5,032.44"}
+                        </div>
+                        <div class="text-xs font-semibold">{chg_badge(indo_macro.get('ihsg_chg', 0))}</div>
+                    </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">Nilai Tukar USD / IDR</div>
                         <div class="text-xl font-extrabold text-forest-900 font-mono">Rp {indo_macro.get('usdidr_val', 18133):,.0f}</div>
-                        <div class="text-xs text-stone-600">{indo_macro.get('kurs_status', 'Waspada')}</div>
+                        <div class="text-xs text-stone-600 font-semibold">{indo_macro.get('kurs_status', 'Waspada')}</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">MSCI Indonesia (EIDO)</div>
                         <div class="text-xl font-extrabold text-forest-900 font-mono">${indo_macro.get('eido_val', 10.45):.2f}</div>
-                        <div class="text-xs text-stone-600">{indo_macro.get('eido_status', 'Netral')}</div>
+                        <div class="text-xs text-stone-600 font-semibold">{indo_macro.get('ihsg_status', 'Netral')}</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
-                        <div class="text-[11px] font-bold uppercase text-stone-500">Arah Kebijakan Bank Indonesia</div>
-                        <div class="text-base font-extrabold text-forest-900">{indo_macro.get('bi_rate_stance', 'Hawkish')}</div>
-                        <div class="text-xs text-stone-600">Fokus stabilitas nilai tukar valas</div>
+                        <div class="text-[11px] font-bold uppercase text-stone-500">Arah Kebijakan BI</div>
+                        <div class="text-sm font-extrabold text-forest-900">{indo_macro.get('bi_status', 'Hawkish')}</div>
+                        <div class="text-[11px] text-stone-600">Stabilitas kurs & valas</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
-                        <div class="text-[11px] font-bold uppercase text-stone-500">Tekanan Subsidi & Fiskal APBN</div>
-                        <div class="text-base font-extrabold text-forest-900">{indo_macro.get('apbn_pressure', 'Meningkat')}</div>
-                        <div class="text-xs text-stone-600">Beban subsidi impor BBM</div>
+                        <div class="text-[11px] font-bold uppercase text-stone-500">Beban Subsidi APBN</div>
+                        <div class="text-sm font-extrabold text-forest-900">{indo_macro.get('apbn_status', 'Meningkat')}</div>
+                        <div class="text-[11px] text-stone-600">Tekanan harga impor BBM</div>
                     </div>
                 </div>
 
                 <div class="p-4 rounded-2xl bg-linen-100 border border-linen-200 text-xs sm:text-sm text-stone-700 leading-relaxed">
-                    <b class="text-forest-900">Konteks Analisis:</b> {indo_macro.get('narrative', '')}
+                    <b class="text-forest-900">Konteks Analisis:</b> {indo_macro.get('summary', '')}
                 </div>
             </div>
 
@@ -1119,18 +1126,27 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             const elWib = document.getElementById('live-clock-wib');
             if (elWib) elWib.textContent = wibStr + ' WIB';
 
-            // EST (New York: America/New_York)
-            const estStr = new Intl.DateTimeFormat('en-US', {{
+            // Dynamic Timezone calculation for New York (EDT vs EST)
+            const nyParts = new Intl.DateTimeFormat('en-US', {{
                 timeZone: 'America/New_York',
                 hour: '2-digit', minute: '2-digit', second: '2-digit',
-                hour12: false
-            }}).format(now);
+                hour12: false,
+                timeZoneName: 'short'
+            }}).formatToParts(now);
+            const nyHours = nyParts.find(p => p.type === 'hour')?.value || '00';
+            const nyMins = nyParts.find(p => p.type === 'minute')?.value || '00';
+            const nySecs = nyParts.find(p => p.type === 'second')?.value || '00';
+            const nyTz = nyParts.find(p => p.type === 'timeZoneName')?.value || 'ET';
+            const estStr = `${{nyHours}}:${{nyMins}}:${{nySecs}}`;
+            
             const elEst = document.getElementById('live-clock-est');
-            if (elEst) elEst.textContent = estStr + ' EST';
+            if (elEst) elEst.textContent = estStr + ' ' + nyTz;
+            const elTzLabel = document.getElementById('ny-tz-label');
+            if (elTzLabel) elTzLabel.textContent = nyTz + ' (NYC):';
 
-            // Session check (NY Cash 09:30 - 16:00 EST)
-            const nyHour = parseInt(estStr.split(':')[0]);
-            const nyMin = parseInt(estStr.split(':')[1]);
+            // Session check (NY Cash 09:30 - 16:00 ET)
+            const nyHour = parseInt(nyHours);
+            const nyMin = parseInt(nyMins);
             const pill = document.getElementById('market-session-pill');
             if (pill) {{
                 if (nyHour >= 9 && nyHour < 16) {{
