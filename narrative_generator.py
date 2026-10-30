@@ -225,11 +225,11 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     # Top Section: Validated 5-Stage Sentiment Chain with Live News Drivers
     chain_section = build_validated_sentiment_chain(prices, sectors, snapshot, market_drivers)
 
-    # Crypto News Wire block (Accurate Label: Kawat Berita Pasar Kripto & Web3)
+    # Crypto News block (Accurate Label: Sentimen Pasar Kripto & Web3)
     crypto_news_lines = []
     if crypto_news:
         for it in crypto_news[:3]:
-            crypto_news_lines.append(f"• {it.get('title', '')} ({it.get('source', 'Crypto Wire')})")
+            crypto_news_lines.append(f"• {it.get('title', '')} ({it.get('source', 'Sentimen')})")
     else:
         crypto_news_lines.append("• Arus modal institusional dan penyesuaian posisi kontrak berjangka di pasar derivatif.")
     crypto_news_str = "\n".join(crypto_news_lines)
@@ -291,21 +291,21 @@ LIKUIDITAS THE FED (H.4.1 BALANCE SHEET)
 • Catatan Pembaruan: Rilis resmi mingguan setiap Kamis sore waktu US (Jumat ~03:30 WIB)
 
 ━━━━━━━━━━━━━━━━━━━━━
-DYNAMICS & CRYPTO NEWS WIRE
+DYNAMICS & SENTIMEN PASAR KRIPTO
 • Bitcoin (BTC): US$ {btc:,.0f} (1D: {btc_chg:+.2f}% | 20D: {btc_20d:+.2f}%)
 • Ethereum (ETH): US$ {eth:,.0f} (1D: {eth_chg:+.2f}%)
 • Solana (SOL): US$ {sol:.2f} (1D: {sol_chg:+.2f}%)
 • Status Altseason: {altseason_status}
-• Kawat Berita Pasar Kripto & Web3:
+• Sentimen Pasar Kripto & Web3:
 {crypto_news_str}
 {cal_block}
 {indo_block}
 
 ━━━━━━━━━━━━━━━━━━━━━
-SUMBER DATA & KAWAT BERITA TERVERIFIKASI
+SUMBER DATA & SENTIMEN TERVERIFIKASI
 • Pasar & Ekuitas: Yahoo Finance, S&P Dow Jones Indices, CBOE, Bank Indonesia & Binance API
 • Neraca & Likuiditas: Federal Reserve Bank of St. Louis (FRED® API)
-• Media & Kawat Berita: {sources_str}
+• Media & Sentimen Berita: {sources_str}
 
 ━━━━━━━━━━━━━━━━━━━━━
 ⚠️ Disclaimer: Ringkasan makroekonomi ini disusun untuk tujuan riset internal dan pemantauan pasar modal, bukan merupakan rekomendasi atau ajakan transaksi investasi.
@@ -329,6 +329,11 @@ def generate_report_payload(snapshot, ews_signals, regime, corrs, sectors, crypt
         "eth_btc_ratio": eth_btc_ratio,
         "net_liquidity": snapshot.get("net_liquidity", {}),
         "macro_prices": snapshot.get("prices", {}),
+        "news_by_category": snapshot.get("news_by_category", {}),
+        "gold_news": snapshot.get("gold_news", []),
+        "oil_news": snapshot.get("oil_news", []),
+        "dollar_news": snapshot.get("dollar_news", []),
+        "tech_news": snapshot.get("tech_news", []),
         "global_news": snapshot.get("global_news", []),
         "geopolitics_news": snapshot.get("geopolitics_news", []),
         "crypto_news": snapshot.get("crypto_news", []),

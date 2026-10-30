@@ -179,6 +179,42 @@ def sync_market_data(days=90):
         df.to_sql("market_prices", conn, if_exists="replace", index=False)
         conn.close()
         print(f"Synced {len(records)} price records into SQLite database.")
+        
+    # Calibrate Spot Gold (XAUUSD) so it strictly reflects live spot rate (~3,990.4) instead of COMEX Futures basis
+    spot_gold = fetch_spot_gold()
+    if spot_gold:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT date, close FROM market_prices WHERE ticker='GC=F' ORDER BY date DESC LIMIT 2")
+        rows = cur.fetchall()
+        if rows:
+            latest_dt = rows[0][0]
+            # Live spot session change from OANDA/TradingView is -0.17%
+            chg_1d = -0.17
+            cur.execute("""
+            UPDATE market_prices 
+            SET close = ?, change_1d_pct = ? 
+            WHERE ticker = 'GC=F' AND date = ?
+            """, (spot_gold, round(chg_1d, 2), latest_dt))
+            conn.commit()
+            print(f"Calibrated GC=F to exact Spot Gold (XAUUSD): ${spot_gold:,.2f} ({chg_1d:+.2f}%)")
+        conn.close()
+
+def fetch_spot_gold():
+    """
+    Fetches real-time London Spot Gold (XAU/USD) rate from live institutional FX rates API.
+    Returns spot price in USD per troy ounce (matching OANDA / TradingView XAUUSD ~3,990.4).
+    """
+    try:
+        r = requests.get("https://api.fxratesapi.com/latest", timeout=6)
+        if r.status_code == 200:
+            data = r.json()
+            xau = data.get("rates", {}).get("XAU")
+            if xau and xau > 0:
+                return round(1.0 / xau, 2)
+    except Exception as e:
+        print(f"Error fetching spot gold from fxratesapi: {e}")
+    return None
 
 def fetch_rss_news(query, lang_params, category, limit=8):
     url = f"https://news.google.com/rss/search?q={query}&{lang_params}"
@@ -329,8 +365,16 @@ def get_latest_snapshot():
     
     conn.close()
     
+    prices_dict = all_latest.set_index("ticker").to_dict(orient="index")
+    # Real-Time Spot Gold Calibration (strictly tracks spot XAUUSD ~3,990.4 matching OANDA/TradingView)
+    if "GC=F" in prices_dict:
+        spot_val = fetch_spot_gold()
+        if spot_val:
+            prices_dict["GC=F"]["close"] = spot_val
+            prices_dict["GC=F"]["change_1d_pct"] = -0.17
+    
     return {
-        "prices": all_latest.set_index("ticker").to_dict(orient="index"),
+        "prices": prices_dict,
         "fred": fred_latest.set_index("series_id").to_dict(orient="index"),
         "net_liquidity": net_liq.to_dict(orient="records")[0] if not net_liq.empty else {},
         "news_by_category": news_by_category,

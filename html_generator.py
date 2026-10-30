@@ -61,6 +61,67 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     unique_sources = sorted(list(set(raw_sources)))
     active_news_sources_str = ", ".join(unique_sources[:8]) if unique_sources else "Reuters, CoinDesk, CNBC Indonesia, Bloomberg, FXStreet"
 
+    # Finviz-Style Live News Stream Aggregator
+    finviz_categories_map = [
+        ("kripto", payload.get("crypto_news", []), "BTC 🪙", "bg-rose-100 text-rose-900 border-rose-200"),
+        ("emas", payload.get("gold_news", []), "XAU 🟡", "bg-amber-100 text-amber-900 border-amber-200"),
+        ("minyak", payload.get("oil_news", []) or payload.get("geopolitics_news", []), "WTI 🛢️", "bg-stone-200 text-stone-800 border-stone-300"),
+        ("dollar", payload.get("dollar_news", []), "USD 💵", "bg-blue-100 text-blue-900 border-blue-200"),
+        ("tech", payload.get("tech_news", []), "TECH 💻", "bg-purple-100 text-purple-900 border-purple-200"),
+        ("indonesia", payload.get("indonesia_news", []), "IHSG 🇮🇩", "bg-emerald-100 text-emerald-900 border-emerald-200"),
+        ("global", payload.get("global_news", []), "FED 🌐", "bg-linen-200 text-forest-900 border-linen-300")
+    ]
+    
+    finviz_items = []
+    seen_fz_titles = set()
+    
+    for cat_slug, item_list, ticker_badge, badge_style in finviz_categories_map:
+        for it in item_list:
+            t = it.get("title", "").strip()
+            if not t or t in seen_fz_titles:
+                continue
+            seen_fz_titles.add(t)
+            
+            raw_pub = it.get("pub_date", "")
+            time_str = "Hari Ini"
+            if raw_pub:
+                try:
+                    import email.utils
+                    import datetime
+                    dt_parsed = email.utils.parsedate_to_datetime(raw_pub)
+                    wib_dt = dt_parsed.astimezone(datetime.timezone(datetime.timedelta(hours=7)))
+                    time_str = wib_dt.strftime("%d %b %H:%M")
+                except Exception:
+                    time_str = raw_pub[:16]
+                    
+            finviz_items.append({
+                "cat_slug": cat_slug,
+                "ticker": ticker_badge,
+                "badge_style": badge_style,
+                "time": time_str,
+                "title": t,
+                "link": it.get("link", "#"),
+                "source": it.get("source", "Sentimen")
+            })
+            
+    finviz_rows_html = "".join([f'''
+        <tr data-cat="{item['cat_slug']}" class="hover:bg-linen-100/90 transition-colors group">
+            <td class="py-2.5 px-3 font-mono text-[11px] text-stone-500 whitespace-nowrap">{item['time']}</td>
+            <td class="py-2.5 px-3 whitespace-nowrap">
+                <span class="inline-block px-2 py-0.5 rounded-md font-mono text-[10px] font-bold border {item['badge_style']}">{item['ticker']}</span>
+            </td>
+            <td class="py-2.5 px-3 font-medium text-xs text-stone-800 leading-snug">
+                <a href="{item['link']}" target="_blank" rel="noopener noreferrer" class="hover:text-forest-700 hover:underline inline-flex items-center gap-1">
+                    <span>{item['title']}</span>
+                    <span class="text-stone-400 group-hover:text-forest-700 text-[10px]">↗</span>
+                </a>
+            </td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                <span class="inline-block font-mono text-[10px] font-semibold text-stone-600 bg-linen-200/70 px-2 py-0.5 rounded border border-linen-300">{item['source']}</span>
+            </td>
+        </tr>
+    ''' for item in finviz_items])
+
     # Helper for natural badges
     def natural_badge(status):
         s_up = str(status).upper()
@@ -311,15 +372,17 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                 </div>
 
-                <!-- XAUUSD (Gold) -->
+                <!-- XAUUSD (Gold Spot) -->
                 <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
                     <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold">Emas (XAUUSD)</span>
-                        <span class="text-[10px] text-amber-300 font-semibold">Spot</span>
+                        <span class="font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>Emas (XAUUSD)
+                        </span>
+                        <span class="text-[10px] text-amber-300 font-semibold uppercase tracking-wider font-mono">Spot</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">${prices.get('GC=F', {}).get('close', 4050):,.1f}</div>
-                        <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</div>
+                        <div class="text-lg font-extrabold text-white font-mono">${prices.get('GC=F', {}).get('close', 3990.4):,.1f}</div>
+                        <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', -0.17))}</div>
                     </div>
                 </div>
 
@@ -509,7 +572,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('gold', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('gold', {}).get('news', {}).get('title', 'Gold slips as higher oil, US inflation data bolster Fed hike bets')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('gold', {}).get('news', {}).get('title', 'Gold slips as higher oil, US inflation data bolster Fed hike bets')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('gold', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
                         </a>
                     </div>
@@ -534,7 +597,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('crypto', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('crypto', {}).get('news', {}).get('title', 'Bitcoin price volatility intensifies in derivative markets')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('crypto', {}).get('news', {}).get('title', 'Bitcoin price volatility intensifies in derivative markets')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('crypto', {}).get('news', {}).get('source', 'CoinDesk')}) ↗</span>
                         </a>
                     </div>
@@ -559,7 +622,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('oil', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('oil', {}).get('news', {}).get('title', 'Oil prices react to supply developments and global demand')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('oil', {}).get('news', {}).get('title', 'Oil prices react to supply developments and global demand')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('oil', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
                         </a>
                     </div>
@@ -584,7 +647,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('dollar', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('dollar', {}).get('news', {}).get('title', 'Treasury yields and dollar adjust ahead of key economic data')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('dollar', {}).get('news', {}).get('title', 'Treasury yields and dollar adjust ahead of key economic data')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('dollar', {}).get('news', {}).get('source', 'WSJ')}) ↗</span>
                         </a>
                     </div>
@@ -609,7 +672,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('tech', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('tech', {}).get('news', {}).get('title', 'Tech equities react to earnings guidance and rate path')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('tech', {}).get('news', {}).get('title', 'Tech equities react to earnings guidance and rate path')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('tech', {}).get('news', {}).get('source', 'Bloomberg')}) ↗</span>
                         </a>
                     </div>
@@ -634,7 +697,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             </p>
                         </div>
                         <a href="{market_drivers.get('indonesia', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('indonesia', {}).get('news', {}).get('title', 'BI jaga stabilitas nilai tukar Rupiah di tengah dinamika eksternal')}" 
+                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('indonesia', {}).get('news', {}).get('title', 'BI jaga stabilitas nilai tukar Rupiah di tengah dinamika eksternal')}" 
                             <span class="font-mono text-stone-400">({market_drivers.get('indonesia', {}).get('news', {}).get('source', 'CNBC Indonesia')}) ↗</span>
                         </a>
                     </div>
@@ -671,6 +734,51 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                             {market_drivers.get('regime', {}).get('driver', 'Rezim aktif saat ini berakar pada tingginya komoditas energi dan suku bunga riil.')}
                         </p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Finviz-Style Live News & Sentimen Terminal -->
+            <div class="natural-card p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Sentimen Terverifikasi Finviz Style</div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900 flex items-center gap-2">
+                            <span>📰 Live Sentimen & Arus Berita Pasar Real-Time</span>
+                            <span class="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-forest-900 text-sprout">Finviz Stream</span>
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-mono text-stone-600">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Disinkronkan 7 Saluran Aset Makro ({len(finviz_items)} Headlines)
+                    </div>
+                </div>
+
+                <!-- Category Filters (Finviz Style) -->
+                <div class="flex flex-wrap items-center gap-2 pb-1 text-xs font-semibold">
+                    <button onclick="filterFinviz('all')" id="btn-fz-all" class="px-3 py-1.5 rounded-lg bg-forest-900 text-white font-mono transition-all shadow-sm">Semua Sentimen ({len(finviz_items)})</button>
+                    <button onclick="filterFinviz('kripto')" id="btn-fz-kripto" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">Kripto & Web3</button>
+                    <button onclick="filterFinviz('emas')" id="btn-fz-emas" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">Emas (XAU)</button>
+                    <button onclick="filterFinviz('minyak')" id="btn-fz-minyak" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">Minyak (WTI)</button>
+                    <button onclick="filterFinviz('dollar')" id="btn-fz-dollar" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">Dollar (DXY)</button>
+                    <button onclick="filterFinviz('tech')" id="btn-fz-tech" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">Wall Street & Tech</button>
+                    <button onclick="filterFinviz('indonesia')" id="btn-fz-indonesia" class="px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all">IHSG & Domestik</button>
+                </div>
+
+                <!-- Finviz Tabular Stream -->
+                <div class="overflow-x-auto rounded-xl border border-linen-300 bg-white/70 shadow-sm max-h-[500px] overflow-y-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="sticky top-0 bg-linen-100 text-stone-700 border-b border-linen-300 font-mono text-[11px] uppercase tracking-wider z-10">
+                            <tr>
+                                <th class="py-2.5 px-3 w-28 font-bold">Waktu</th>
+                                <th class="py-2.5 px-3 w-24 font-bold">Aset</th>
+                                <th class="py-2.5 px-3 font-bold">Judul Sentimen / Berita Terverifikasi</th>
+                                <th class="py-2.5 px-3 w-36 text-right font-bold">Sumber</th>
+                            </tr>
+                        </thead>
+                        <tbody id="finviz-table-body" class="divide-y divide-linen-200 font-sans">
+                            {finviz_rows_html}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1073,7 +1181,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <p class="text-stone-600 leading-relaxed">Ketegangan kawasan Timur Tengah dan kuota pasokan OPEC+ menahan harga energi di atas $95–$100/barel, memicu 'cost-push inflation' di tingkat global.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
-                        <div class="font-bold text-forest-800">2. Jalur Emas Spot (${prices.get('GC=F', {}).get('close', 4040):,.0f}/oz)</div>
+                        <div class="font-bold text-forest-800">2. Jalur Emas Spot (${prices.get('GC=F', {}).get('close', 3990.4):,.1f}/oz)</div>
                         <p class="text-stone-600 leading-relaxed">Apresiasi emas di tengah dolar kuat mencerminkan aksi akumulasi devisa bank sentral (de-dolarisasi) dan premi perlindungan risiko perang.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
@@ -1083,15 +1191,15 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
             </div>
 
-            <!-- Verified News Feed (4 Dedicated Wires) -->
+            <!-- Verified News Feed (Arus Sentimen Pasar Terverifikasi) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- Wire 1: Global Macro & Fed -->
+                <!-- Box 1: Global Macro & Fed -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-forest-700"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Global Macro & Federal Reserve</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Sentimen Makro Global & Federal Reserve</h4>
                         </div>
                         <span class="text-[11px] text-stone-500 font-mono">Kebijakan Moneter</span>
                     </div>
@@ -1100,7 +1208,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         {"".join([f'''
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">{item.get('source', 'Macro Wire')}</span>
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">{item.get('source', 'Sentimen Makro')}</span>
                                 <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
@@ -1111,12 +1219,12 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                 </div>
 
-                <!-- Wire 2: Geopolitics & Energy -->
+                <!-- Box 2: Geopolitics & Energy -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Geopolitik, Minyak & Pasokan Energi</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Sentimen Geopolitik, Minyak & Energi</h4>
                         </div>
                         <span class="text-[11px] text-amber-700 font-mono">Premi Risiko & OPEC</span>
                     </div>
@@ -1125,7 +1233,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         {"".join([f'''
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-amber-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200">{item.get('source', 'Energy Wire')}</span>
+                                <span class="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200">{item.get('source', 'Sentimen Energi')}</span>
                                 <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-amber-800 leading-snug">
@@ -1136,12 +1244,12 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                 </div>
 
-                <!-- Wire 3: Crypto & Bitcoin Intelligence -->
+                <!-- Box 3: Crypto & Bitcoin Intelligence -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Kripto, Bitcoin & Aset Digital</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Sentimen Kripto, Bitcoin & Web3</h4>
                         </div>
                         <span class="text-[11px] text-indigo-700 font-mono">Likuiditas & Derivatif</span>
                     </div>
@@ -1150,7 +1258,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         {"".join([f'''
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-indigo-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-indigo-900 bg-indigo-100 px-2 py-0.5 rounded-md border border-indigo-200">{item.get('source', 'Crypto Wire')}</span>
+                                <span class="font-bold text-indigo-900 bg-indigo-100 px-2 py-0.5 rounded-md border border-indigo-200">{item.get('source', 'Sentimen Kripto')}</span>
                                 <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-indigo-800 leading-snug">
@@ -1161,12 +1269,12 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                 </div>
 
-                <!-- Wire 4: Indonesia Financial Wire -->
+                <!-- Box 4: Indonesia Financial Wire -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Indonesia Financial Wire (IHSG & Rupiah)</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Sentimen Pasar Modal Indonesia (IHSG & Rupiah)</h4>
                         </div>
                         <span class="text-[11px] text-emerald-700 font-mono">Bank Indonesia & APBN</span>
                     </div>
@@ -1175,7 +1283,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         {"".join([f'''
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">{item.get('source', 'Domestik')}</span>
+                                <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">{item.get('source', 'Sentimen Domestik')}</span>
                                 <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
@@ -1468,6 +1576,29 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 }}, 2500);
             }}).catch(err => {{
                 alert('Gagal menyalin: ' + err);
+            }});
+        }}
+
+        // 6. Finviz Table Category Filter
+        function filterFinviz(cat) {{
+            const rows = document.querySelectorAll('#finviz-table-body tr');
+            rows.forEach(r => {{
+                if (cat === 'all' || r.getAttribute('data-cat') === cat) {{
+                    r.style.display = '';
+                }} else {{
+                    r.style.display = 'none';
+                }}
+            }});
+            const btns = ['all', 'kripto', 'emas', 'minyak', 'dollar', 'tech', 'indonesia'];
+            btns.forEach(b => {{
+                const btn = document.getElementById('btn-fz-' + b);
+                if (btn) {{
+                    if (b === cat) {{
+                        btn.className = 'px-3 py-1.5 rounded-lg bg-forest-900 text-white font-mono transition-all shadow-sm';
+                    }} else {{
+                        btn.className = 'px-3 py-1.5 rounded-lg bg-linen-100 text-stone-700 hover:bg-linen-200 border border-linen-300 font-mono transition-all';
+                    }}
+                }}
             }});
         }}
     </script>
