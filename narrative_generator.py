@@ -281,6 +281,9 @@ SUMBER DATA & KAWAT BERITA TERVERIFIKASI
 • Neraca & Likuiditas: Federal Reserve Bank of St. Louis (FRED® API)
 • Media & Kawat Berita: {sources_str}
 
+━━━━━━━━━━━━━━━━━━━━━
+⚠️ Disclaimer: Ringkasan makroekonomi ini disusun untuk tujuan riset internal dan pemantauan pasar modal, bukan merupakan rekomendasi atau ajakan transaksi investasi.
+
 Disusun oleh studikarangsambung-market pulse engine"""
     return msg.strip()
 

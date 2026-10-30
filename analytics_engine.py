@@ -330,16 +330,42 @@ def compute_sector_scorecard(snapshot, regime_data):
         # Momentum score
         momentum_score = (chg_1d * 0.2) + (chg_5d * 0.3) + (chg_20d * 0.5)
         
-        # Allocation recommendation
-        if ticker in [s.split()[0] for s in regime_data["favored_sectors"]]:
+        # Macro Regime Stance
+        favored_list = [s.split()[0] for s in regime_data.get("favored_sectors", [])]
+        lagging_list = [s.split()[0] for s in regime_data.get("lagging_sectors", [])]
+        
+        is_favored = ticker in favored_list
+        is_lagging = ticker in lagging_list
+        
+        # Coherent Hybrid Allocation (Quantitative Momentum + Macro Regime Overlay)
+        if is_favored and momentum_score >= 0:
             alloc = "OVERWEIGHT (OW)"
             stance = "bullish"
-        elif ticker in [s.split()[0] for s in regime_data["lagging_sectors"]]:
+            rationale = "Favored Siklus Makro + Momentum Positif"
+        elif is_favored and momentum_score < 0:
+            alloc = "OVERWEIGHT (AKUMULASI)"
+            stance = "bullish"
+            rationale = "Favored Siklus Makro (Peluang Buy on Dip)"
+        elif is_lagging and momentum_score <= 0:
             alloc = "UNDERWEIGHT (UW)"
             stance = "bearish"
+            rationale = "Dihindari Siklus Makro + Momentum Lemah"
+        elif is_lagging and momentum_score > 0:
+            alloc = "TACTICAL UNDERWEIGHT"
+            stance = "neutral"
+            rationale = "Rebound Jangka Pendek di Tengah Hambatan Makro"
+        elif momentum_score > 2.0:
+            alloc = "OVERWEIGHT TAKTIS"
+            stance = "bullish"
+            rationale = "Momentum Defensif Kuat (Rotasi Safe-Haven)"
+        elif momentum_score < -2.0:
+            alloc = "UNDERWEIGHT TAKTIS"
+            stance = "bearish"
+            rationale = "Tekanan Momentum Berat"
         else:
             alloc = "NEUTRAL (N)"
             stance = "neutral"
+            rationale = "Konsolidasi Siklus & Momentum Berimbang"
             
         scores.append({
             "ticker": ticker,
@@ -351,7 +377,8 @@ def compute_sector_scorecard(snapshot, regime_data):
             "chg_20d": chg_20d,
             "momentum_score": round(momentum_score, 2),
             "recommendation": alloc,
-            "stance": stance
+            "stance": stance,
+            "rationale": rationale
         })
         
     scores.sort(key=lambda x: x["momentum_score"], reverse=True)

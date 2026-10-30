@@ -1,0 +1,6 @@
+Metode,Out-of-Sample Accuracy,Macro Precision,Macro Recall,Macro F1-Score,Strategy Ann. Return,Strategy Sharpe,Max Drawdown (MDD)
+Supervised ML (Random Forest),98.9%,98.9%,98.9%,98.9%,+6.7%,0.40,-30.7%
+Linear Baseline (Logistic Regression),87.6%,87.5%,87.4%,87.4%,+6.6%,0.38,-30.7%
+Unsupervised ML (GMM Clustering),35.6%,23.2%,31.0%,21.2%,+5.2%,0.28,-32.2%
+Rule-Based Heuristik (Thresholds),58.5%,63.0%,56.0%,54.4%,+7.1%,0.43,-27.1%
+Benchmark: Buy & Hold S&P 500,N/A,N/A,N/A,N/A,+10.7%,0.51,-52.6%
