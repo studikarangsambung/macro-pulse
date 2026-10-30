@@ -89,17 +89,40 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
         crypto_news_lines.append(f"  • Penyesuaian posisi derivatif & arus ETF Spot di tengah tingginya yield obligasi AS.")
     crypto_news_str = "\n".join(crypto_news_lines)
 
-    # Weekly Calendar block text
+    # Weekly Calendar block text: prioritize upcoming & today's events!
     cal_block = ""
     if weekly_calendar:
-        top_events = weekly_calendar[:3]
+        today_iso = wib_now.strftime("%Y-%m-%d")
+        upcoming_events = [e for e in weekly_calendar if e.get("date_iso", "") >= today_iso]
+        display_events = upcoming_events[:3] if upcoming_events else weekly_calendar[-3:]
+        
         cal_items = []
-        for e in top_events:
-            cal_items.append(f"• *{e['date']} {e['time_wib']}* [{e['country']}]: {e['event']} ({e['importance']})\n  ↳ *Dampak Hot:* {e['impact_hot']}\n  ↳ *Aset Pilihan:* {e['favored_asset']}")
+        for e in display_events:
+            date_iso = e.get("date_iso", "")
+            if date_iso == today_iso:
+                status_label = "🔴 [HARI INI]"
+            elif date_iso > today_iso:
+                status_label = "⏳ [MENDATANG]"
+            else:
+                status_label = "✓ [TELAH RILIS]"
+                
+            cal_items.append(
+                f"• *{e['day']}, {e['date']} {e['time_wib']}* {status_label} [{e['country']}]:\n"
+                f"  *{e['event']}* ({e['importance']})\n"
+                f"  ↳ *Dampak Hot:* {e['impact_hot']}\n"
+                f"  ↳ *Aset Pilihan:* {e['favored_asset']}"
+            )
+            
+        past_events = [e for e in weekly_calendar if e.get("date_iso", "") < today_iso]
+        recap_line = ""
+        if past_events:
+            last_past = past_events[-1]
+            recap_line = f"\n📌 *Kilas Rilis Kemarin:* {last_past['event']} ({last_past['date']}) -> Mengonfirmasi bertahannya suku bunga tinggi."
+
         cal_block = f"""
 ━━━━━━━━━━━━━━━━━━━━━
-📅 *KATALIS KALENDER EKONOMI PEKAN INI & DAMPAK:*
-{chr(10).join(cal_items)}"""
+📅 *KATALIS KALENDER EKONOMI (FOKUS HARI INI & MENDATANG):*
+{chr(10).join(cal_items)}{recap_line}"""
 
     # Indonesia block text
     indo_block = ""

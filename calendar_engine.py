@@ -16,6 +16,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Rabu",
             "date": "28 Okt 2026",
+            "date_iso": "2026-10-28",
             "time_wib": "19:30 WIB",
             "country": "US 🇺🇸",
             "event": "US GDP Q3 Final / Annual Revision",
@@ -29,6 +30,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Kamis",
             "date": "29 Okt 2026",
+            "date_iso": "2026-10-29",
             "time_wib": "19:30 WIB",
             "country": "US 🇺🇸",
             "event": "US Core PCE Price Index MoM / YoY",
@@ -42,6 +44,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Kamis",
             "date": "29 Okt 2026",
+            "date_iso": "2026-10-29",
             "time_wib": "19:30 WIB",
             "country": "US 🇺🇸",
             "event": "US Initial Jobless Claims",
@@ -55,6 +58,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Jumat",
             "date": "30 Okt 2026",
+            "date_iso": "2026-10-30",
             "time_wib": "19:30 WIB",
             "country": "US 🇺🇸",
             "event": "US Non-Farm Payrolls (NFP) & Unemployment Rate",
@@ -68,6 +72,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Jumat",
             "date": "30 Okt 2026",
+            "date_iso": "2026-10-30",
             "time_wib": "21:00 WIB",
             "country": "US 🇺🇸",
             "event": "ISM Manufacturing PMI & Prices Paid",
@@ -81,6 +86,7 @@ def get_weekly_economic_calendar():
         {
             "day": "Senin",
             "date": "02 Nov 2026",
+            "date_iso": "2026-11-02",
             "time_wib": "11:00 WIB",
             "country": "ID 🇮🇩",
             "event": "BPS Inflasi CPI Indonesia (Oktober)",

@@ -30,6 +30,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     weekly_cal = payload.get("weekly_calendar", [])
     flow_proj = payload.get("flow_proj", {})
     market_drivers = payload.get("market_drivers") or {}
+    today_iso = payload.get("iso_timestamp", "")[:10]
 
     # Compute dynamic Net Liquidity status & impact
     net_liq_chg = net_liq.get('change_4w_bil', 0)
@@ -749,8 +750,13 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <h4 class="font-bold text-forest-900 text-sm sm:text-base">{ev['event']}</h4>
                                 <span class="text-xs font-bold {'text-rose-600' if 'KRUSIAL' in ev['importance'] else 'text-amber-700'}">[{ev['importance']}]</span>
                             </div>
-                            <div class="text-xs font-medium text-stone-500">
-                                📅 {ev['day']}, {ev['date']} · <b class="text-forest-800">{ev['time_wib']}</b>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {'bg-rose-100 text-rose-800 border border-rose-300 animate-pulse' if ev.get('date_iso') == today_iso else 'bg-emerald-100 text-emerald-800 border border-emerald-300' if ev.get('date_iso', '') > today_iso else 'bg-linen-200 text-stone-500 border border-linen-300'}">
+                                    {'🔴 HARI INI' if ev.get('date_iso') == today_iso else '⏳ MENDATANG' if ev.get('date_iso', '') > today_iso else '✓ TELAH RILIS'}
+                                </span>
+                                <div class="text-xs font-medium text-stone-500">
+                                    📅 {ev['day']}, {ev['date']} · <b class="text-forest-800">{ev['time_wib']}</b>
+                                </div>
                             </div>
                         </div>
 
