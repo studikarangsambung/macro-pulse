@@ -7,7 +7,7 @@ import sys
 import argparse
 sys.stdout.reconfigure(encoding='utf-8')
 from data_fetcher import init_db, sync_fred_data, compute_net_liquidity, sync_market_data, sync_news_data, get_latest_snapshot
-from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment
+from analytics_engine import evaluate_ews, classify_macro_regime, compute_correlation_matrix, compute_sector_scorecard, compute_crypto_scorecard, load_price_history, analyze_indonesia_macro_sentiment, analyze_market_drivers
 from calendar_engine import get_weekly_economic_calendar, compute_macro_flow_projections
 from narrative_generator import generate_report_payload, generate_whatsapp_broadcast
 from html_generator import render_html_report
@@ -55,7 +55,8 @@ def run_pipeline(sync=True, print_wa=True):
     print(f"      Liquidity Flow Regime: {flow_proj.get('primary_flow_regime', 'ROTASI SIKLIKAL')}")
     
     print("\n[4/5] Synthesizing Causality Chain & WhatsApp Broadcast...")
-    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, weekly_cal, flow_proj)
+    market_drivers = analyze_market_drivers(snapshot, regime, ews)
+    payload = generate_report_payload(snapshot, ews, regime, corrs, sectors, crypto_data, eth_btc, indo_macro, weekly_cal, flow_proj, market_drivers)
     
     print("\n[5/5] Generating Natural Horizon Terminal HTML Report...")
     report_file = render_html_report(payload, output_path="report_us_macro.html")

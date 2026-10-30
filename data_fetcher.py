@@ -227,17 +227,31 @@ def sync_news_data():
         query="macro+economy+OR+federal+reserve+interest+rates+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="global",
-        limit=8
+        limit=6
+    )
+    
+    geo_items = fetch_rss_news(
+        query="crude+oil+OR+geopolitics+OR+middle+east+OR+energy+inflation+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="geopolitics",
+        limit=6
+    )
+    
+    crypto_items = fetch_rss_news(
+        query="bitcoin+OR+crypto+market+fall+OR+drop+OR+rally+OR+etf+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="crypto",
+        limit=6
     )
     
     indo_items = fetch_rss_news(
         query="rupiah+OR+ihsg+OR+\"bank+indonesia\"+when:2d",
         lang_params="hl=id&gl=ID&ceid=ID:id",
         category="indonesia",
-        limit=8
+        limit=6
     )
     
-    all_items = global_items + indo_items
+    all_items = global_items + geo_items + crypto_items + indo_items
     for item in all_items:
         cursor.execute("""
         INSERT OR REPLACE INTO macro_news (category, title, source, link, pub_date)
@@ -246,7 +260,7 @@ def sync_news_data():
         
     conn.commit()
     conn.close()
-    print(f"Synced {len(all_items)} verified news headlines with sources.")
+    print(f"Synced {len(all_items)} verified news headlines across Global, Geopolitics, Crypto, and Indonesia.")
 
 def get_latest_snapshot():
     conn = sqlite3.connect(DB_PATH)
@@ -276,6 +290,8 @@ def get_latest_snapshot():
     net_liq = pd.read_sql_query("SELECT * FROM net_liquidity ORDER BY date DESC LIMIT 1", conn)
     
     global_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='global' ORDER BY id DESC LIMIT 6", conn)
+    geo_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='geopolitics' ORDER BY id DESC LIMIT 6", conn)
+    crypto_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='crypto' ORDER BY id DESC LIMIT 6", conn)
     indo_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='indonesia' ORDER BY id DESC LIMIT 6", conn)
     
     conn.close()
@@ -285,6 +301,8 @@ def get_latest_snapshot():
         "fred": fred_latest.set_index("series_id").to_dict(orient="index"),
         "net_liquidity": net_liq.to_dict(orient="records")[0] if not net_liq.empty else {},
         "global_news": global_news.to_dict(orient="records"),
+        "geopolitics_news": geo_news.to_dict(orient="records"),
+        "crypto_news": crypto_news.to_dict(orient="records"),
         "indonesia_news": indo_news.to_dict(orient="records")
     }
 

@@ -23,10 +23,13 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     whatsapp_text = payload["whatsapp_broadcast"]
     display_date = payload["display_date"]
     global_news = payload.get("global_news", [])
+    geopolitics_news = payload.get("geopolitics_news", [])
+    crypto_news = payload.get("crypto_news", [])
     indonesia_news = payload.get("indonesia_news", [])
     indo_macro = payload.get("indo_macro") or {}
     weekly_cal = payload.get("weekly_calendar", [])
     flow_proj = payload.get("flow_proj", {})
+    market_drivers = payload.get("market_drivers") or {}
 
     # Compute dynamic Net Liquidity status & impact
     net_liq_chg = net_liq.get('change_4w_bil', 0)
@@ -44,9 +47,9 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         liq_impact = "Tekanan likuiditas berat memicu aksi jual de-risking menyeluruh di pasar saham dan volatilitas tajam kripto."
 
     # Extract dynamic unique news sources
-    raw_sources = [n.get('source') for n in global_news + indonesia_news if n.get('source')]
+    raw_sources = [n.get('source') for n in (global_news + geopolitics_news + crypto_news + indonesia_news) if n.get('source')]
     unique_sources = sorted(list(set(raw_sources)))
-    active_news_sources_str = ", ".join(unique_sources[:7]) if unique_sources else "FXStreet, IDNFinancials, Bloomberg Technoz, CNBC Indonesia, Kompas"
+    active_news_sources_str = ", ".join(unique_sources[:8]) if unique_sources else "Reuters, CoinDesk, CNBC Indonesia, Bloomberg, FXStreet"
 
     # Helper for natural badges
     def natural_badge(status):
@@ -70,6 +73,9 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>MACRO PULSE · Natural Horizon Terminal</title>
     <!-- Google Fonts: Plus Jakarta Sans (Open Sauce counterpart: clean geometric grotesque) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,19 +226,16 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
                 <!-- Action Controls -->
                 <div class="flex flex-wrap items-center gap-3">
-                    <button onclick="fetchLiveCryptoPrices()" id="btn-refresh" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
+                    <button onclick="refreshAllData()" id="btn-refresh" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
                         <svg id="sync-icon" class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        <span id="btn-refresh-text">Refresh Live Data</span>
+                        <span id="btn-refresh-text">Refresh Data Pasar</span>
                     </button>
 
                     <a href="#tab-wa" onclick="switchTab('tab-wa')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sprout hover:bg-white text-forest-900 text-xs font-bold transition-all shadow-sm">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.45 1.743 1.966 2.091.246.057.448.014.592-.043.144-.058.462-.534.592-.722.13-.188.26-.159.433-.087.173.072 1.097.518 1.285.612.188.094.318.144.364.223.046.079.046.462-.098.867z"/>
-                        </svg>
-                        Salin WhatsApp Broadcast
-                    </a>
                         </svg>
                         Salin WhatsApp Broadcast
                     </a>
@@ -456,6 +459,82 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 Rotasi modal institusional ke sektor Energi (XLE) dan instrumen kas berbunga tinggi (T-Bills).
                             </p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kausalitas & Atribusi Dinamika Pasar Terkini (Why Did It Move?) -->
+            <div class="natural-card p-6 sm:p-7 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Kausalitas & Atribusi Pasar Terkini</div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900">Mengapa Aset Bergerak Hari Ini? (Market Drivers)</h3>
+                    </div>
+                    <div class="text-xs text-stone-500 font-mono flex items-center gap-1.5 bg-linen-100 px-3 py-1 rounded-full border border-linen-200">
+                        <span class="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
+                        Otomasi Deteksi Makro & Kripto
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Driver 1: Minyak WTI & Geopolitik -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                🛢️ Minyak Mentah WTI (CL=F)
+                            </span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                                {market_drivers.get('oil', {}).get('tag', 'Geopolitik & Pasokan')}
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-700 leading-relaxed">
+                            {market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.')}
+                        </p>
+                    </div>
+
+                    <!-- Driver 2: Bitcoin & Derivatif -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                🪙 Bitcoin & Kripto (BTC-USD)
+                            </span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
+                                {market_drivers.get('crypto', {}).get('tag', 'Yield Shock & Derivatif')}
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-700 leading-relaxed">
+                            {market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.')}
+                        </p>
+                    </div>
+
+                    <!-- Driver 3: Likuiditas The Fed -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                🏦 Likuiditas The Fed (Neraca H.4.1)
+                            </span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                                Rilis Mingguan Tiap Kamis
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-700 leading-relaxed">
+                            {market_drivers.get('fed', {}).get('driver', 'Neraca The Fed dirilis resmi tiap Kamis sore US (Jumat subuh WIB).')}
+                        </p>
+                    </div>
+
+                    <!-- Driver 4: Sensitivitas Makro Rezim -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                🎯 Sensitivitas Rezim 4-Kuadran
+                            </span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-forest-100 text-forest-900 border border-forest-300">
+                                Syarat Transisi Rezim
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-700 leading-relaxed">
+                            {market_drivers.get('regime', {}).get('driver', 'Rezim aktif saat ini berakar pada tingginya komoditas energi dan suku bunga riil.')}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -849,42 +928,92 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
             </div>
 
-            <!-- Verified News Feed (Global & Indonesia) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Verified News Feed (4 Dedicated Wires) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- Global Macro Wire -->
+                <!-- Wire 1: Global Macro & Fed -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-forest-700"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Global Macro Wire</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Global Macro & Federal Reserve</h4>
                         </div>
-                        <span class="text-xs text-stone-500">Sumber Terverifikasi</span>
+                        <span class="text-[11px] text-stone-500 font-mono">Kebijakan Moneter</span>
                     </div>
 
                     <div class="space-y-3">
                         {"".join([f'''
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">{item.get('source', 'News')}</span>
-                                <span class="text-stone-500 font-mono">{item.get('published', '')}</span>
+                                <span class="font-bold text-forest-800 bg-linen-200 px-2 py-0.5 rounded-md">{item.get('source', 'Macro Wire')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-forest-700 leading-snug">
                                 {item.get('title', '')}
                             </a>
                         </div>
-                        ''' for item in global_news[:5]])}
+                        ''' for item in global_news[:5]]) if global_news else '<div class="text-xs text-stone-500 p-4 text-center">Menunggu sinkronisasi feed global...</div>'}
                     </div>
                 </div>
 
-                <!-- Indonesia Financial Wire -->
+                <!-- Wire 2: Geopolitics & Energy -->
+                <div class="natural-card p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-linen-300">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+                            <h4 class="font-bold text-forest-900 text-sm">Geopolitik, Minyak & Pasokan Energi</h4>
+                        </div>
+                        <span class="text-[11px] text-amber-700 font-mono">Premi Risiko & OPEC</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        {"".join([f'''
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-amber-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200">{item.get('source', 'Energy Wire')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
+                            </div>
+                            <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-amber-800 leading-snug">
+                                {item.get('title', '')}
+                            </a>
+                        </div>
+                        ''' for item in geopolitics_news[:5]]) if geopolitics_news else '<div class="text-xs text-stone-500 p-4 text-center">Menunggu sinkronisasi geopolitik feed...</div>'}
+                    </div>
+                </div>
+
+                <!-- Wire 3: Crypto & Bitcoin Intelligence -->
+                <div class="natural-card p-6 space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-linen-300">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                            <h4 class="font-bold text-forest-900 text-sm">Kripto, Bitcoin & Aset Digital</h4>
+                        </div>
+                        <span class="text-[11px] text-indigo-700 font-mono">Likuiditas & Derivatif</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        {"".join([f'''
+                        <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-indigo-600/40 transition-all">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-indigo-900 bg-indigo-100 px-2 py-0.5 rounded-md border border-indigo-200">{item.get('source', 'Crypto Wire')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
+                            </div>
+                            <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-indigo-800 leading-snug">
+                                {item.get('title', '')}
+                            </a>
+                        </div>
+                        ''' for item in crypto_news[:5]]) if crypto_news else '<div class="text-xs text-stone-500 p-4 text-center">Menunggu sinkronisasi crypto feed...</div>'}
+                    </div>
+                </div>
+
+                <!-- Wire 4: Indonesia Financial Wire -->
                 <div class="natural-card p-6 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-linen-300">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                            <h4 class="font-bold text-forest-900 text-sm">Indonesia Financial Wire</h4>
+                            <h4 class="font-bold text-forest-900 text-sm">Indonesia Financial Wire (IHSG & Rupiah)</h4>
                         </div>
-                        <span class="text-xs text-stone-500">Sumber Domestik</span>
+                        <span class="text-[11px] text-emerald-700 font-mono">Bank Indonesia & APBN</span>
                     </div>
 
                     <div class="space-y-3">
@@ -892,13 +1021,13 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <div class="p-3.5 rounded-xl bg-linen-50 border border-linen-200 space-y-1.5 hover:border-forest-600/40 transition-all">
                             <div class="flex items-center justify-between text-[11px]">
                                 <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">{item.get('source', 'Domestik')}</span>
-                                <span class="text-stone-500 font-mono">{item.get('published', '')}</span>
+                                <span class="text-stone-500 font-mono">{item.get('pub_date', '')}</span>
                             </div>
                             <a href="{item.get('link', '#')}" target="_blank" rel="noopener noreferrer" class="block font-semibold text-xs text-stone-900 hover:text-emerald-700 leading-snug">
                                 {item.get('title', '')}
                             </a>
                         </div>
-                        ''' for item in indonesia_news[:5]])}
+                        ''' for item in indonesia_news[:5]]) if indonesia_news else '<div class="text-xs text-stone-500 p-4 text-center">Menunggu sinkronisasi berita domestik...</div>'}
                     </div>
                 </div>
 
@@ -1072,6 +1201,21 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
         // 4. Live Client-Side Crypto Poller via Binance Public API
         let previousCrypto = {{}};
+        
+        function refreshAllData() {{
+            const syncIcon = document.getElementById('sync-icon');
+            const btnText = document.getElementById('btn-refresh-text');
+            if (syncIcon) syncIcon.classList.add('animate-spin');
+            if (btnText) btnText.textContent = "Sinkronisasi Live...";
+            
+            fetchLiveCryptoPrices();
+            
+            // Reload bypassing browser cache with fresh timestamp query
+            setTimeout(() => {{
+                window.location.href = window.location.pathname + '?_t=' + new Date().getTime();
+            }}, 1200);
+        }}
+
         async function fetchLiveCryptoPrices() {{
             const syncIcon = document.getElementById('sync-icon');
             const btnText = document.getElementById('btn-refresh-text');

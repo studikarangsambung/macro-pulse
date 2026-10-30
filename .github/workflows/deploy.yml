@@ -2,18 +2,27 @@ name: Update Macro Monitor & Deploy to GitHub Pages
 
 on:
   schedule:
-    # 22:30 UTC = 05:30 WIB (Pasca penutupan bursa Wall Street)
-    - cron: '30 22 * * 1-5'
-    # 02:00 UTC = 09:00 WIB (Pembukaan pasar Asia / Sesi 1 IHSG)
+    # Hari Kerja (Senin-Jumat): Update berkala mengikuti sesi pasar dunia
+    # 00:00 UTC = 07:00 WIB (Pagi hari Asia & persiapan pasar)
+    - cron: '0 0 * * 1-5'
+    # 02:00 UTC = 09:00 WIB (Pembukaan pasar Asia & IHSG Sesi 1)
     - cron: '0 2 * * 1-5'
-    # 05:00 UTC = 12:00 WIB (Siang sesi Asia / Pembukaan bursa Eropa)
-    - cron: '0 5 * * *'
+    # 04:30 UTC = 11:30 WIB (Rehat siang IHSG)
+    - cron: '30 4 * * 1-5'
+    # 06:30 UTC = 13:30 WIB (Sesi 2 IHSG & Pembukaan pasar London/Eropa)
+    - cron: '30 6 * * 1-5'
     # 09:00 UTC = 16:00 WIB (Penutupan pasar domestik IHSG)
     - cron: '0 9 * * 1-5'
-    # 13:00 UTC = 20:00 WIB (Jelang pembukaan Wall Street & Rilis PCE/CPI/NFP)
-    - cron: '0 13 * * 1-5'
-    # 15:30 UTC = 22:30 WIB (Sesi aktif perdagangan New York)
+    # 11:30 UTC = 18:30 WIB (Sesi sore Eropa & pre-market Wall Street)
+    - cron: '30 11 * * 1-5'
+    # 13:30 UTC = 20:30 WIB (Rilis data ekonomi AS: PCE/CPI/NFP/Jobless Claims)
+    - cron: '30 13 * * 1-5'
+    # 15:30 UTC = 22:30 WIB (Sesi aktif bursa New York Wall Street)
     - cron: '30 15 * * 1-5'
+    # 21:00 UTC = 04:00 WIB (Penutupan Wall Street & Rilis Neraca H.4.1 The Fed tiap Kamis)
+    - cron: '0 21 * * 1-5'
+    # Akhir Pekan (Sabtu-Minggu): Pemantauan pasar Kripto 24/7 tiap 6 jam
+    - cron: '0 0,6,12,18 * * 0,6'
   workflow_dispatch: # Memungkinkan tombol 'Run workflow' manual kapan saja dari web/aplikasi HP
   push:
     branches: [main, master]

@@ -449,6 +449,92 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
         "summary": summary_paragraph
     }
 
+def analyze_market_drivers(snapshot, regime, ews_signals):
+    """
+    Automated Causality Engine:
+    Answers 'Why is Bitcoin down?', 'Why is Oil up?', 'Fed Liquidity Impact', and 'Macro Regime Triggers'.
+    """
+    prices = snapshot.get("prices", {})
+    net_liq = snapshot.get("net_liquidity", {})
+    
+    oil = prices.get("CL=F", {}).get("close", 0)
+    oil_1d = prices.get("CL=F", {}).get("change_1d_pct", 0)
+    oil_20d = prices.get("CL=F", {}).get("change_20d_pct", 0)
+    
+    btc = prices.get("BTC-USD", {}).get("close", 0)
+    btc_1d = prices.get("BTC-USD", {}).get("change_1d_pct", 0)
+    btc_20d = prices.get("BTC-USD", {}).get("change_20d_pct", 0)
+    
+    tnx = prices.get("^TNX", {}).get("close", 0)
+    dxy = prices.get("DX-Y.NYB", {}).get("close", 0)
+    gold = prices.get("GC=F", {}).get("close", 0)
+    
+    # 1. Kenapa Minyak Bergerak
+    if oil > 90:
+        oil_driver = (
+            f"Minyak mentah WTI berada di level tinggi (${oil:.2f}/bbl, 20D: {oil_20d:+.1f}%) "
+            f"dipicu oleh eskalasi tensi geopolitik Timur Tengah, risiko gangguan pasokan, dan disiplin kuota OPEC+. "
+            f"Kenaikan ini mentransmisikan tekanan inflasi energi ke seluruh rantai pasok global dan membatasi ruang pemotongan suku bunga The Fed."
+        )
+        oil_tag = "Geopolitik & Disrupsi Pasokan"
+    elif oil_1d > 1.5:
+        oil_driver = (
+            f"Minyak mentah WTI melonjak {oil_1d:+.1f}% hari ini ke level ${oil:.2f}/bbl akibat kekhawatiran pasokan jangka pendek "
+            f"dan penurunan persediaan cadangan minyak strategis AS."
+        )
+        oil_tag = "Kekhawatiran Pasokan"
+    else:
+        oil_driver = (
+            f"Minyak mentah WTI diperdagangkan di ${oil:.2f}/bbl (1D: {oil_1d:+.1f}%), berada dalam fase konsolidasi "
+            f"antara tarik-menarik perlambatan aktivitas manufaktur global vs ketatnya pasokan fisik komoditas energi."
+        )
+        oil_tag = "Konsolidasi Pasokan"
+
+    # 2. Kenapa Bitcoin Bergerak
+    if btc_1d < -1.0 or btc_20d < -3.0:
+        btc_driver = (
+            f"Koreksi Bitcoin ke kisaran ${btc:,.0f} (1D: {btc_1d:+.1f}%, 20D: {btc_20d:+.1f}%) dipicu oleh fenomena "
+            f"'Yield Shock' (US 10Y Yield di {tnx:.3f}%) dan penguatan Dollar AS (DXY {dxy:.2f}). "
+            f"Tingginya yield obligasi bebas risiko menyedot likuiditas pasar, memicu de-risking aset non-yielding, "
+            f"serta mempercepat likuidasi posisi 'long' ber-leverage tinggi di pasar derivatif kripto."
+        )
+        btc_tag = "Yield Shock & Likuidasi Derivatif"
+    elif btc_1d > 2.0:
+        btc_driver = (
+            f"Penguatan Bitcoin ke ${btc:,.0f} (1D: {btc_1d:+.1f}%) didorong oleh arus masuk bersih (net inflows) ETF Spot "
+            f"dan pelemahan sesaat yield obligasi yang memicu ekspansi selera risiko (risk-on sentiment)."
+        )
+        btc_tag = "ETF Inflows & Risk-On"
+    else:
+        btc_driver = (
+            f"Bitcoin diperdagangkan di kisaran ${btc:,.0f} (1D: {btc_1d:+.1f}%), berkonsolidasi di dekat support kritis. "
+            f"Pasar kripto sedang menunggu katalis rilis data inflasi (PCE/CPI) dan arah pelonggaran likuiditas bank sentral."
+        )
+        btc_tag = "Konsolidasi & Menunggu Katalis"
+
+    # 3. Likuiditas The Fed
+    liq_bil = net_liq.get("net_liquidity_bil", 0)
+    chg_4w = net_liq.get("change_4w_bil", 0)
+    fed_driver = (
+        f"Likuiditas Bersih The Fed tercatat ${liq_bil:,.1f} Miliar (Perubahan 4 Pekan: {chg_4w:+.1f} Miliar). "
+        f"Siklus rilis resmi neraca The Fed (H.4.1) terbit setiap Kamis sore waktu Washington DC (Jumat ~03:30 WIB). "
+        f"Perubahan neto diatur oleh saldo TGA Departemen Keuangan AS dan fasilitas Reverse Repo (RRP)."
+    )
+
+    # 4. Dinamika Makro Rezim
+    regime_driver = (
+        f"Status Rezim: '{regime['title']}'. Model 4-kuadran mengunci status ini karena kombinasi Minyak (${oil:.2f} > $88) "
+        f"dan Yield 10Y ({tnx:.3f}% > 4.50%). Untuk beralih ke 'Disinflasi / Goldilocks', harga minyak harus turun ke bawah $80 "
+        f"dan yield US10Y melandai ke bawah 4.40%."
+    )
+
+    return {
+        "oil": {"price": oil, "chg_1d": oil_1d, "driver": oil_driver, "tag": oil_tag},
+        "crypto": {"price": btc, "chg_1d": btc_1d, "driver": btc_driver, "tag": btc_tag},
+        "fed": {"net_liq": liq_bil, "chg_4w": chg_4w, "driver": fed_driver},
+        "regime": {"title": regime["title"], "driver": regime_driver}
+    }
+
 if __name__ == "__main__":
     from data_fetcher import get_latest_snapshot
     snapshot = get_latest_snapshot()
