@@ -12,14 +12,14 @@ WIB_TZ = datetime.timezone(datetime.timedelta(hours=7))
 def get_wib_now():
     return datetime.datetime.now(WIB_TZ)
 
-def build_validated_sentiment_chain(prices, sectors, snapshot):
+def build_validated_sentiment_chain(prices, sectors, snapshot, market_drivers=None):
     """
-    Constructs a 5-stage causal sentiment chain with strict validation:
-    1. Katalis Utama & Sentimen Ekuitas AS (Reflects actual SPY & QQQ signs)
+    Constructs a 5-stage causal sentiment chain with strict validation & real-time news catalysts:
+    1. Katalis Utama & Sentimen Ekuitas AS (Incorporate Tech news driver & price signs)
     2. Kinerja Sektoral Wall Street (Dynamically selects true outperformers & true laggards)
-    3. Pasar Energi & Komoditas (Reflects actual Oil WTI sign and level)
-    4. Dinamika Pasar Kripto (Accurately identifies divergence vs co-movement with Tech)
-    5. Keseimbangan Imbal Hasil Obligasi & Emas (Reflects actual US10Y & Gold trends)
+    3. Pasar Energi & Komoditas (Incorporate Crude Oil news driver & price signs)
+    4. Dinamika Pasar Kripto (Incorporate Bitcoin news driver & liquidity factors)
+    5. Keseimbangan Imbal Hasil Obligasi, Dollar & Emas (Incorporate Dollar/Yield & Gold drivers)
     """
     spx = prices.get("SPY", {}).get("close", 0)
     spx_chg = prices.get("SPY", {}).get("change_1d_pct", 0)
@@ -35,24 +35,29 @@ def build_validated_sentiment_chain(prices, sectors, snapshot):
     
     us10y = prices.get("^TNX", {}).get("close", 0)
     us10y_chg = prices.get("^TNX", {}).get("change_1d_pct", 0)
+    dxy = prices.get("DX-Y.NYB", {}).get("close", 0)
+    dxy_chg = prices.get("DX-Y.NYB", {}).get("change_1d_pct", 0)
+    
     oil = prices.get("CL=F", {}).get("close", 0)
     oil_chg = prices.get("CL=F", {}).get("change_1d_pct", 0)
     gold = prices.get("GC=F", {}).get("close", 0)
     gold_chg = prices.get("GC=F", {}).get("change_1d_pct", 0)
 
     # 1. Stage 1: Wall Street / Big Tech Catalyst
+    tech_drv = market_drivers.get("tech", {}) if market_drivers else {}
+    tech_sum = tech_drv.get("summary", "")
+    
     if qqq_chg >= 0.2 and spx_chg >= 0.1:
         stage_1_title = "Resiliensi Ekuitas AS & Kinerja Laporan Keuangan"
-        stage_1_sub = "(Wall Street Menguat Selektif di Tengah Penyesuaian Valuasi)"
+        stage_1_sub = f"({tech_sum})" if tech_sum else "(Wall Street Menguat Selektif di Tengah Penyesuaian Valuasi)"
     elif qqq_chg <= -0.4 or spx_chg <= -0.4:
         stage_1_title = "Rotasi Defensif & Penyesuaian Valuasi Ekuitas AS"
-        stage_1_sub = "(Pasar Mencermati Dampak Suku Bunga Restriktif terhadap Laba Korporasi)"
+        stage_1_sub = f"({tech_sum})" if tech_sum else "(Pasar Mencermati Dampak Suku Bunga Restriktif terhadap Laba Korporasi)"
     else:
         stage_1_title = "Konsolidasi Terbatas Pasar Saham Wall Street"
-        stage_1_sub = "(Pergerakan Fluktuatif Menanti Rilis Data Tenaga Kerja & Manufaktur)"
+        stage_1_sub = f"({tech_sum})" if tech_sum else "(Pergerakan Fluktuatif Menanti Rilis Data Tenaga Kerja & Manufaktur)"
 
     # 2. Stage 2: S&P 500 & Nasdaq Sector Reaction
-    # Dynamic sector selection strictly according to 1D returns
     sorted_sectors = sorted(sectors, key=lambda s: s.get("chg_1d", 0), reverse=True)
     top_2 = sorted_sectors[:2]
     bottom_2 = sorted_sectors[-2:]
@@ -74,44 +79,58 @@ def build_validated_sentiment_chain(prices, sectors, snapshot):
         )
 
     # 3. Stage 3: Crude Oil & Energy Dynamics
+    oil_drv = market_drivers.get("oil", {}) if market_drivers else {}
+    oil_sum = oil_drv.get("summary", "")
+    
     if oil_chg >= 0.8:
         stage_3_title = "Minyak Mentah Menguat / Premi Risiko Pasokan"
-        stage_3_sub = "(Ketegangan geopolitik kawasan dan disiplin kuota pasokan fisik)"
+        stage_3_sub = f"({oil_sum})" if oil_sum else "(Ketegangan geopolitik kawasan dan disiplin kuota pasokan fisik)"
     elif oil_chg <= -0.8:
         stage_3_title = "Minyak Mentah Terkoreksi Melandai"
-        stage_3_sub = "(Ekspektasi diplomasi kawasan dan pelepasan cadangan minyak)"
+        stage_3_sub = f"({oil_sum})" if oil_sum else "(Ekspektasi diplomasi kawasan dan pelepasan cadangan minyak)"
     else:
         stage_3_title = "Minyak Mentah Bertahan di Level Tinggi"
-        stage_3_sub = "(Konsolidasi harga energi bertahan di atas ambang batas $100/barel)"
+        stage_3_sub = f"({oil_sum})" if oil_sum else "(Konsolidasi harga energi bertahan di atas ambang batas $100/barel)"
     stage_3_text = f"Minyak WTI US$ {oil:.2f} / barel ({oil_chg:+.2f}%)"
 
     # 4. Stage 4: Crypto Market (Divergence vs Co-movement check)
+    crypto_drv = market_drivers.get("crypto", {}) if market_drivers else {}
+    crypto_sum = crypto_drv.get("summary", "")
+    
+    stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
+    
     if btc_chg <= -1.5 and qqq_chg >= 0:
         stage_4_title = "Divergensi Pasar Kripto (Tekanan Jual Mandiri)"
-        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
-        stage_4_desc = "Tekanan jual derivatif dan volatilitas ekosistem kripto terjadi di tengah bursa saham AS yang cenderung bertahan."
+        stage_4_desc = f"{crypto_sum} di tengah bursa saham AS yang cenderung bertahan." if crypto_sum else "Tekanan jual derivatif dan volatilitas ekosistem kripto terjadi di tengah bursa saham AS yang cenderung bertahan."
     elif btc_chg <= -1.5 and qqq_chg < 0:
         stage_4_title = "Risk-Off Global Menekan Pasar Kripto"
-        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
-        stage_4_desc = "Likuidasi posisi leverage di pasar derivatif sejalan dengan de-risking saham-saham teknologi Wall Street."
+        stage_4_desc = f"{crypto_sum} sejalan dengan aksi de-risking di saham teknologi Wall Street." if crypto_sum else "Likuidasi posisi leverage di pasar derivatif sejalan dengan de-risking saham-saham teknologi Wall Street."
     elif btc_chg >= 1.5 and qqq_chg >= 0:
         stage_4_title = "Risk Appetite Meluas ke Pasar Kripto"
-        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
-        stage_4_desc = "Sentimen positif ekuitas mendorong aliran likuiditas ke aset digital."
+        stage_4_desc = f"{crypto_sum}." if crypto_sum else "Sentimen positif ekuitas mendorong aliran likuiditas ke aset digital."
     else:
         stage_4_title = "Konsolidasi Terbatas Pasar Kripto"
-        stage_4_crypto = f"Pasar Kripto: BTC US$ {btc:,.0f} ({btc_chg:+.2f}%), ETH US$ {eth:,.0f} ({eth_chg:+.2f}%), SOL US$ {sol:.2f} ({sol_chg:+.2f}%)"
-        stage_4_desc = "Harga aset kripto berkonsolidasi di rentang sempit menunggu pemicu likuiditas baru."
+        stage_4_desc = f"{crypto_sum}." if crypto_sum else "Harga aset kripto berkonsolidasi di rentang sempit menunggu pemicu likuiditas baru."
 
-    # 5. Stage 5: Yield & Gold Balance
-    if us10y_chg >= 0.5:
-        yield_desc = f"US 10-Year Yield naik ke {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar menakar peluang suku bunga The Fed tetap ketat/hawkish)"
-    elif us10y_chg <= -0.5:
-        yield_desc = f"US 10-Year Yield melandai ke {us10y:.3f}% ({us10y_chg:+.2f}%) (konsolidasi pasar obligasi pasca rilis data makro)"
-    else:
-        yield_desc = f"US 10-Year Yield bertahan di {us10y:.3f}% ({us10y_chg:+.2f}%) (pasar obligasi memantau prospek kebijakan The Fed)"
+    # 5. Stage 5: Yield, Dollar & Gold Balance
+    dollar_drv = market_drivers.get("dollar", {}) if market_drivers else {}
+    dollar_sum = dollar_drv.get("summary", "")
+    gold_drv = market_drivers.get("gold", {}) if market_drivers else {}
+    gold_sum = gold_drv.get("summary", "")
     
+    if us10y_chg >= 0.5:
+        yield_desc = f"US 10-Year Yield naik ke {us10y:.3f}% ({us10y_chg:+.2f}%) & DXY {dxy:.2f} ({dxy_chg:+.2f}%)"
+    elif us10y_chg <= -0.5:
+        yield_desc = f"US 10-Year Yield melandai ke {us10y:.3f}% ({us10y_chg:+.2f}%) & DXY {dxy:.2f} ({dxy_chg:+.2f}%)"
+    else:
+        yield_desc = f"US 10-Year Yield bertahan di {us10y:.3f}% ({us10y_chg:+.2f}%) & DXY {dxy:.2f} ({dxy_chg:+.2f}%)"
+        
+    if dollar_sum:
+        yield_desc += f"\n↳ Katalis Suku Bunga: {dollar_sum}"
+
     gold_desc = f"Emas Spot di US$ {gold:,.1f} / troy oz ({gold_chg:+.2f}%)"
+    if gold_sum:
+        gold_desc += f"\n↳ Katalis Emas: {gold_sum}"
 
     chain = f"""{stage_1_title}
 ↓
@@ -127,7 +146,7 @@ def build_validated_sentiment_chain(prices, sectors, snapshot):
 {stage_4_crypto}
 {stage_4_desc}
 ↓
-Keseimbangan Yield & Logam Mulia
+Keseimbangan Yield, Dollar & Emas
 {yield_desc}
 {gold_desc}"""
     return chain
@@ -192,12 +211,19 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
         altseason_status = f"Altseason Aktif (Likuiditas Meluas ke Altcoins) [Rasio ETH/BTC: {eth_btc_ratio:.4f}]"
     
     # Extract unique sources for transparent attribution
-    raw_sources = [n.get('source') for n in (snapshot.get('global_news', []) + snapshot.get('geopolitics_news', []) + snapshot.get('crypto_news', []) + snapshot.get('indonesia_news', [])) if n.get('source')]
+    all_news_items = []
+    if "news_by_category" in snapshot:
+        for cat_list in snapshot["news_by_category"].values():
+            all_news_items.extend(cat_list)
+    else:
+        all_news_items = (snapshot.get('global_news', []) + snapshot.get('geopolitics_news', []) + snapshot.get('crypto_news', []) + snapshot.get('indonesia_news', []))
+        
+    raw_sources = [n.get('source') for n in all_news_items if n.get('source')]
     unique_sources = sorted(list(set(raw_sources)))
     sources_str = ", ".join(unique_sources[:6]) if unique_sources else "Reuters, CoinDesk, Bloomberg, CNBC Indonesia, FXStreet"
 
-    # Top Section: Validated 5-Stage Sentiment Chain
-    chain_section = build_validated_sentiment_chain(prices, sectors, snapshot)
+    # Top Section: Validated 5-Stage Sentiment Chain with Live News Drivers
+    chain_section = build_validated_sentiment_chain(prices, sectors, snapshot, market_drivers)
 
     # Crypto News Wire block (Accurate Label: Kawat Berita Pasar Kripto & Web3)
     crypto_news_lines = []

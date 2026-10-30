@@ -223,35 +223,63 @@ def sync_news_data():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    global_items = fetch_rss_news(
-        query="macro+economy+OR+federal+reserve+interest+rates+when:2d",
+    # 1. Emas & Logam Mulia (Gold / XAUUSD)
+    gold_items = fetch_rss_news(
+        query="gold+price+OR+xauusd+OR+bullion+fall+OR+drop+OR+rally+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
-        category="global",
+        category="gold",
         limit=6
     )
-    
-    geo_items = fetch_rss_news(
-        query="crude+oil+OR+geopolitics+OR+middle+east+OR+energy+inflation+when:2d",
+
+    # 2. Minyak Mentah & Energi (Crude Oil / WTI / Brent)
+    oil_items = fetch_rss_news(
+        query="crude+oil+OR+wti+OR+brent+price+fall+OR+drop+OR+rally+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
-        category="geopolitics",
+        category="oil",
         limit=6
     )
-    
+
+    # 3. Kripto & Bitcoin (BTC / Crypto / Liquidations / ETF)
     crypto_items = fetch_rss_news(
-        query="bitcoin+OR+crypto+market+fall+OR+drop+OR+rally+OR+etf+when:2d",
+        query="bitcoin+OR+crypto+price+fall+OR+drop+OR+rally+OR+binance+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="crypto",
         limit=6
     )
-    
+
+    # 4. Dollar AS & Yield US Treasuries (DXY / US 10Y)
+    dollar_items = fetch_rss_news(
+        query="us+dollar+OR+dxy+OR+treasury+yields+rise+OR+fall+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="dollar",
+        limit=6
+    )
+
+    # 5. Wall Street & Big Tech (Nasdaq / S&P 500 / AI capex / Semiconductors)
+    tech_items = fetch_rss_news(
+        query="nasdaq+OR+big+tech+OR+nvidia+OR+semiconductors+stocks+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="tech",
+        limit=6
+    )
+
+    # 6. Indonesia (IHSG, Rupiah, Bank Indonesia, MSCI)
     indo_items = fetch_rss_news(
         query="rupiah+OR+ihsg+OR+\"bank+indonesia\"+when:2d",
         lang_params="hl=id&gl=ID&ceid=ID:id",
         category="indonesia",
         limit=6
     )
-    
-    all_items = global_items + geo_items + crypto_items + indo_items
+
+    # 7. Makro Global & Kebijakan The Fed
+    global_items = fetch_rss_news(
+        query="macro+economy+OR+federal+reserve+interest+rates+when:2d",
+        lang_params="hl=en-US&gl=US&ceid=US:en",
+        category="global",
+        limit=6
+    )
+
+    all_items = gold_items + oil_items + crypto_items + dollar_items + tech_items + indo_items + global_items
     for item in all_items:
         cursor.execute("""
         INSERT OR REPLACE INTO macro_news (category, title, source, link, pub_date)
@@ -260,7 +288,7 @@ def sync_news_data():
         
     conn.commit()
     conn.close()
-    print(f"Synced {len(all_items)} verified news headlines across Global, Geopolitics, Crypto, and Indonesia.")
+    print(f"Synced {len(all_items)} verified news headlines across Gold, Oil, Crypto, Dollar, Tech, Indonesia, and Global.")
 
 def get_latest_snapshot():
     conn = sqlite3.connect(DB_PATH)
@@ -289,10 +317,15 @@ def get_latest_snapshot():
     
     net_liq = pd.read_sql_query("SELECT * FROM net_liquidity ORDER BY date DESC LIMIT 1", conn)
     
-    global_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='global' ORDER BY id DESC LIMIT 6", conn)
-    geo_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='geopolitics' ORDER BY id DESC LIMIT 6", conn)
-    crypto_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='crypto' ORDER BY id DESC LIMIT 6", conn)
-    indo_news = pd.read_sql_query("SELECT title, source, link, pub_date FROM macro_news WHERE category='indonesia' ORDER BY id DESC LIMIT 6", conn)
+    # Ingest structured news by category
+    categories = ["gold", "oil", "crypto", "dollar", "tech", "indonesia", "global", "geopolitics"]
+    news_by_category = {}
+    for cat in categories:
+        df_news = pd.read_sql_query(
+            "SELECT title, source, link, pub_date FROM macro_news WHERE category=? ORDER BY id DESC LIMIT 6",
+            conn, params=(cat,)
+        )
+        news_by_category[cat] = df_news.to_dict(orient="records")
     
     conn.close()
     
@@ -300,10 +333,15 @@ def get_latest_snapshot():
         "prices": all_latest.set_index("ticker").to_dict(orient="index"),
         "fred": fred_latest.set_index("series_id").to_dict(orient="index"),
         "net_liquidity": net_liq.to_dict(orient="records")[0] if not net_liq.empty else {},
-        "global_news": global_news.to_dict(orient="records"),
-        "geopolitics_news": geo_news.to_dict(orient="records"),
-        "crypto_news": crypto_news.to_dict(orient="records"),
-        "indonesia_news": indo_news.to_dict(orient="records")
+        "news_by_category": news_by_category,
+        "gold_news": news_by_category.get("gold", []),
+        "oil_news": news_by_category.get("oil", []),
+        "dollar_news": news_by_category.get("dollar", []),
+        "tech_news": news_by_category.get("tech", []),
+        "global_news": news_by_category.get("global", []),
+        "geopolitics_news": news_by_category.get("geopolitics", []) or news_by_category.get("oil", []),
+        "crypto_news": news_by_category.get("crypto", []),
+        "indonesia_news": news_by_category.get("indonesia", [])
     }
 
 if __name__ == "__main__":

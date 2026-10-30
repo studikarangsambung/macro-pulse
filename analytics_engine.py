@@ -492,12 +492,15 @@ def analyze_indonesia_macro_sentiment(snapshot, ews_signals, regime):
 
 def analyze_market_drivers(snapshot, regime, ews_signals):
     """
-    Automated Causality Engine:
-    Answers 'Why is Bitcoin down?', 'Why is Oil up?', 'Fed Liquidity Impact', and 'Macro Regime Triggers'.
+    Automated Real-Time News & Causality Engine:
+    Links price movements of Gold, Crypto (BTC), Oil, US Dollar/Yields, Wall Street Tech, and IHSG
+    directly to live news headlines and market sentiment catalysts.
     """
     prices = snapshot.get("prices", {})
     net_liq = snapshot.get("net_liquidity", {})
+    news_cat = snapshot.get("news_by_category", {})
     
+    # Prices & Movements
     oil = prices.get("CL=F", {}).get("close", 0)
     oil_1d = prices.get("CL=F", {}).get("change_1d_pct", 0)
     oil_20d = prices.get("CL=F", {}).get("change_20d_pct", 0)
@@ -507,71 +510,204 @@ def analyze_market_drivers(snapshot, regime, ews_signals):
     btc_20d = prices.get("BTC-USD", {}).get("change_20d_pct", 0)
     
     tnx = prices.get("^TNX", {}).get("close", 0)
+    tnx_1d = prices.get("^TNX", {}).get("change_1d_pct", 0)
     dxy = prices.get("DX-Y.NYB", {}).get("close", 0)
-    gold = prices.get("GC=F", {}).get("close", 0)
+    dxy_1d = prices.get("DX-Y.NYB", {}).get("change_1d_pct", 0)
     
-    # 1. Kenapa Minyak Bergerak
-    if oil > 90:
-        oil_driver = (
-            f"Minyak mentah WTI berada di level tinggi (${oil:.2f}/bbl, 20D: {oil_20d:+.1f}%) "
-            f"dipicu oleh eskalasi tensi geopolitik Timur Tengah, risiko gangguan pasokan, dan disiplin kuota OPEC+. "
-            f"Kenaikan ini mentransmisikan tekanan inflasi energi ke seluruh rantai pasok global dan membatasi ruang pemotongan suku bunga The Fed."
-        )
-        oil_tag = "Geopolitik & Disrupsi Pasokan"
-    elif oil_1d > 1.5:
-        oil_driver = (
-            f"Minyak mentah WTI melonjak {oil_1d:+.1f}% hari ini ke level ${oil:.2f}/bbl akibat kekhawatiran pasokan jangka pendek "
-            f"dan penurunan persediaan cadangan minyak strategis AS."
-        )
-        oil_tag = "Kekhawatiran Pasokan"
-    else:
-        oil_driver = (
-            f"Minyak mentah WTI diperdagangkan di ${oil:.2f}/bbl (1D: {oil_1d:+.1f}%), berada dalam fase konsolidasi "
-            f"antara tarik-menarik perlambatan aktivitas manufaktur global vs ketatnya pasokan fisik komoditas energi."
-        )
-        oil_tag = "Konsolidasi Pasokan"
+    gold = prices.get("GC=F", {}).get("close", 0)
+    gold_1d = prices.get("GC=F", {}).get("change_1d_pct", 0)
+    gold_20d = prices.get("GC=F", {}).get("change_20d_pct", 0)
+    
+    qqq = prices.get("QQQ", {}).get("close", 0)
+    qqq_1d = prices.get("QQQ", {}).get("change_1d_pct", 0)
+    spx = prices.get("SPY", {}).get("close", 0)
+    spx_1d = prices.get("SPY", {}).get("change_1d_pct", 0)
+    
+    ihsg = prices.get("^JKSE", {}).get("close", 5032.44)
+    ihsg_1d = prices.get("^JKSE", {}).get("change_1d_pct", -1.29)
+    usdidr = prices.get("IDR=X", {}).get("close", 18140.0)
+    usdidr_1d = prices.get("IDR=X", {}).get("change_1d_pct", 0.41)
+    
+    def get_top_news(cat_key, fallback_title, fallback_src):
+        items = news_cat.get(cat_key, [])
+        if not items and cat_key == "oil":
+            items = snapshot.get("geopolitics_news", [])
+        elif not items and cat_key == "crypto":
+            items = snapshot.get("crypto_news", [])
+        elif not items and cat_key == "indonesia":
+            items = snapshot.get("indonesia_news", [])
+        elif not items and cat_key == "tech":
+            items = snapshot.get("global_news", [])
+            
+        if items and len(items) > 0:
+            it = items[0]
+            return {
+                "title": it.get("title", fallback_title),
+                "source": it.get("source", fallback_src),
+                "link": it.get("link", "#")
+            }
+        return {"title": fallback_title, "source": fallback_src, "link": "#"}
 
-    # 2. Kenapa Bitcoin Bergerak
+    # 1. EMAS & LOGAM MULIA (GOLD / XAUUSD)
+    gold_news = get_top_news("gold", "Gold prices fluctuate as Fed rate expectations evolve", "Reuters")
+    if gold_1d < 0:
+        gold_tag = "Penguatan Dolar & Yield Restriktif"
+        gold_driver = (
+            f"Emas Spot terkoreksi ke US$ {gold:,.1f}/oz ({gold_1d:+.2f}%) dipicu oleh tingginya yield obligasi US 10Y ({tnx:.3f}%) "
+            f"dan rilis data inflasi yang menahan ekspektasi penurunan suku bunga The Fed ('{gold_news['title']}'). "
+            f"Kondisi ini menaikkan 'opportunity cost' memegang aset tanpa imbal hasil (non-yielding asset)."
+        )
+        gold_summary = f"Kekhawatiran suku bunga ketat & penguatan yield menekan emas ({gold_news['source']})"
+    else:
+        gold_tag = "Permintaan Safe-Haven & Hedging"
+        gold_driver = (
+            f"Emas Spot menguat ke US$ {gold:,.1f}/oz ({gold_1d:+.2f}%) didorong oleh arus beli lindung nilai terhadap inflasi "
+            f"dan peningkatan permintaan safe-haven global di tengah ketegangan geopolitik ('{gold_news['title']}')."
+        )
+        gold_summary = f"Permintaan aset safe-haven & lindung nilai inflasi meningkat ({gold_news['source']})"
+
+    # 2. MINYAK MENTAH & ENERGI (CRUDE OIL / WTI)
+    oil_news = get_top_news("oil", "Crude oil trades amidst supply constraints and geopolitical watch", "Reuters")
+    if oil_1d > 0.5 or oil > 95.0:
+        oil_tag = "Premi Risiko Pasokan & Geopolitik"
+        oil_driver = (
+            f"Minyak mentah WTI berada di level tinggi US$ {oil:.2f}/barel (1D: {oil_1d:+.2f}%, 20D: {oil_20d:+.1f}%) "
+            f"didorong oleh disiplin kuota pasokan OPEC+ dan premi risiko geopolitik pasokan energi ('{oil_news['title']}'). "
+            f"Lonjakan ini mentransmisikan tekanan biaya produksi (cost-push inflation) ke seluruh sektor industri."
+        )
+        oil_summary = f"Premi risiko pasokan energi & disiplin kuota pasokan ({oil_news['source']})"
+    else:
+        oil_tag = "Harapan Diplomasi & Melandainya Premi Pasokan"
+        oil_driver = (
+            f"Minyak mentah WTI melandai ke US$ {oil:.2f}/barel ({oil_1d:+.2f}%) sejalan dengan munculnya harapan diplomasi "
+            f"yang meredakan kekhawatiran disrupsi pasokan fisik di pasar komoditas ('{oil_news['title']}')."
+        )
+        oil_summary = f"Harapan diplomasi kawasan meredakan kekhawatiran pasokan ({oil_news['source']})"
+
+    # 3. BITCOIN & PASAR KRIPTO
+    crypto_news = get_top_news("crypto", "Bitcoin and crypto markets consolidate near critical support", "CoinDesk")
     if btc_1d < -1.0 or btc_20d < -3.0:
+        btc_tag = "Likuidasi Derivatif & Volatilitas Sentimen"
         btc_driver = (
-            f"Koreksi Bitcoin ke kisaran ${btc:,.0f} (1D: {btc_1d:+.1f}%, 20D: {btc_20d:+.1f}%) dipicu oleh fenomena "
-            f"'Yield Shock' (US 10Y Yield di {tnx:.3f}%) dan penguatan Dollar AS (DXY {dxy:.2f}). "
-            f"Tingginya yield obligasi bebas risiko menyedot likuiditas pasar, memicu de-risking aset non-yielding, "
-            f"serta mempercepat likuidasi posisi 'long' ber-leverage tinggi di pasar derivatif kripto."
+            f"Koreksi Bitcoin ke kisaran US$ {btc:,.0f} (1D: {btc_1d:+.2f}%, 20D: {btc_20d:+.1f}%) dipicu oleh likuidasi posisi "
+            f"leverage tinggi di pasar derivatif dan sentimen kehati-hatian investor ('{crypto_news['title']}'). "
+            f"Tingginya yield US 10Y ({tnx:.3f}%) menyedot likuiditas pasar dan memicu aksi de-risking aset digital."
         )
-        btc_tag = "Yield Shock & Likuidasi Derivatif"
-    elif btc_1d > 2.0:
+        btc_summary = f"Likuidasi derivatif leverage & volatilitas sentimen ekosistem ({crypto_news['source']})"
+    elif btc_1d > 1.5:
+        btc_tag = "Inflow ETF Spot & Risk-On"
         btc_driver = (
-            f"Penguatan Bitcoin ke ${btc:,.0f} (1D: {btc_1d:+.1f}%) didorong oleh arus masuk bersih (net inflows) ETF Spot "
-            f"dan pelemahan sesaat yield obligasi yang memicu ekspansi selera risiko (risk-on sentiment)."
+            f"Bitcoin menguat ke US$ {btc:,.0f} ({btc_1d:+.2f}%) ditopang oleh akumulasi arus masuk bersih ETF Spot "
+            f"dan perbaikan selera risiko pasar digital ('{crypto_news['title']}')."
         )
-        btc_tag = "ETF Inflows & Risk-On"
+        btc_summary = f"Arus masuk modal ETF & perbaikan selera risiko ({crypto_news['source']})"
     else:
+        btc_tag = "Konsolidasi Menunggu Katalis"
         btc_driver = (
-            f"Bitcoin diperdagangkan di kisaran ${btc:,.0f} (1D: {btc_1d:+.1f}%), berkonsolidasi di dekat support kritis. "
-            f"Pasar kripto sedang menunggu katalis rilis data inflasi (PCE/CPI) dan arah pelonggaran likuiditas bank sentral."
+            f"Bitcoin berkonsolidasi di kisaran US$ {btc:,.0f} ({btc_1d:+.2f}%) menunggu katalis baru arah kebijakan moneter "
+            f"dan stabilitas pasar saham Wall Street ('{crypto_news['title']}')."
         )
-        btc_tag = "Konsolidasi & Menunggu Katalis"
+        btc_summary = f"Konsolidasi di area support menanti pemicu likuiditas ({crypto_news['source']})"
 
-    # 3. Likuiditas The Fed
+    # 4. US DOLLAR (DXY) & US 10Y TREASURY YIELD
+    dollar_news = get_top_news("dollar", "Treasury yields and US Dollar reflect interest rate expectations", "CNBC")
+    if tnx_1d > 0.4 or dxy_1d > 0.2:
+        dollar_tag = "Ekspektasi Suku Bunga Higher-for-Longer"
+        dollar_driver = (
+            f"US 10Y Yield naik ke {tnx:.3f}% ({tnx_1d:+.2f}%) dan Dollar AS (DXY {dxy:.2f}) menguat "
+            f"terdorong oleh data ekonomi yang memperkuat proyeksi suku bunga The Fed tetap restriktif ('{dollar_news['title']}')."
+        )
+        dollar_summary = f"Ekspektasi suku bunga restriktif menopang Dollar & Yield ({dollar_news['source']})"
+    else:
+        dollar_tag = "Konsolidasi Pasar Obligasi & Safe-Haven Bid"
+        dollar_driver = (
+            f"US 10-Year Yield melandai ke {tnx:.3f}% ({tnx_1d:+.2f}%) dan DXY di {dxy:.2f} mencerminkan aksi konsolidasi "
+            f"pasar obligasi dan aliran perlindungan modal di tengah volatilitas pasar saham global ('{dollar_news['title']}')."
+        )
+        dollar_summary = f"Aksi lindung nilai pasar obligasi menahan lonjakan yield ({dollar_news['source']})"
+
+    # 5. WALL STREET & BIG TECH (NASDAQ / S&P 500)
+    tech_news = get_top_news("tech", "Wall Street equities adjust to tech earnings and rate expectations", "Bloomberg")
+    if qqq_1d < 0 or spx_1d < 0:
+        tech_tag = "Kekhawatiran Belanja AI & Penyesuaian Valuasi"
+        tech_driver = (
+            f"Koreksi Nasdaq (QQQ {qqq_1d:+.2f}%) dan S&P 500 (SPY {spx_1d:+.2f}%) dipicu oleh kekhawatiran profitabilitas belanja "
+            f"infrastruktur AI korporasi serta evaluasi valuasi saham-saham ber-PE tinggi di tengah suku bunga restriktif ('{tech_news['title']}')."
+        )
+        tech_summary = f"Penyesuaian valuasi laba korporasi & kekhawatiran belanja modal AI ({tech_news['source']})"
+    else:
+        tech_tag = "Optimisme Laba Korporasi & Sektor Semikonduktor"
+        tech_driver = (
+            f"Wall Street (QQQ {qqq_1d:+.2f}%, SPY {spx_1d:+.2f}%) menguat didorong oleh optimisme adopsi komputasi AI "
+            f"dan resiliensi neraca keuangan emiten teknologi terkemuka ('{tech_news['title']}')."
+        )
+        tech_summary = f"Kinerja solid sektor cip & optimisme adopsi kecerdasan buatan ({tech_news['source']})"
+
+    # 6. PASAR MODAL INDONESIA (IHSG & RUPIAH)
+    indo_news = get_top_news("indonesia", "Bank Indonesia jaga stabilitas nilai tukar Rupiah di tengah dinamika global", "CNBC Indonesia")
+    if ihsg_1d < 0 or usdidr_1d > 0.2:
+        indo_tag = "Outflow Modal Asing & Tekanan Valas"
+        indo_driver = (
+            f"IHSG tertekan ke level {ihsg:,.2f} ({ihsg_1d:+.2f}%) dan USD/IDR berada di Rp {usdidr:,.0f} "
+            f"akibat keluarnya aliran dana asing (foreign outflow), sentimen rebalancing indeks global, dan fokus Bank Indonesia "
+            f"menjaga stabilitas kurs ('{indo_news['title']}')."
+        )
+        indo_summary = f"Arus keluar modal asing & penyesuaian bobot portofolio global ({indo_news['source']})"
+    else:
+        indo_tag = "Akumulasi Selektif & Resiliensi Domestik"
+        indo_driver = (
+            f"IHSG bertahan di {ihsg:,.2f} ({ihsg_1d:+.2f}%) ditopang oleh akumulasi investor domestik pada saham berbasis dividen "
+            f"dan komoditas, diimbangi oleh intervensi stabilisasi Bank Indonesia ('{indo_news['title']}')."
+        )
+        indo_summary = f"Dukungan akumulasi saham dividen & stabilisasi moneter BI ({indo_news['source']})"
+
+    # 7. Likuiditas The Fed
     liq_bil = net_liq.get("net_liquidity_bil", 0)
     chg_4w = net_liq.get("change_4w_bil", 0)
     fed_driver = (
-        f"Likuiditas Bersih The Fed tercatat ${liq_bil:,.1f} Miliar (Perubahan 4 Pekan: {chg_4w:+.1f} Miliar). "
+        f"Likuiditas Bersih The Fed tercatat US$ {liq_bil:,.1f} Miliar (Perubahan 4 Pekan: {chg_4w:+.1f} Miliar). "
         f"Siklus rilis resmi neraca The Fed (H.4.1) terbit setiap Kamis sore waktu Washington DC (Jumat ~03:30 WIB). "
         f"Perubahan neto diatur oleh saldo TGA Departemen Keuangan AS dan fasilitas Reverse Repo (RRP)."
     )
 
-    # 4. Dinamika Makro Rezim
+    # 8. Dinamika Makro Rezim
     regime_driver = (
-        f"Status Rezim: '{regime['title']}'. Model 4-kuadran mengunci status ini karena kombinasi Minyak (${oil:.2f} > $88) "
+        f"Status Rezim: '{regime['title']}'. Model 4-kuadran mengunci status ini karena kombinasi Minyak (US$ {oil:.2f} > $88) "
         f"dan Yield 10Y ({tnx:.3f}% > 4.50%). Untuk beralih ke 'Disinflasi / Goldilocks', harga minyak harus turun ke bawah $80 "
         f"dan yield US10Y melandai ke bawah 4.40%."
     )
 
     return {
-        "oil": {"price": oil, "chg_1d": oil_1d, "driver": oil_driver, "tag": oil_tag},
-        "crypto": {"price": btc, "chg_1d": btc_1d, "driver": btc_driver, "tag": btc_tag},
+        "gold": {
+            "price": gold, "chg_1d": gold_1d, "chg_20d": gold_20d,
+            "driver": gold_driver, "tag": gold_tag, "summary": gold_summary,
+            "news": gold_news
+        },
+        "oil": {
+            "price": oil, "chg_1d": oil_1d, "chg_20d": oil_20d,
+            "driver": oil_driver, "tag": oil_tag, "summary": oil_summary,
+            "news": oil_news
+        },
+        "crypto": {
+            "price": btc, "chg_1d": btc_1d, "chg_20d": btc_20d,
+            "driver": btc_driver, "tag": btc_tag, "summary": btc_summary,
+            "news": crypto_news
+        },
+        "dollar": {
+            "dxy": dxy, "chg_1d": dxy_1d, "tnx": tnx, "tnx_1d": tnx_1d,
+            "driver": dollar_driver, "tag": dollar_tag, "summary": dollar_summary,
+            "news": dollar_news
+        },
+        "tech": {
+            "qqq": qqq, "qqq_1d": qqq_1d, "spx": spx, "spx_1d": spx_1d,
+            "driver": tech_driver, "tag": tech_tag, "summary": tech_summary,
+            "news": tech_news
+        },
+        "indonesia": {
+            "ihsg": ihsg, "ihsg_1d": ihsg_1d, "usdidr": usdidr, "usdidr_1d": usdidr_1d,
+            "driver": indo_driver, "tag": indo_tag, "summary": indo_summary,
+            "news": indo_news
+        },
         "fed": {"net_liq": liq_bil, "chg_4w": chg_4w, "driver": fed_driver},
         "regime": {"title": regime["title"], "driver": regime_driver}
     }

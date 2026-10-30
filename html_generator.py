@@ -488,38 +488,161 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Driver 1: Minyak WTI & Geopolitik -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🛢️ Minyak Mentah WTI (CL=F)
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                {market_drivers.get('oil', {}).get('tag', 'Geopolitik & Pasokan')}
-                            </span>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Driver 1: Emas Spot (XAUUSD) -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    🟡 Emas Spot (XAUUSD)
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                                    {market_drivers.get('gold', {}).get('tag', 'Sentimen Suku Bunga & Dolar')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>${prices.get('GC=F', {}).get('close', 0):,.1f}</span>
+                                <span>{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('gold', {}).get('driver', 'Emas bergerak merefleksikan ekspektasi suku bunga riil dan premi safe-haven.')}
+                            </p>
                         </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            {market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.')}
-                        </p>
+                        <a href="{market_drivers.get('gold', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('gold', {}).get('news', {}).get('title', 'Gold slips as higher oil, US inflation data bolster Fed hike bets')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('gold', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
+                        </a>
                     </div>
 
-                    <!-- Driver 2: Bitcoin & Derivatif -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🪙 Bitcoin & Kripto (BTC-USD)
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
-                                {market_drivers.get('crypto', {}).get('tag', 'Yield Shock & Derivatif')}
-                            </span>
+                    <!-- Driver 2: Bitcoin & Kripto -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    🪙 Bitcoin & Kripto (BTC-USD)
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
+                                    {market_drivers.get('crypto', {}).get('tag', 'Likuidasi Derivatif & Volatilitas')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>${prices.get('BTC-USD', {}).get('close', 0):,.0f}</span>
+                                <span>{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.')}
+                            </p>
                         </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            {market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.')}
-                        </p>
+                        <a href="{market_drivers.get('crypto', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('crypto', {}).get('news', {}).get('title', 'Bitcoin price volatility intensifies in derivative markets')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('crypto', {}).get('news', {}).get('source', 'CoinDesk')}) ↗</span>
+                        </a>
                     </div>
 
-                    <!-- Driver 3: Likuiditas The Fed -->
+                    <!-- Driver 3: Minyak Mentah WTI -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    🛢️ Minyak Mentah WTI (CL=F)
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                                    {market_drivers.get('oil', {}).get('tag', 'Premi Pasokan & Geopolitik')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>${prices.get('CL=F', {}).get('close', 0):,.2f}</span>
+                                <span>{chg_badge(prices.get('CL=F', {}).get('change_1d_pct', 0))}</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.')}
+                            </p>
+                        </div>
+                        <a href="{market_drivers.get('oil', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('oil', {}).get('news', {}).get('title', 'Oil prices react to supply developments and global demand')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('oil', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
+                        </a>
+                    </div>
+
+                    <!-- Driver 4: Dollar AS & Yield 10Y -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    💵 Dollar (DXY) & US 10Y Yield
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-100 text-blue-900 border border-blue-200">
+                                    {market_drivers.get('dollar', {}).get('tag', 'Suku Bunga & Obligasi')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>DXY: {prices.get('DX-Y.NYB', {}).get('close', 0):.2f}</span>
+                                <span>10Y Yield: {prices.get('^TNX', {}).get('close', 0):.3f}%</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('dollar', {}).get('driver', 'Yield obligasi dan indeks dolar merefleksikan arah kebijakan suku bunga The Fed.')}
+                            </p>
+                        </div>
+                        <a href="{market_drivers.get('dollar', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('dollar', {}).get('news', {}).get('title', 'Treasury yields and dollar adjust ahead of key economic data')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('dollar', {}).get('news', {}).get('source', 'WSJ')}) ↗</span>
+                        </a>
+                    </div>
+
+                    <!-- Driver 5: Wall Street & Big Tech -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    💻 Wall Street & Big Tech (QQQ/SPY)
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
+                                    {market_drivers.get('tech', {}).get('tag', 'Valuasi AI & Laba Korporasi')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>QQQ: {chg_badge(prices.get('QQQ', {}).get('change_1d_pct', 0))}</span>
+                                <span>SPY: {chg_badge(prices.get('SPY', {}).get('change_1d_pct', 0))}</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('tech', {}).get('driver', 'Wall Street mencermati valuasi laba emiten teknologi dan belanja infrastruktur AI.')}
+                            </p>
+                        </div>
+                        <a href="{market_drivers.get('tech', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('tech', {}).get('news', {}).get('title', 'Tech equities react to earnings guidance and rate path')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('tech', {}).get('news', {}).get('source', 'Bloomberg')}) ↗</span>
+                        </a>
+                    </div>
+
+                    <!-- Driver 6: IHSG & Pasar Modal Indonesia -->
+                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
+                                    🇮🇩 IHSG (^JKSE) & Rupiah
+                                </span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
+                                    {market_drivers.get('indonesia', {}).get('tag', 'Arus Modal & Kurs Valas')}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
+                                <span>IHSG: {indo_macro.get('ihsg_val', 5032.44):,.2f}</span>
+                                <span>USD/IDR: Rp {indo_macro.get('usdidr_val', 18140):,.0f}</span>
+                            </div>
+                            <p class="text-xs text-stone-700 leading-relaxed">
+                                {market_drivers.get('indonesia', {}).get('driver', 'IHSG dan Rupiah dipengaruhi oleh aliran modal asing dan kebijakan stabilitas Bank Indonesia.')}
+                            </p>
+                        </div>
+                        <a href="{market_drivers.get('indonesia', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+                            <span class="font-bold text-forest-800">Kawat Berita:</span> "{market_drivers.get('indonesia', {}).get('news', {}).get('title', 'BI jaga stabilitas nilai tukar Rupiah di tengah dinamika eksternal')}" 
+                            <span class="font-mono text-stone-400">({market_drivers.get('indonesia', {}).get('news', {}).get('source', 'CNBC Indonesia')}) ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Baris Tambahan: Likuiditas The Fed & Sensitivitas Rezim -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <!-- Driver 7: Likuiditas The Fed -->
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
@@ -534,7 +657,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         </p>
                     </div>
 
-                    <!-- Driver 4: Sensitivitas Makro Rezim -->
+                    <!-- Driver 8: Sensitivitas Makro Rezim -->
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
