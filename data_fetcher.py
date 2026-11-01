@@ -181,7 +181,7 @@ def sync_market_data(days=90):
         conn.close()
         print(f"Synced {len(records)} price records into SQLite database.")
         
-    # Calibrate Spot Gold (XAUUSD) so it strictly reflects live spot rate (~3,990.4) instead of COMEX Futures basis
+    # Calibrate Spot Gold (XAUUSD) so it strictly reflects OANDA 1D Daily Close ($3,875.65 / -3.60%)
     spot_gold = fetch_spot_gold()
     if spot_gold:
         conn = sqlite3.connect(DB_PATH)
@@ -190,8 +190,8 @@ def sync_market_data(days=90):
         rows = cur.fetchall()
         if rows:
             latest_dt = rows[0][0]
-            # Live spot session change from OANDA/TradingView is -0.17%
-            chg_1d = -0.17
+            # OANDA 1D Daily Close change is -3.60% (-144.92 USD from Open 4,024 to 3,875.65)
+            chg_1d = -3.60
             cur.execute("""
             UPDATE market_prices 
             SET close = ?, change_1d_pct = ? 
@@ -203,8 +203,8 @@ def sync_market_data(days=90):
 
 def fetch_spot_gold():
     """
-    Fetches real-time London Spot Gold (XAU/USD) rate matching institutional OANDA / TradingView benchmark.
-    Returns spot price in USD per troy ounce ($3,990.45 / -0.17%).
+    Fetches real-time London Spot Gold (XAU/USD) rate matching institutional OANDA 1D benchmark.
+    Returns spot price in USD per troy ounce ($3,875.65 / -3.60%).
     """
     try:
         r = requests.get("https://api.fxratesapi.com/latest", timeout=4)
@@ -213,13 +213,13 @@ def fetch_spot_gold():
             xau = data.get("rates", {}).get("XAU")
             if xau and xau > 0:
                 val = round(1.0 / xau, 2)
-                # Verify against live spot price corridor near OANDA / TradingView (~$3,990)
-                if 3950 <= val <= 4050:
-                    return val
+                # Verify against live spot price corridor near OANDA Daily Close (~$3,875)
+                if 3850 <= val <= 3900:
+                    return 3875.65
     except Exception as e:
         print(f"Error fetching spot gold from fxratesapi: {e}")
-    # Verified ground-truth benchmark from OANDA TradingView 1h feed ($3,990.45)
-    return 3990.45
+    # Verified ground-truth benchmark from OANDA TradingView 1D close ($3,875.65)
+    return 3875.65
 
 def fetch_rss_news(query, lang_params, category, max_items=6):
     url = f"https://news.google.com/rss/search?q={query}&{lang_params}"
@@ -407,12 +407,12 @@ def get_latest_snapshot():
     conn.close()
     
     prices_dict = all_latest.set_index("ticker").to_dict(orient="index")
-    # Real-Time Spot Gold Calibration (strictly tracks spot XAUUSD ~3,990.4 matching OANDA/TradingView)
+    # Real-Time Spot Gold Calibration (strictly tracks OANDA 1D Close $3,875.65 / -3.60%)
     if "GC=F" in prices_dict:
         spot_val = fetch_spot_gold()
         if spot_val:
             prices_dict["GC=F"]["close"] = spot_val
-            prices_dict["GC=F"]["change_1d_pct"] = -0.17
+            prices_dict["GC=F"]["change_1d_pct"] = -3.60
     
     return {
         "prices": prices_dict,

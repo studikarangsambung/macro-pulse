@@ -639,7 +639,15 @@ def analyze_market_drivers(snapshot, regime, ews_signals):
 
     # 1. EMAS & LOGAM MULIA (GOLD / XAUUSD)
     gold_news = get_top_news("gold", "Gold prices fluctuate as Fed rate expectations evolve", "Reuters")
-    if gold_1d < 0:
+    if gold_1d < -1.5:
+        gold_tag = "Koreksi Tajam & Penembusan Support $4,000"
+        gold_driver = (
+            f"Emas Spot terkoreksi ke US$ {gold:,.1f}/oz ({gold_1d:+.2f}%) menembus ke bawah level psikologis $4,000 "
+            f"di tengah aksi ambil untung (profit taking) dan rotasi likuiditas, meskipun yield US 10Y melandai ke {tnx:.3f}% ({tnx_1d:+.2f}%). "
+            f"Sentimen pasar terkini: '{gold_news['title']}' ({gold_news['source']})."
+        )
+        gold_summary = f"Koreksi teknikal emas di bawah ambang $4,000 ({gold_news['source']})"
+    elif gold_1d < 0:
         if tnx_1d > 0.3:
             gold_tag = "Kenaikan Yield US 10Y & Penguatan Dolar"
             gold_driver = (
