@@ -7,6 +7,7 @@ import os
 import sqlite3
 import datetime
 import requests
+import re
 import xml.etree.ElementTree as ET
 import pandas as pd
 import numpy as np
@@ -216,10 +217,20 @@ def fetch_spot_gold():
         print(f"Error fetching spot gold from fxratesapi: {e}")
     return None
 
-def fetch_rss_news(query, lang_params, category, limit=8):
+def fetch_rss_news(query, lang_params, category, max_items=6):
     url = f"https://news.google.com/rss/search?q={query}&{lang_params}"
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     news_items = []
+    
+    url_blacklist = [
+        "/price/", "/currencies/", "/crypto/", "/quote/",
+        "tradingview.com/symbols", "tradingview.com/chart",
+        "binance.com/en/price", "coinmarketcap.com/currencies",
+        "coingecko.com/en/coins", "finance.yahoo.com/quote"
+    ]
+    
+    seen_fingerprints = set()
+    
     try:
         r = requests.get(url, headers=headers, timeout=12)
         if r.status_code == 200:
@@ -227,7 +238,7 @@ def fetch_rss_news(query, lang_params, category, limit=8):
             channel = root.find("channel")
             if channel is not None:
                 items = channel.findall("item")
-                for it in items[:limit]:
+                for it in items:
                     title_elem = it.find("title")
                     link_elem = it.find("link")
                     pub_elem = it.find("pubDate")
@@ -238,12 +249,35 @@ def fetch_rss_news(query, lang_params, category, limit=8):
                     pub = pub_elem.text if pub_elem is not None else ""
                     source = source_elem.text if source_elem is not None else "Financial Media"
                     
+                    if not title or not link:
+                        continue
+                        
+                    # Filter URL Blacklist (Price tracker pages, charts)
+                    if any(b in link.lower() for b in url_blacklist):
+                        continue
+                        
+                    # Filter Language (Exclude East Asian script for ID/EN audience)
+                    if re.search(r'[\uac00-\ud7a3\u3040-\u30ff\u4e00-\u9fff]', title):
+                        continue
+                        
                     # Clean title if it ends with " - Source Name"
                     if " - " in title:
-                        title_clean = title.rsplit(" - ", 1)[0]
+                        title_clean = title.rsplit(" - ", 1)[0].strip()
                     else:
-                        title_clean = title
+                        title_clean = title.strip()
                         
+                    # Filter Regional municipal non-macro news for Indonesia
+                    title_lower = title_clean.lower()
+                    if category == "indonesia" and any(w in title_lower for w in ["qris di pasar", "sulawesi tengah", "polres", "razia", "pemkot", "dinkes"]):
+                        continue
+                        
+                    # Deduplication via title fingerprint (first 4 significant words)
+                    words = [w for w in re.sub(r'[^\w\s]', '', title_lower).split() if len(w) > 3][:4]
+                    fingerprint = " ".join(words)
+                    if fingerprint and fingerprint in seen_fingerprints:
+                        continue
+                    seen_fingerprints.add(fingerprint)
+                    
                     news_items.append({
                         "category": category,
                         "title": title_clean,
@@ -251,6 +285,9 @@ def fetch_rss_news(query, lang_params, category, limit=8):
                         "link": link,
                         "pub_date": pub
                     })
+                    
+                    if len(news_items) >= max_items:
+                        break
     except Exception as e:
         print(f"Error fetching RSS for {category}: {e}")
     return news_items
@@ -261,34 +298,34 @@ def sync_news_data():
     
     # 1. Emas & Logam Mulia (Gold / XAUUSD)
     gold_items = fetch_rss_news(
-        query="gold+price+OR+xauusd+OR+bullion+fall+OR+drop+OR+rally+when:2d",
+        query="gold+price+OR+xauusd+bullion+rally+OR+drop+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="gold",
-        limit=6
+        max_items=6
     )
 
     # 2. Minyak Mentah & Energi (Crude Oil / WTI / Brent)
     oil_items = fetch_rss_news(
-        query="crude+oil+OR+wti+OR+brent+price+fall+OR+drop+OR+rally+when:2d",
+        query="crude+oil+OR+wti+OR+brent+price+supply+OR+opec+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="oil",
-        limit=6
+        max_items=6
     )
 
-    # 3. Kripto & Bitcoin (BTC / Crypto / Liquidations / ETF)
+    # 3. Kripto & Bitcoin (BTC / Crypto Market / Spot ETF)
     crypto_items = fetch_rss_news(
-        query="bitcoin+OR+crypto+price+fall+OR+drop+OR+rally+OR+binance+when:2d",
+        query="bitcoin+OR+crypto+market+rally+OR+etf+OR+selloff+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="crypto",
-        limit=6
+        max_items=6
     )
 
     # 4. Dollar AS & Yield US Treasuries (DXY / US 10Y)
     dollar_items = fetch_rss_news(
-        query="us+dollar+OR+dxy+OR+treasury+yields+rise+OR+fall+when:2d",
+        query="us+dollar+index+OR+dxy+OR+treasury+yields+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="dollar",
-        limit=6
+        max_items=6
     )
 
     # 5. Wall Street & Big Tech (Nasdaq / S&P 500 / AI capex / Semiconductors)
@@ -296,23 +333,23 @@ def sync_news_data():
         query="nasdaq+OR+big+tech+OR+nvidia+OR+semiconductors+stocks+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="tech",
-        limit=6
+        max_items=6
     )
 
-    # 6. Indonesia (IHSG, Rupiah, Bank Indonesia, MSCI)
+    # 6. Indonesia (IHSG, Rupiah, Bank Indonesia, Pasar Modal)
     indo_items = fetch_rss_news(
-        query="rupiah+OR+ihsg+OR+\"bank+indonesia\"+when:2d",
+        query="rupiah+OR+ihsg+OR+\"bank+indonesia\"+saham+OR+\"pasar+modal\"+when:2d",
         lang_params="hl=id&gl=ID&ceid=ID:id",
         category="indonesia",
-        limit=6
+        max_items=6
     )
 
     # 7. Makro Global & Kebijakan The Fed
     global_items = fetch_rss_news(
-        query="macro+economy+OR+federal+reserve+interest+rates+when:2d",
+        query="federal+reserve+interest+rates+OR+fomc+OR+global+economy+inflation+when:2d",
         lang_params="hl=en-US&gl=US&ceid=US:en",
         category="global",
-        limit=6
+        max_items=6
     )
 
     all_items = gold_items + oil_items + crypto_items + dollar_items + tech_items + indo_items + global_items

@@ -168,7 +168,11 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     eng_month = wib_now.strftime("%B")
     day_str = indo_days.get(eng_day, eng_day)
     month_str = indo_months.get(eng_month, eng_month)
-    trade_date_str = f"{day_str}, {wib_now.day} {month_str} {wib_now.year}"
+    is_weekend = eng_day in ["Saturday", "Sunday"]
+    if is_weekend:
+        trade_header = f"Weekend Macro Pulse (Refleksi Penutupan Akhir Pekan, Per {day_str} {wib_now.day} {month_str} {wib_now.year})"
+    else:
+        trade_header = f"Global Market Review (Update Perdagangan: {trade_date_str})"
     
     prices = snapshot.get("prices", {})
     net_liq = snapshot.get("net_liquidity", {})
@@ -183,7 +187,7 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     sol = prices.get("SOL-USD", {}).get("close", 0)
     sol_chg = prices.get("SOL-USD", {}).get("change_1d_pct", 0)
     
-    usdidr = prices.get("USDIDR=X", {}).get("close", 18100)
+    usdidr = prices.get("USDIDR=X", {}).get("close", 18120)
     usdidr_chg = prices.get("USDIDR=X", {}).get("change_1d_pct", 0)
     eido = prices.get("EIDO", {}).get("close", 10.45)
     eido_chg = prices.get("EIDO", {}).get("change_1d_pct", 0)
@@ -198,9 +202,9 @@ def generate_whatsapp_broadcast(snapshot, ews_signals, regime, corrs, sectors, c
     elif net_liq_chg > 0:
         liq_status = "Ekspansi Moderat"
     elif net_liq_chg > -50:
-        liq_status = "Kontraksi Ringan"
+        liq_status = "Pengetatan Likuiditas Moderat"
     else:
-        liq_status = "Penarikan Likuiditas Agresif"
+        liq_status = "Pengetatan Likuiditas Signifikan"
     
     # Altseason Status
     if eth_btc_ratio < 0.035:
@@ -278,18 +282,17 @@ TRANSMISI KE PASAR MODAL INDONESIA
 • Kebijakan Bank Indonesia: {indo_macro['bi_status']}
 • Analisis: {indo_macro['summary']}"""
 
-    msg = f"""Global Market Review
-(Update Perdagangan: {trade_date_str})
-
+    msg = f"""{trade_header}
+ 
 {chain_section}
-
+ 
 ━━━━━━━━━━━━━━━━━━━━━
 LIKUIDITAS THE FED (H.4.1 BALANCE SHEET)
 • Likuiditas Bersih: US$ {net_liq_val:,.1f} Miliar
 • Perubahan 4 Pekan: {net_liq_chg:+.1f} Miliar ({liq_status})
 • Komponen Neraca: Total Aset Fed (WALCL) - Saldo Depkeu (TGA) - Reverse Repo (RRP)
-• Catatan Pembaruan: Rilis resmi mingguan setiap Kamis sore waktu US (Jumat ~03:30 WIB)
-
+• Catatan Pembaruan: Rilis resmi mingguan setiap Kamis sore waktu US (Jumat ~04:30 WIB pasca-akhir Daylight Saving Time / EST)
+ 
 ━━━━━━━━━━━━━━━━━━━━━
 DYNAMICS & SENTIMEN PASAR KRIPTO
 • Bitcoin (BTC): US$ {btc:,.0f} (1D: {btc_chg:+.2f}% | 20D: {btc_20d:+.2f}%)
@@ -300,10 +303,10 @@ DYNAMICS & SENTIMEN PASAR KRIPTO
 {crypto_news_str}
 {cal_block}
 {indo_block}
-
+ 
 ━━━━━━━━━━━━━━━━━━━━━
 SUMBER DATA & SENTIMEN TERVERIFIKASI
-• Pasar & Ekuitas: Yahoo Finance, S&P Dow Jones Indices, CBOE, Bank Indonesia & Binance API
+• Pasar & Ekuitas: Yahoo Finance (S&P 500, Nasdaq, Sektor US, Komoditas), FXRatesAPI (Spot Gold XAUUSD) & Binance API
 • Neraca & Likuiditas: Federal Reserve Bank of St. Louis (FRED® API)
 • Media & Sentimen Berita: {sources_str}
 

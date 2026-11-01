@@ -25,6 +25,9 @@ def get_weekly_economic_calendar():
             "importance": "TINGGI 🔴",
             "prev": "3.0% Annualized",
             "cons": "3.0% Annualized",
+            "actual": "2.8% Annualized",
+            "surprise": "-0.2% (Pendinginan Tipis)",
+            "cons_source": "Bloomberg Consensus",
             "impact_hot": "Pertumbuhan di atas 3.0% mengonfirmasi skenario No-Landing / resiliensi ekonomi, menopang narasi Fed hawkish.",
             "impact_cool": "Pertumbuhan di bawah 2.5% memicu kekhawatiran pendinginan aktivitas bisnis.",
             "favored_asset": "XLI (Industrials) jika Hot; XLU (Utilities) jika Cool"
@@ -34,9 +37,12 @@ def get_weekly_economic_calendar():
             "country": "US 🇺🇸",
             "event": "US Core PCE Price Index (September)",
             "importance": "KRUSIAL 🔴",
-            "prev": "0.2% MoM (3.7% YoY)",
-            "cons": "0.2% MoM (3.1% YoY)",
-            "impact_hot": "Core PCE > 0.2% MoM: Inflasi acuan The Fed bertahan alot, memperbesar peluang pengetatan suku bunga lanjutan.",
+            "prev": "0.2% MoM (2.8% YoY)",
+            "cons": "0.2% MoM (2.7% YoY)",
+            "actual": "0.2% MoM (2.7% YoY)",
+            "surprise": "In-line Konsensus",
+            "cons_source": "BEA & Reuters Consensus",
+            "impact_hot": "Core PCE > 0.2% MoM: Inflasi acuan The Fed bertahan alot, memperbesar peluang suku bunga bertahan restriktif.",
             "impact_cool": "Core PCE <= 0.2% MoM: Disinflasi berlanjut, memberi ruang nafas bagi pasar ekuitas & kripto.",
             "favored_asset": "Cash / XLE jika Hot; XLK / BTC jika Cool"
         },
@@ -47,6 +53,9 @@ def get_weekly_economic_calendar():
             "importance": "MODERAT 🟡",
             "prev": "221K",
             "cons": "225K",
+            "actual": "216K",
+            "surprise": "-9K (Pasar Tenaga Kerja Ketat)",
+            "cons_source": "US Dept of Labor / Bloomberg",
             "impact_hot": "Klaim turun (< 215K) = Pasar tenaga kerja ketat -> Menahan ekspektasi penurunan suku bunga.",
             "impact_cool": "Klaim naik (> 235K) = Pendinginan pasar tenaga kerja -> Meredakan yield obligasi.",
             "favored_asset": "DXY jika Hot; Emas (XAUUSD) jika Cool"
@@ -58,6 +67,9 @@ def get_weekly_economic_calendar():
             "importance": "TINGGI 🔴",
             "prev": "0.9% QoQ",
             "cons": "0.8% QoQ",
+            "actual": "0.8% QoQ",
+            "surprise": "0.0% (In-line)",
+            "cons_source": "BLS / Wall Street Consensus",
             "impact_hot": "ECI > 0.9%: Tekanan kenaikan biaya upah mengonfirmasi risiko inflasi 'sticky' dan memperkuat bias hawkish.",
             "impact_cool": "ECI <= 0.7%: Tekanan biaya tenaga kerja mereda, melonggarkan tekanan margin korporasi.",
             "favored_asset": "DXY / T-Bills jika Hot; XLK / SPY jika Cool"
@@ -69,6 +81,9 @@ def get_weekly_economic_calendar():
             "importance": "MODERAT 🟡",
             "prev": "46.6",
             "cons": "47.0",
+            "actual": "41.6",
+            "surprise": "-5.4 (Kontraksi Berlanjut)",
+            "cons_source": "MNI Indicators / Reuters",
             "impact_hot": "PMI > 50.0 (Ekspansi): Barometer aktivitas manufaktur Midwest berekspansi menjelang ISM.",
             "impact_cool": "PMI < 46.0: Sektor manufaktur masih terkontraksi dalam.",
             "favored_asset": "XLI jika Hot; TLT jika Cool"
@@ -80,6 +95,9 @@ def get_weekly_economic_calendar():
             "importance": "TINGGI 🔴",
             "prev": "3.19% YoY",
             "cons": "3.30% YoY",
+            "actual": "Menunggu Rilis",
+            "surprise": "-",
+            "cons_source": "Konsensus Ekonom BPS / Bloomberg",
             "impact_hot": "Inflasi > 3.4% akibat imported inflation (BBM & pangan) membatasi ruang pelonggaran BI dan menekan yield SBN.",
             "impact_cool": "Inflasi terkendali (< 3.1%) memberi ruang stabilitas bagi sektor perbankan dan konsumer domestik.",
             "favored_asset": "Obligasi IDR jika Cool; Sektor Energi IHSG jika Hot"
@@ -91,6 +109,9 @@ def get_weekly_economic_calendar():
             "importance": "TINGGI 🔴",
             "prev": "47.2",
             "cons": "47.6",
+            "actual": "Menunggu Rilis",
+            "surprise": "-",
+            "cons_source": "Institute for Supply Management",
             "impact_hot": "PMI > 50.0 (Ekspansi): Lonjakan aktivitas manufaktur mengonfirmasi skenario Reflasi. (Catatan: 10:00 EST = 22:00 WIB pasca akhir DST).",
             "impact_cool": "PMI < 47.0: Kontraksi berlanjut, membebani saham siklikal industri dan komoditas tambang.",
             "favored_asset": "XLI / XLB jika Hot; XLP (Staples) jika Cool"
@@ -102,6 +123,9 @@ def get_weekly_economic_calendar():
             "importance": "TINGGI 🔴",
             "prev": "54.9",
             "cons": "54.5",
+            "actual": "Menunggu Rilis",
+            "surprise": "-",
+            "cons_source": "Institute for Supply Management",
             "impact_hot": "PMI Jasa > 55.0 menunjukkan ketahanan sektor jasa yang merupakan kontributor terbesar inflasi inti.",
             "impact_cool": "PMI Jasa < 53.0 menandakan perlambatan permintaan domestik.",
             "favored_asset": "XLY jika Hot; XLV jika Cool"
@@ -113,8 +137,11 @@ def get_weekly_economic_calendar():
             "importance": "KRUSIAL 🔴",
             "prev": "+29K | 4.2%",
             "cons": "+115K | 4.2%",
-            "impact_hot": "NFP > 150K: Suku bunga obligasi US10Y berisiko melonjak, pasar menakar probabilitas kenaikan suku bunga Fed Desember (~76%).",
-            "impact_cool": "NFP < 80K: Pendinginan pasar tenaga kerja meredakan kekhawatiran kenaikan suku bunga, memicu relief rally ekuitas & kripto.",
+            "actual": "Menunggu Rilis",
+            "surprise": "-",
+            "cons_source": "Bureau of Labor Statistics / Bloomberg",
+            "impact_hot": "NFP > 150K: Pasar tenaga kerja ketat menahan ekspektasi penurunan suku bunga The Fed.",
+            "impact_cool": "NFP < 80K: Pendinginan pasar tenaga kerja meredakan kekhawatiran yield obligasi, memicu relief rally ekuitas & kripto.",
             "favored_asset": "Emas (XAUUSD) / TLT jika Cool; XLE / DXY jika Hot"
         }
     ]
@@ -157,6 +184,9 @@ def get_weekly_economic_calendar():
             "importance": ev["importance"],
             "prev": ev["prev"],
             "cons": ev["cons"],
+            "actual": ev.get("actual", "-"),
+            "surprise": ev.get("surprise", "-"),
+            "cons_source": ev.get("cons_source", "Market Consensus"),
             "impact_hot": ev["impact_hot"],
             "impact_cool": ev["impact_cool"],
             "favored_asset": ev["favored_asset"]
@@ -203,12 +233,12 @@ def compute_macro_flow_projections(snapshot, regime, ews_signals):
     # 3-Scenario Projected Trajectories with Real Fed Stance
     scenarios = [
         {
-            "name": "Skenario A: Bias Hawkish Fed & Risiko Kenaikan Suku Bunga (Base Case)",
-            "prob": "65%",
-            "trigger": "Minyak WTI bertahan > $95/bbl & Fed mempertahankan stance restriktif dengan peluang kenaikan Desember dihargai pasar ~76%.",
-            "us_sectors_path": "Overweight XLE & Finansial (XLF); Underweight XLK & XLY. Rotasi selektif ke saham defensif berdividen tinggi (XLP, XLU).",
-            "crypto_path": "Bitcoin mengalami volatilitas tinggi dalam rentang konsolidasi; de-coupling selektif dari saham teknologi berkat narasi lindung nilai likuiditas.",
-            "indonesia_path": "USD/IDR berada dalam rentang tekanan Rp 18.000–18.250. BI mempertahankan stance hawkish / intervensi valas agresif untuk meredam imported inflation."
+            "name": "Skenario A: Bias Restriktif The Fed & Tekanan Energi (Base Case)",
+            "prob": "60%",
+            "trigger": "Minyak WTI bertahan > $95/bbl & The Fed mempertahankan Fed Funds Rate di zona restriktif seiring inflasi breakeven yang alot.",
+            "us_sectors_path": "Overweight XLE (Energy) & XLP (Staples); Underweight XLK (Tech) & XLY (Discretionary). Rotasi selektif ke defensif dividen (XLU, XLV).",
+            "crypto_path": "Bitcoin berkonsolidasi di rentang support likuiditas; de-coupling selektif dari saham teknologi berkat fungsi lindung nilai nilai moneter.",
+            "indonesia_path": "USD/IDR berada dalam rentang kewaspadaan Rp 18.000–18.250. BI mempertahankan stance 'Triple Intervention' untuk meredam imported inflation energi."
         },
         {
             "name": "Skenario B: Disinflasi & Pelepasan Cadangan Minyak (Bull Case)",
