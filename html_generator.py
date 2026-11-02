@@ -141,6 +141,17 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         else:
             return f'<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>{status}</span>'
 
+    def render_news_pill(news_dict):
+        if not news_dict or not news_dict.get("available"):
+            return '<div class="p-2 rounded-xl bg-white/60 border border-linen-200 text-[11px] text-stone-400 italic font-mono">Tidak ada berita terkait yang selaras arah di feed saat ini.</div>'
+        t = str(news_dict.get("title", "")).replace('"', "&quot;")
+        s = str(news_dict.get("source", ""))
+        l = str(news_dict.get("link", "#"))
+        return f'''<a href="{l}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
+            <span class="font-bold text-forest-800">Berita Terkait:</span> "{t}" 
+            <span class="font-mono text-stone-400">({s}) &#x2197;</span>
+        </a>'''
+
     def chg_badge(val):
         if val > 0:
             return f'<span class="text-emerald-700 font-semibold">+{val:.2f}%</span>'
@@ -361,7 +372,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
                         <div class="text-lg font-extrabold text-white font-mono">
-                            {f"{indo_macro.get('ihsg_val', 0):,.2f}" if indo_macro.get('ihsg_val', 0) > 0 else "5,032.44"}
+                            {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}
                         </div>
                         <div class="text-xs font-semibold">{chg_badge(indo_macro.get('ihsg_chg', 0))}</div>
                     </div>
@@ -374,7 +385,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <span class="text-[10px] text-amber-300 font-semibold">{indo_macro.get('kurs_status', 'KURS')}</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">Rp {prices.get('USDIDR=X', {}).get('close', 18133):,.0f}</div>
+                        <div class="text-lg font-extrabold text-white font-mono">{f"Rp {prices['USDIDR=X']['close']:,.0f}" if prices.get('USDIDR=X', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('USDIDR=X', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
@@ -388,7 +399,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <span class="text-[10px] text-amber-300 font-semibold uppercase tracking-wider font-mono">Spot</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">${prices.get('GC=F', {}).get('close', 3990.4):,.1f}</div>
+                        <div class="text-lg font-extrabold text-white font-mono">{f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', -0.17))}</div>
                     </div>
                 </div>
@@ -400,7 +411,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <span class="text-[10px] text-rose-300 font-semibold">Risk Benchmark</span>
                     </div>
                     <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">{prices.get('^TNX', {}).get('close', 5.045):.3f}%</div>
+                        <div class="text-lg font-extrabold text-white font-mono">{f"{prices['^TNX']['close']:.3f}%" if prices.get('^TNX', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('^TNX', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
@@ -459,48 +470,49 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>Klasifikasi 4-Kuadran Makro (Pertumbuhan vs Inflasi):</span>
                                 <span class="font-mono text-[10px] text-stone-500">Model Backtest Empiris 54 Tahun (1970–2024)</span>
                             </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                                 <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'REFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
                                     <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
                                         <span>Kuadran I</span>
-                                        <span class="font-mono text-[10px]">{regime.get('probabilities', {}).get('reflasi', 10.0)}%</span>
+                                        <span class="font-mono text-[10px]">Rotasi Siklikal</span>
                                     </div>
                                     <div class="font-bold">Reflasi</div>
-                                    <div class="text-[10px] opacity-80">Growth ↑ · Inflasi ↑</div>
+                                    <div class="text-[10px] opacity-80">Minyak &gt; $80 &bull; Yield &gt; 4.2%</div>
                                 </div>
                                 <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DISINFLASI_BOOM' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
                                     <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
                                         <span>Kuadran II</span>
-                                        <span class="font-mono text-[10px]">{regime.get('probabilities', {}).get('disinflasi', 5.0)}%</span>
+                                        <span class="font-mono text-[10px]">Ekspansi Likuiditas</span>
                                     </div>
                                     <div class="font-bold">Disinflasi Boom</div>
-                                    <div class="text-[10px] opacity-80">Growth ↑ · Inflasi ↓</div>
+                                    <div class="text-[10px] opacity-80">Likuiditas +20B &bull; VIX &lt; 20</div>
                                 </div>
                                 <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'STAGFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
                                     <div class="text-[9px] uppercase tracking-wider text-sprout flex items-center justify-between">
-                                        <span>Kuadran III (Dominan)</span>
-                                        <span class="font-mono text-[10px] text-white">{regime.get('probabilities', {}).get('stagflasi', 65.0)}%</span>
+                                        <span>Kuadran III</span>
+                                        <span class="font-mono text-[10px] {'text-white' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-500'}">Aktif</span>
                                     </div>
-                                    <div class="font-bold text-white">Stagflasi Energi</div>
-                                    <div class="text-[10px] text-sprout">Growth ↓ · Inflasi ↑</div>
+                                    <div class="font-bold {'text-white' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-800'}">Stagflasi Energi</div>
+                                    <div class="text-[10px] {'text-sprout' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-500'}">Minyak &gt; $88 &bull; Yield &gt; 4.5%</div>
                                 </div>
                                 <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DEFLASI_KONTRAKSI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
                                     <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
                                         <span>Kuadran IV</span>
-                                        <span class="font-mono text-[10px]">{regime.get('probabilities', {}).get('deflasi', 20.0)}%</span>
+                                        <span class="font-mono text-[10px]">Defensif</span>
                                     </div>
                                     <div class="font-bold">Deflasi Kontraksi</div>
-                                    <div class="text-[10px] opacity-80">Growth ↓ · Inflasi ↓</div>
+                                    <div class="text-[10px] opacity-80">Volatilitas / Perlambatan</div>
                                 </div>
                             </div>
                             
                             <!-- Empirical Macro Metrics Strip -->
                             <div class="mt-2.5 p-2.5 rounded-xl bg-linen-100/90 border border-linen-300 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono">
-                                <div><span class="text-stone-500">Pertumbuhan (Growth):</span> <b class="text-forest-900">{regime.get('growth_label', 'Melambat')} ({regime.get('growth_score', -0.35):+.2f})</b></div>
-                                <div><span class="text-stone-500">Tekanan Inflasi:</span> <b class="text-forest-900">{regime.get('inflation_label', 'Tinggi')} ({regime.get('inflation_score', 0.45):+.2f})</b></div>
-                                <div><span class="text-stone-500">10Y Breakeven:</span> <b class="text-forest-900">{regime.get('breakeven_inflation_10y', 2.26):.2f}%</b></div>
-                                <div><span class="text-stone-500">Rasio Copper/Gold:</span> <b class="text-forest-900">{regime.get('copper_gold_ratio', 1.63):.3f}</b></div>
+                                <div><span class="text-stone-500">Minyak WTI:</span> <b class="text-forest-900">${prices.get('CL=F', {}).get('close', 0):.2f}</b> <span class="text-stone-400">(Syarat: &gt;$88)</span></div>
+                                <div><span class="text-stone-500">US 10Y Yield:</span> <b class="text-forest-900">{prices.get('^TNX', {}).get('close', 0):.3f}%</b> <span class="text-stone-400">(Syarat: &gt;4.50%)</span></div>
+                                <div><span class="text-stone-500">CBOE VIX:</span> <b class="text-forest-900">{prices.get('^VIX', {}).get('close', 0):.2f}</b> <span class="text-stone-400">(Syarat: &lt;22)</span></div>
+                                <div><span class="text-stone-500">Likuiditas 4W:</span> <b class="text-forest-900">{chg_liq_str}</b> <span class="text-stone-400">({liq_status})</span></div>
                             </div>
+                        </div>
                         </div>
                     </div>
 
@@ -572,8 +584,8 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             <div class="natural-card p-6 sm:p-7 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
                     <div>
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Kausalitas & Atribusi Pasar Terkini</div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900">Mengapa Aset Bergerak Hari Ini? (Market Drivers)</h3>
+                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Arah Pasar & Berita Terkait</div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900">Pergerakan Aset & Berita Terkait (Market Drivers)</h3>
                     </div>
                     <div class="text-xs text-stone-500 font-mono flex items-center gap-1.5 bg-linen-100 px-3 py-1 rounded-full border border-linen-200">
                         <span class="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
@@ -601,10 +613,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 {market_drivers.get('gold', {}).get('driver', 'Emas bergerak merefleksikan ekspektasi suku bunga riil dan premi safe-haven.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('gold', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('gold', {}).get('news', {}).get('title', 'Gold slips as higher oil, US inflation data bolster Fed hike bets')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('gold', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("gold", {}).get("news"))}
                     </div>
 
                     <!-- Driver 2: Bitcoin & Kripto -->
@@ -626,10 +635,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 {market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('crypto', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('crypto', {}).get('news', {}).get('title', 'Bitcoin price volatility intensifies in derivative markets')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('crypto', {}).get('news', {}).get('source', 'CoinDesk')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("crypto", {}).get("news"))}
                     </div>
 
                     <!-- Driver 3: Minyak Mentah WTI -->
@@ -651,10 +657,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 {market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('oil', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('oil', {}).get('news', {}).get('title', 'Oil prices react to supply developments and global demand')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('oil', {}).get('news', {}).get('source', 'Reuters')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("oil", {}).get("news"))}
                     </div>
 
                     <!-- Driver 4: Dollar AS & Yield 10Y -->
@@ -676,10 +679,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 {market_drivers.get('dollar', {}).get('driver', 'Yield obligasi dan indeks dolar merefleksikan arah kebijakan suku bunga The Fed.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('dollar', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('dollar', {}).get('news', {}).get('title', 'Treasury yields and dollar adjust ahead of key economic data')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('dollar', {}).get('news', {}).get('source', 'WSJ')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("dollar", {}).get("news"))}
                     </div>
 
                     <!-- Driver 5: Wall Street & Big Tech -->
@@ -701,10 +701,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 {market_drivers.get('tech', {}).get('driver', 'Wall Street mencermati valuasi laba emiten teknologi dan belanja infrastruktur AI.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('tech', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('tech', {}).get('news', {}).get('title', 'Tech equities react to earnings guidance and rate path')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('tech', {}).get('news', {}).get('source', 'Bloomberg')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("tech", {}).get("news"))}
                     </div>
 
                     <!-- Driver 6: IHSG & Pasar Modal Indonesia -->
@@ -719,17 +716,14 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 </span>
                             </div>
                             <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>IHSG: {indo_macro.get('ihsg_val', 5032.44):,.2f}</span>
-                                <span>USD/IDR: Rp {indo_macro.get('usdidr_val', 18140):,.0f}</span>
+                                <span>IHSG: {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}</span>
+                                <span>USD/IDR: {f"Rp {indo_macro['usdidr_val']:,.0f}" if indo_macro.get('usdidr_val') else "N/A"}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
                                 {market_drivers.get('indonesia', {}).get('driver', 'IHSG dan Rupiah dipengaruhi oleh aliran modal asing dan kebijakan stabilitas Bank Indonesia.')}
                             </p>
                         </div>
-                        <a href="{market_drivers.get('indonesia', {}).get('news', {}).get('link', '#')}" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-                            <span class="font-bold text-forest-800">Sentimen:</span> "{market_drivers.get('indonesia', {}).get('news', {}).get('title', 'BI jaga stabilitas nilai tukar Rupiah di tengah dinamika eksternal')}" 
-                            <span class="font-mono text-stone-400">({market_drivers.get('indonesia', {}).get('news', {}).get('source', 'CNBC Indonesia')}) ↗</span>
-                        </a>
+                        {render_news_pill(market_drivers.get("indonesia", {}).get("news"))}
                     </div>
                 </div>
 
@@ -1115,7 +1109,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     </table>
                 </div>
                 <div class="pt-3 border-t border-linen-200 text-[11px] text-stone-500 leading-relaxed">
-                    <b>Metodologi Scorecard & Alokasi:</b> Rekomendasi menggabungkan kuantitatif momentum (bobot 40%: 1D 20%, 5D 30%, 20D 50%) dengan overlay rezim makro siklikal (bobot 60%). Sektor defensif dengan momentum tinggi memperoleh status <i>OVERWEIGHT TAKTIS</i> sebagai instrumen lindung nilai di tengah volatilitas.
+                    <b>Metodologi Scorecard & Alokasi:</b> Skor dihitung murni dari momentum harga (bobot: 1D 20%, 5D 30%, 20D 50%). Rekomendasi alokasi (Overweight, Underweight, Netral) menggabungkan skor momentum dengan klasifikasi sektor unggulan dan tertinggal dari rezim makro aktif. Hanya sektor utilitas, konsumer primer, dan kesehatan (XLU, XLP, XLV) yang dikategorikan defensif.
                 </div>
             </div>
 
@@ -1168,7 +1162,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">IHSG Spot (^JKSE)</div>
                         <div class="text-xl font-extrabold text-forest-900 font-mono">
-                            {f"{indo_macro.get('ihsg_val', 0):,.2f}" if indo_macro.get('ihsg_val', 0) > 0 else "5,032.44"}
+                            {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}
                         </div>
                         <div class="text-xs font-semibold">{chg_badge(indo_macro.get('ihsg_chg', 0))}</div>
                     </div>
@@ -1180,7 +1174,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">MSCI Indonesia (EIDO)</div>
                         <div class="text-xl font-extrabold text-forest-900 font-mono">${indo_macro.get('eido_val', 10.45):.2f}</div>
-                        <div class="text-xs text-stone-600 font-semibold">{indo_macro.get('ihsg_status', 'Netral')}</div>
+                        <div class="text-xs text-stone-600 font-semibold">{indo_macro.get('eido_status', 'N/A')}</div>
                     </div>
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1">
                         <div class="text-[11px] font-bold uppercase text-stone-500">Arah Kebijakan BI</div>
@@ -1217,7 +1211,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <p class="text-stone-600 leading-relaxed">Ketegangan kawasan Timur Tengah dan kuota pasokan OPEC+ menahan harga energi di atas $95–$100/barel, memicu 'cost-push inflation' di tingkat global.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
-                        <div class="font-bold text-forest-800">2. Jalur Emas Spot (${prices.get('GC=F', {}).get('close', 3990.4):,.1f}/oz)</div>
+                        <div class="font-bold text-forest-800">2. Jalur Emas Spot ({f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}/oz)</div>
                         <p class="text-stone-600 leading-relaxed">Emas bertahan di area elevasi tinggi mencerminkan peran aset jangkar lindung nilai geopolitik dan diversifikasi cadangan devisa global.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
