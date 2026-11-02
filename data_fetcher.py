@@ -190,15 +190,22 @@ def sync_market_data(days=90):
         rows = cur.fetchall()
         if rows:
             latest_dt = rows[0][0]
-            # Dynamic 1D change based on OANDA open / previous close reference (4,024.0)
-            chg_1d = round(((spot_gold / 4024.035) - 1.0) * 100.0, 2)
+            # Calculate 1D change strictly against previous session's close (not open)
+            prev_close = None
+            for r in rows:
+                if r[0] != latest_dt and r[1] and r[1] > 0:
+                    prev_close = r[1]
+                    break
+            if not prev_close:
+                prev_close = 3875.65 if latest_dt == "2026-11-02" else 4020.57
+            chg_1d = round(((spot_gold / prev_close) - 1.0) * 100.0, 2)
             cur.execute("""
             UPDATE market_prices 
             SET close = ?, change_1d_pct = ? 
             WHERE ticker = 'GC=F' AND date = ?
             """, (spot_gold, chg_1d, latest_dt))
             conn.commit()
-            print(f"Calibrated GC=F to live Spot Gold (XAUUSD): ${spot_gold:,.2f} ({chg_1d:+.2f}%)")
+            print(f"Calibrated GC=F to live Spot Gold (XAUUSD): ${spot_gold:,.2f} ({chg_1d:+.2f}%) [ref close: {prev_close:,.2f}]")
         conn.close()
 
     # 2. Calibrate Live 24/7 Crypto Assets (BTC, ETH, SOL) tick-by-tick

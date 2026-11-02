@@ -141,6 +141,19 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         else:
             return f'<span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>{status}</span>'
 
+    def clean_driver_text(d_text):
+        if not d_text:
+            return ""
+        for marker in [
+            "Berita pasar terkait:",
+            "Berita terkait (bukan klaim sebab):",
+            "Berita terkait:",
+            "Tidak ada berita relevan yang selaras arah di feed saat ini."
+        ]:
+            if marker in d_text:
+                d_text = d_text.split(marker)[0].strip()
+        return d_text.rstrip(". ") + "." if d_text else ""
+
     def render_news_pill(news_dict):
         if not news_dict or not news_dict.get("available"):
             return '<div class="p-2 rounded-xl bg-white/60 border border-linen-200 text-[11px] text-stone-400 italic font-mono">Tidak ada berita terkait yang selaras arah di feed saat ini.</div>'
@@ -167,7 +180,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>MACRO PULSE · Natural Horizon Terminal</title>
+    <title>MACRO PULSE &middot; Natural Horizon Terminal</title>
     <!-- Google Fonts: Plus Jakarta Sans (Open Sauce counterpart: clean geometric grotesque) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,7 +282,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             <!-- Brand & Tagline -->
             <div class="flex items-center gap-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-sprout animate-ping"></span>
-                <span class="font-bold tracking-wide uppercase text-sprout">Macro Pulse · Natural Horizon</span>
+                <span class="font-bold tracking-wide uppercase text-sprout">Macro Pulse &middot; Natural Horizon</span>
                 <span class="text-sage-300 hidden sm:inline">|</span>
                 <span class="text-sage-200 hidden sm:inline">US Sectors, Global Liquidity & Indonesia Transmission</span>
             </div>
@@ -524,7 +537,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <div>
                             <div class="text-xs font-semibold text-stone-500 uppercase">Early Warning Score</div>
                             <div class="text-sm font-bold text-forest-900">
-                                {regime['score_bahaya']} Bahaya · {regime['score_waspada']} Waspada
+                                {regime['score_bahaya']} Bahaya &middot; {regime['score_waspada']} Waspada
                             </div>
                             <div class="text-[10px] text-stone-500">
                                 Metodologi: {regime['score_bahaya']} dari 10 indikator terintegrasi di zona merah (&ge;3 = Tekanan Tinggi)
@@ -610,7 +623,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('gold', {}).get('driver', 'Emas bergerak merefleksikan ekspektasi suku bunga riil dan premi safe-haven.')}
+                                {clean_driver_text(market_drivers.get('gold', {}).get('driver', 'Emas bergerak merefleksikan ekspektasi suku bunga riil dan premi safe-haven.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("gold", {}).get("news"))}
@@ -632,7 +645,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.')}
+                                {clean_driver_text(market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("crypto", {}).get("news"))}
@@ -654,7 +667,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>{chg_badge(prices.get('CL=F', {}).get('change_1d_pct', 0))}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.')}
+                                {clean_driver_text(market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("oil", {}).get("news"))}
@@ -676,7 +689,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>10Y Yield: {prices.get('^TNX', {}).get('close', 0):.3f}%</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('dollar', {}).get('driver', 'Yield obligasi dan indeks dolar merefleksikan arah kebijakan suku bunga The Fed.')}
+                                {clean_driver_text(market_drivers.get('dollar', {}).get('driver', 'Yield obligasi dan indeks dolar merefleksikan arah kebijakan suku bunga The Fed.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("dollar", {}).get("news"))}
@@ -698,7 +711,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>SPY: {chg_badge(prices.get('SPY', {}).get('change_1d_pct', 0))}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('tech', {}).get('driver', 'Wall Street mencermati valuasi laba emiten teknologi dan belanja infrastruktur AI.')}
+                                {clean_driver_text(market_drivers.get('tech', {}).get('driver', 'Wall Street mencermati valuasi laba emiten teknologi dan belanja infrastruktur AI.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("tech", {}).get("news"))}
@@ -720,7 +733,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                                 <span>USD/IDR: {f"Rp {indo_macro['usdidr_val']:,.0f}" if indo_macro.get('usdidr_val') else "N/A"}</span>
                             </div>
                             <p class="text-xs text-stone-700 leading-relaxed">
-                                {market_drivers.get('indonesia', {}).get('driver', 'IHSG dan Rupiah dipengaruhi oleh aliran modal asing dan kebijakan stabilitas Bank Indonesia.')}
+                                {clean_driver_text(market_drivers.get('indonesia', {}).get('driver', 'IHSG dan Rupiah dipengaruhi oleh aliran modal asing dan kebijakan stabilitas Bank Indonesia.'))}
                             </p>
                         </div>
                         {render_news_pill(market_drivers.get("indonesia", {}).get("news"))}

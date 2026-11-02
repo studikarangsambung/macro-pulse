@@ -248,7 +248,7 @@ def generate_report_payload(snapshot, ews_signals, regime, corrs, sectors, crypt
 
     payload = {
         "timestamp": wib_now.strftime("%Y-%m-%d %H:%M:%S"),
-        "display_date": wib_now.strftime("%A, %d %B %Y · %H:%M WIB"),
+        "display_date": f"{wib_now.strftime('%A, %d %B %Y')} · {wib_now.strftime('%H:%M')} WIB",
         "iso_timestamp": wib_now.isoformat(),
         "regime": regime,
         "ews": ews_signals,

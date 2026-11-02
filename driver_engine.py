@@ -139,17 +139,20 @@ ASSET_KEYWORDS = {
 
 NOISE_TITLE = re.compile(
     r"live price|price today|market cap|price history|price chart|"
+    r"\brates? today\b|\brates? in \w+|\bjewellery\b|\b22k\b|\b24k\b|"
+    r"\bgarden city\b|\bper gram\b|\brate in [a-z]+\b|"
     r"\bfor [A-Z0-9]+:[A-Z0-9]+\b|\(btc-usd\)", re.I)
 NOISE_SOURCES = {"tradingview"}
 
 _NEG = re.compile(
     r"\b(drop|drops|dropped|fall|falls|fell|plunge|plunges|plunged|slump|slumps|"
     r"tumble|tumbles|sink|sinks|slide|slides|decline|declines|lower|sell-off|"
-    r"selloff|turun|anjlok|melemah|terkoreksi|jatuh)\b", re.I)
+    r"selloff|turun|anjlok|melemah|terkoreksi|jatuh|cut|cuts|cutting|slashed|slashing|"
+    r"dip|dips|losses|loses|retreats|retreating|down)\b", re.I)
 _POS = re.compile(
     r"\b(rise|rises|rose|surge|surges|surged|jump|jumps|rally|rallies|climb|"
     r"climbs|gain|gains|higher|rebound|rebounds|record high|naik|melonjak|"
-    r"menguat|reli)\b", re.I)
+    r"menguat|reli|raising|raise|raises|boost|boosts|spike|spikes|spiked|up)\b", re.I)
 _STOP = {"the", "and", "for", "with", "from", "after", "over", "here", "what", "know",
          "why", "how", "that", "this", "its", "are", "has", "have", "will", "not",
          "new", "into", "amid", "than", "dan", "yang", "untuk", "dari", "pada"}
@@ -219,7 +222,7 @@ def _news_ref(it):
 
 def _news_sentence(ref):
     if ref["available"]:
-        return f"Berita terkait (bukan klaim sebab): \"{ref['title']}\" ({ref['source']})."
+        return f"Berita pasar terkait: \"{ref['title']}\" ({ref['source']})."
     return "Tidak ada berita relevan yang selaras arah di feed saat ini."
 
 
