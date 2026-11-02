@@ -180,211 +180,370 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>MACRO PULSE &middot; Natural Horizon Terminal</title>
-    <!-- Google Fonts: Plus Jakarta Sans (Open Sauce counterpart: clean geometric grotesque) -->
+    <title>FINVIZ &middot; MACRO PULSE | Stock Screener & Cross-Asset Intelligence</title>
+    <!-- Google Fonts: Inter & JetBrains Mono for authentic Finviz terminal experience -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {{
+            darkMode: 'class',
             theme: {{
                 extend: {{
                     fontFamily: {{
-                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        sans: ['"Inter"', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
-                    }},
-                    colors: {{
-                        forest: {{
-                            900: '#1D2A14',
-                            800: '#2A3C1E',
-                            700: '#384C25', // Canva Primary Olive Forest
-                            600: '#486230',
-                            500: '#5F7F41',
-                        }},
-                        sage: {{
-                            700: '#4D5E39',
-                            600: '#5E7345',
-                            500: '#768A55', // Canva Sage Green
-                            400: '#8FA36E',
-                            300: '#ADC091',
-                            200: '#CFDCBC',
-                            100: '#E6EEDA',
-                            50: '#F4F7EF',
-                        }},
-                        sprout: '#D2E8B3', // Canva Accent Light Lime
-                        linen: {{
-                            50: '#FAFBF8',
-                            100: '#F4F6F0', // Canva Body Linen Background
-                            200: '#E9EFE3',
-                            300: '#DDE5D6',
-                            400: '#C7D3BD',
-                        }}
                     }}
                 }}
             }}
-        }}
+        }};
+
+        // Instant Finviz Theme Detection to prevent theme flicker
+        (function() {{
+            const savedTheme = localStorage.getItem('finviz_theme');
+            if (savedTheme === 'light') {{
+                document.documentElement.classList.remove('dark');
+            }} else {{
+                document.documentElement.classList.add('dark');
+            }}
+        }})();
     </script>
     <style>
+        :root {{
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }}
+
+        html.dark {{
+            color-scheme: dark;
+        }}
+        html:not(.dark) {{
+            color-scheme: light;
+        }}
+
         body {{
-            background-color: #F4F6F0;
-            color: #243019;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: var(--font-sans);
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.15s ease, color 0.15s ease;
         }}
-        .natural-card {{
-            background: #FFFFFF;
-            border: 1px solid #DCE5D3;
-            border-radius: 1.25rem;
-            box-shadow: 0 2px 10px rgba(46, 63, 33, 0.04);
-            transition: all 0.2s ease-in-out;
+
+        /* Finviz Dark Theme Base */
+        html.dark body {{
+            background-color: #0b0f17;
+            color: #cbd5e1;
         }}
-        .natural-card:hover {{
-            box-shadow: 0 6px 18px rgba(46, 63, 33, 0.07);
+        /* Finviz Light Theme Base */
+        html:not(.dark) body {{
+            background-color: #f1f4f8;
+            color: #0f172a;
         }}
-        .tab-btn.active {{
-            background-color: #384C25;
-            color: #FFFFFF;
-            box-shadow: 0 2px 8px rgba(56, 76, 37, 0.25);
+
+        /* Finviz Cards & Containers */
+        .finviz-card, .natural-card {{
+            border-radius: 0.5rem;
+            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }}
-        .tab-btn:not(.active) {{
-            background-color: transparent;
-            color: #4D5E39;
+        html.dark .finviz-card, html.dark .natural-card {{
+            background-color: #131922 !important;
+            border: 1px solid #1f2937 !important;
+            color: #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         }}
-        .tab-btn:not(.active):hover {{
-            background-color: #E6EEDA;
-            color: #1D2A14;
+        html:not(.dark) .finviz-card, html:not(.dark) .natural-card {{
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }}
-        /* Price Flash Animation */
+
+        /* Inner Panels & Sub-boxes */
+        html.dark .bg-linen-50 {{ background-color: #17202c !important; }}
+        html.dark .bg-linen-100 {{ background-color: #1b2432 !important; }}
+        html.dark .bg-linen-100\\/90 {{ background-color: rgba(27, 36, 50, 0.95) !important; }}
+        html.dark .bg-linen-200 {{ background-color: #233042 !important; }}
+        html.dark .border-linen-200 {{ border-color: #233042 !important; }}
+        html.dark .border-linen-300 {{ border-color: #2a384c !important; }}
+        html.dark .bg-white {{ background-color: #131922 !important; }}
+        html.dark .bg-white\\/80 {{ background-color: rgba(19, 25, 34, 0.85) !important; }}
+        html.dark .bg-white\\/60 {{ background-color: rgba(19, 25, 34, 0.65) !important; }}
+
+        html:not(.dark) .bg-linen-50 {{ background-color: #f8fafc !important; }}
+        html:not(.dark) .bg-linen-100 {{ background-color: #f1f5f9 !important; }}
+        html:not(.dark) .bg-linen-100\\/90 {{ background-color: rgba(241, 245, 249, 0.95) !important; }}
+        html:not(.dark) .bg-linen-200 {{ background-color: #e2e8f0 !important; }}
+        html:not(.dark) .border-linen-200 {{ border-color: #e2e8f0 !important; }}
+        html:not(.dark) .border-linen-300 {{ border-color: #cbd5e1 !important; }}
+        html:not(.dark) .bg-white {{ background-color: #ffffff !important; }}
+        html:not(.dark) .bg-white\\/80 {{ background-color: rgba(255, 255, 255, 0.85) !important; }}
+        html:not(.dark) .bg-white\\/60 {{ background-color: rgba(255, 255, 255, 0.65) !important; }}
+
+        /* Forest color overrides for Finviz theme */
+        html.dark .bg-forest-900 {{ background-color: #161d27 !important; color: #f8fafc !important; }}
+        html.dark .bg-forest-800 {{ background-color: #1a2332 !important; color: #f8fafc !important; }}
+        html.dark .bg-forest-700 {{ background-color: #2563eb !important; color: #ffffff !important; }}
+        html.dark .bg-forest-600 {{ background-color: #3b82f6 !important; }}
+        html.dark .bg-forest-100 {{ background-color: #1e293b !important; color: #93c5fd !important; }}
+        html.dark .border-forest-800 {{ border-color: #1f2937 !important; }}
+        html.dark .border-forest-700 {{ border-color: #2a384c !important; }}
+        html.dark .border-forest-600 {{ border-color: #374151 !important; }}
+        html.dark .border-forest-200 {{ border-color: #233042 !important; }}
+
+        html:not(.dark) .bg-forest-900 {{ background-color: #0f172a !important; color: #ffffff !important; }}
+        html:not(.dark) .bg-forest-800 {{ background-color: #1e293b !important; color: #ffffff !important; }}
+        html:not(.dark) .bg-forest-700 {{ background-color: #1d4ed8 !important; color: #ffffff !important; }}
+        html:not(.dark) .bg-forest-600 {{ background-color: #2563eb !important; }}
+        html:not(.dark) .bg-forest-100 {{ background-color: #dbeafe !important; color: #1e40af !important; }}
+        html:not(.dark) .border-forest-800 {{ border-color: #cbd5e1 !important; }}
+        html:not(.dark) .border-forest-700 {{ border-color: #94a3b8 !important; }}
+        html:not(.dark) .border-forest-600 {{ border-color: #cbd5e1 !important; }}
+        html:not(.dark) .border-forest-200 {{ border-color: #e2e8f0 !important; }}
+
+        /* Typography & Headings */
+        html.dark .text-forest-900 {{ color: #f8fafc !important; }}
+        html.dark .text-forest-800 {{ color: #e2e8f0 !important; }}
+        html.dark .text-forest-700 {{ color: #94a3b8 !important; }}
+        html.dark .text-stone-900 {{ color: #f8fafc !important; }}
+        html.dark .text-stone-800 {{ color: #f1f5f9 !important; }}
+        html.dark .text-stone-700 {{ color: #cbd5e1 !important; }}
+        html.dark .text-stone-600 {{ color: #94a3b8 !important; }}
+        html.dark .text-stone-500 {{ color: #64748b !important; }}
+        html.dark .text-stone-400 {{ color: #475569 !important; }}
+        html.dark .text-sage-600 {{ color: #38bdf8 !important; }}
+        html.dark .text-sage-700 {{ color: #60a5fa !important; }}
+        html.dark .text-sage-300 {{ color: #94a3b8 !important; }}
+        html.dark .text-sage-200 {{ color: #cbd5e1 !important; }}
+        html.dark .text-sprout {{ color: #38bdf8 !important; }}
+
+        html:not(.dark) .text-forest-900 {{ color: #0f172a !important; }}
+        html:not(.dark) .text-forest-800 {{ color: #1e293b !important; }}
+        html:not(.dark) .text-forest-700 {{ color: #334155 !important; }}
+        html:not(.dark) .text-stone-900 {{ color: #0f172a !important; }}
+        html:not(.dark) .text-stone-800 {{ color: #1e293b !important; }}
+        html:not(.dark) .text-stone-700 {{ color: #334155 !important; }}
+        html:not(.dark) .text-stone-600 {{ color: #475569 !important; }}
+        html:not(.dark) .text-stone-500 {{ color: #64748b !important; }}
+        html:not(.dark) .text-stone-400 {{ color: #94a3b8 !important; }}
+        html:not(.dark) .text-sage-600 {{ color: #0284c7 !important; }}
+        html:not(.dark) .text-sage-700 {{ color: #0369a1 !important; }}
+        html:not(.dark) .text-sage-300 {{ color: #475569 !important; }}
+        html:not(.dark) .text-sage-200 {{ color: #334155 !important; }}
+        html:not(.dark) .text-sprout {{ color: #0284c7 !important; }}
+
+        /* Finviz Tables */
+        table {{ border-collapse: collapse; }}
+        html.dark table th {{
+            background-color: #17202c !important;
+            color: #94a3b8 !important;
+            border-bottom: 1px solid #233042 !important;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        html:not(.dark) table th {{
+            background-color: #eaedf2 !important;
+            color: #475569 !important;
+            border-bottom: 1px solid #cbd5e1 !important;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        html.dark table tbody tr:nth-child(even) {{ background-color: #10161f; }}
+        html.dark table tbody tr:nth-child(odd) {{ background-color: #131922; }}
+        html.dark table tbody tr:hover {{ background-color: #1d2736 !important; }}
+        html:not(.dark) table tbody tr:nth-child(even) {{ background-color: #f8fafc; }}
+        html:not(.dark) table tbody tr:nth-child(odd) {{ background-color: #ffffff; }}
+        html:not(.dark) table tbody tr:hover {{ background-color: #f1f5f9 !important; }}
+
+        /* Finviz Navigation Tabs */
+        .tab-btn {{
+            border: 1px solid transparent;
+            font-family: var(--font-mono);
+            border-radius: 0.375rem;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+        }}
+        html.dark .tab-btn.active {{
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+        }}
+        html.dark .tab-btn:not(.active) {{
+            background-color: #131922 !important;
+            color: #94a3b8 !important;
+            border-color: #1f2937 !important;
+        }}
+        html.dark .tab-btn:not(.active):hover {{
+            background-color: #1c2533 !important;
+            color: #f8fafc !important;
+            border-color: #374151 !important;
+        }}
+        html:not(.dark) .tab-btn.active {{
+            background-color: #1d4ed8 !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+        }}
+        html:not(.dark) .tab-btn:not(.active) {{
+            background-color: #ffffff !important;
+            color: #475569 !important;
+            border-color: #e2e8f0 !important;
+        }}
+        html:not(.dark) .tab-btn:not(.active):hover {{
+            background-color: #f1f5f9 !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }}
+
+        /* Footer */
+        html.dark footer {{
+            background-color: #0b0f17 !important;
+            border-color: #1f2937 !important;
+            color: #94a3b8 !important;
+        }}
+        html:not(.dark) footer {{
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #64748b !important;
+        }}
+
+        /* Broadcast Pre/Code Box */
+        html.dark #wa-text-content {{
+            background-color: #0b0f17 !important;
+            color: #38bdf8 !important;
+            border-color: #1f2937 !important;
+        }}
+        html:not(.dark) #wa-text-content {{
+            background-color: #f8fafc !important;
+            color: #0369a1 !important;
+            border-color: #cbd5e1 !important;
+        }}
+
+        /* Finviz Flashes */
         @keyframes flashGreen {{
-            0% {{ background-color: rgba(210, 232, 179, 0.8); }}
+            0% {{ background-color: rgba(16, 185, 129, 0.35); }}
             100% {{ background-color: transparent; }}
         }}
         @keyframes flashRed {{
-            0% {{ background-color: rgba(254, 205, 211, 0.8); }}
+            0% {{ background-color: rgba(239, 68, 68, 0.35); }}
             100% {{ background-color: transparent; }}
         }}
         .flash-up {{ animation: flashGreen 1s ease-out; }}
         .flash-down {{ animation: flashRed 1s ease-out; }}
-        
-        /* Custom clean scrollbar */
+
+        /* Custom Finviz Scrollbar */
         ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        ::-webkit-scrollbar-track {{ background: #F4F6F0; }}
-        ::-webkit-scrollbar-thumb {{ background: #CFDCBC; border-radius: 9999px; }}
-        ::-webkit-scrollbar-thumb:hover {{ background: #8FA36E; }}
+        html.dark ::-webkit-scrollbar-track {{ background: #0b0f17; }}
+        html.dark ::-webkit-scrollbar-thumb {{ background: #233042; border-radius: 9999px; }}
+        html.dark ::-webkit-scrollbar-thumb:hover {{ background: #374151; }}
+        html:not(.dark) ::-webkit-scrollbar-track {{ background: #f1f4f8; }}
+        html:not(.dark) ::-webkit-scrollbar-thumb {{ background: #cbd5e1; border-radius: 9999px; }}
+        html:not(.dark) ::-webkit-scrollbar-thumb:hover {{ background: #94a3b8; }}
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-sprout selection:text-forest-900">
+<body class="bg-[#f1f4f8] text-slate-900 dark:bg-[#0b0f17] dark:text-slate-100 min-h-screen font-sans transition-colors">
 
-    <!-- TOP ANNOUNCEMENT TICKER -->
-    <header class="bg-forest-900 text-linen-100 text-xs border-b border-forest-800 py-2 px-4 sm:px-8">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-            <!-- Brand & Tagline -->
-            <div class="flex items-center gap-3">
-                <span class="w-2.5 h-2.5 rounded-full bg-sprout animate-ping"></span>
-                <span class="font-bold tracking-wide uppercase text-sprout">Macro Pulse &middot; Natural Horizon</span>
-                <span class="text-sage-300 hidden sm:inline">|</span>
-                <span class="text-sage-200 hidden sm:inline">US Sectors, Global Liquidity & Indonesia Transmission</span>
+    <!-- TOP FINVIZ STATUS & TICKER BAR -->
+    <header class="bg-[#0b0f17] text-slate-200 text-xs border-b border-[#1f2937] py-2 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <!-- Finviz Brand & Subtitle -->
+            <div class="flex items-center gap-2.5">
+                <span class="px-2.5 py-0.5 rounded bg-blue-600 text-white font-extrabold text-sm tracking-widest font-mono shadow-sm">FINVIZ</span>
+                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">MACRO PULSE</span>
+                <span class="text-slate-500 hidden sm:inline font-mono">|</span>
+                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Global Screener & Cross-Asset Intelligence</span>
             </div>
 
-            <!-- Live Market Clocks -->
-            <div class="flex items-center gap-4 text-xs font-mono">
-                <div class="flex items-center gap-1.5 bg-forest-800/80 px-3 py-1 rounded-full border border-forest-700">
-                    <span class="text-sage-300">WIB (JKT):</span>
-                    <span id="live-clock-wib" class="font-bold text-linen-50">--:--:--</span>
+            <!-- Clocks, Session & Dark/Light Switcher -->
+            <div class="flex items-center gap-3 text-xs font-mono">
+                <div class="flex items-center gap-1.5 bg-[#161d27] px-2.5 py-1 rounded border border-[#232e3d]">
+                    <span class="text-slate-400">WIB:</span>
+                    <span id="live-clock-wib" class="font-bold text-white">--:--:--</span>
                 </div>
-                <div class="flex items-center gap-1.5 bg-forest-800/80 px-3 py-1 rounded-full border border-forest-700">
-                    <span id="ny-tz-label" class="text-sage-300">EDT (NYC):</span>
-                    <span id="live-clock-est" class="font-bold text-linen-50">--:--:--</span>
+                <div class="flex items-center gap-1.5 bg-[#161d27] px-2.5 py-1 rounded border border-[#232e3d]">
+                    <span id="ny-tz-label" class="text-slate-400">NYC:</span>
+                    <span id="live-clock-est" class="font-bold text-white">--:--:--</span>
                 </div>
                 {session_pill_html}
+
+                <!-- Dark Mode / Light Mode Switcher Button -->
+                <button id="theme-toggle" onclick="toggleFinvizTheme()" class="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-bold transition-all border border-[#2a384c] bg-[#161d27] text-slate-200 hover:bg-[#1e2736] hover:text-white cursor-pointer shadow-sm" title="Toggle Finviz Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-label" class="uppercase tracking-wider">DARK</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- MAIN HERO & LIVESTREAM STRIP WITH ROTATING NATURAL LANDSCAPE -->
-    <section id="hero-landscape-section" class="relative text-white pt-8 pb-10 px-4 sm:px-8 border-b border-forest-800 bg-cover bg-center transition-all duration-700 ease-in-out">
-        <!-- Natural Landscape Dark Overlay for Superior Legibility -->
-        <div class="absolute inset-0 bg-gradient-to-b from-forest-900/90 via-forest-800/85 to-forest-900/95 backdrop-blur-[1.5px]"></div>
-        
-        <div class="relative z-10 max-w-7xl mx-auto space-y-6">
-            
-            <!-- Hero Header Row -->
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="space-y-2 max-w-3xl">
-                    <!-- Status Capsule -->
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-forest-900/80 border border-forest-600/80 text-xs text-sprout font-medium shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-sprout"></span>
-                        <span>Database FRED & Sektor: <b class="text-white font-mono">{display_date}</b></span>
+    <!-- FINVIZ HERO & MARKET TICKER TILES -->
+    <section class="border-b border-slate-200 dark:border-[#1f2937] bg-white dark:bg-[#101620] px-4 sm:px-8 py-5 transition-colors">
+        <div class="max-w-7xl mx-auto space-y-4">
+            <!-- Header Row -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-mono bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span>DATABASE FRED & SEKTOR: <b class="font-mono text-slate-800 dark:text-slate-200">{display_date}</b></span>
                     </div>
-
-                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                        Navigasi Makroekonomi & Arus Modal
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase font-mono">
+                        Finviz &middot; Macro Pulse Screener & Cross-Asset Intelligence
                     </h1>
-                    <p class="text-sage-200 text-sm sm:text-base leading-relaxed">
-                        Sistem pemantauan point-in-time Federal Reserve, rotasi sektor S&P 500, dinamika kripto, serta transmisi kebijakan dan nilai tukar ke pasar modal Indonesia.
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                        Sistem pemantauan makroekonomi institusional, transmisi likuiditas global, rotasi 11 sektor S&P 500, dan transmisi IHSG.
                     </p>
                 </div>
-
-                <!-- Action Controls -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <button onclick="refreshAllData()" id="btn-refresh" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-forest-900/80 hover:bg-forest-900 border border-forest-600 text-sprout text-xs font-semibold transition-all shadow-sm">
-                        <svg id="sync-icon" class="w-4 h-4 text-sprout" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        <span id="btn-refresh-text">Refresh Data Pasar</span>
+                <div class="flex items-center gap-2.5">
+                    <button onclick="refreshAllData()" class="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow cursor-pointer">
+                        <span id="sync-icon">🔄</span>
+                        <span id="btn-refresh-text">Refresh Data</span>
                     </button>
-
-                    <a href="#tab-wa" onclick="switchTab('tab-wa')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sprout hover:bg-white text-forest-900 text-xs font-bold transition-all shadow-sm">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.586-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.299.144.347.491 1.2.534 1.287.043.087.072.188.014.303-.058.116-.087.188-.173.289l-.26.302c-.087.087-.179.182-.077.357.101.174.45 1.743 1.966 2.091.246.057.448.014.592-.043.144-.058.462-.534.592-.722.13-.188.26-.159.433-.087.173.072 1.097.518 1.285.612.188.094.318.144.364.223.046.079.046.462-.098.867z"/>
-                        </svg>
-                        Salin WhatsApp Broadcast
+                    <a href="https://github.com/studikarangsambung/macro-pulse" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-semibold bg-slate-100 dark:bg-[#161d27] hover:bg-slate-200 dark:hover:bg-[#1e2736] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-[#232e3d] transition-all">
+                        <span>GitHub</span> ↗
                     </a>
                 </div>
             </div>
 
-            <!-- Real-time Live Price Cards with Glassmorphism Over Nature Background -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
-                
+            <!-- Finviz 6 Key Assets Ticker Strip -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-1">
                 <!-- BTC Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-btc">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-sprout animate-pulse"></span>BTC / USD
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm" id="card-btc">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>BTC / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-emerald-500/10 text-emerald-500 font-bold">Live</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div id="live-btc" class="text-lg font-extrabold text-white font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div id="live-btc" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
                         <div id="live-btc-chg" class="text-xs font-semibold">{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- ETH Live -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md" id="card-eth">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>ETH / USD
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm" id="card-eth">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>ETH / USD
                         </span>
-                        <span class="text-[10px] uppercase tracking-wide text-sprout font-mono font-semibold">Live</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-blue-500/10 text-blue-500 font-bold">Live</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div id="live-eth" class="text-lg font-extrabold text-white font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div id="live-eth" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
                         <div id="live-eth-chg" class="text-xs font-semibold">{chg_badge(prices.get('ETH-USD', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- IHSG Spot (^JKSE) -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 transition-all hover:border-sprout/60 shadow-md">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>IHSG (^JKSE)
-                        </span>
-                        <span class="text-[10px] uppercase tracking-wide text-amber-300 font-mono font-semibold">{indo_macro.get('ihsg_status', 'Spot')}</span>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">IHSG (^JKSE)</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">{indo_macro.get('ihsg_status', 'Spot')}</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">
                             {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}
                         </div>
                         <div class="text-xs font-semibold">{chg_badge(indo_macro.get('ihsg_chg', 0))}</div>
@@ -392,67 +551,63 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- USD / IDR -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold">USD / IDR</span>
-                        <span class="text-[10px] text-amber-300 font-semibold">{indo_macro.get('kurs_status', 'KURS')}</span>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">USD / IDR</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">{indo_macro.get('kurs_status', 'Kurs')}</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">{f"Rp {prices['USDIDR=X']['close']:,.0f}" if prices.get('USDIDR=X', {}).get('close') else "N/A"}</div>
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"Rp {prices['USDIDR=X']['close']:,.0f}" if prices.get('USDIDR=X', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('USDIDR=X', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- XAUUSD (Gold Spot) -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>Emas (XAUUSD)
-                        </span>
-                        <span class="text-[10px] text-amber-300 font-semibold uppercase tracking-wider font-mono">Spot</span>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">Emas (XAUUSD)</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">Spot</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">{f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}</div>
-                        <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', -0.17))}</div>
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}</div>
+                        <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- US 10Y Yield -->
-                <div class="p-3.5 rounded-2xl bg-forest-900/85 backdrop-blur-md border border-forest-600/70 shadow-md">
-                    <div class="flex items-center justify-between text-xs text-sage-200">
-                        <span class="font-bold">US 10Y Yield</span>
-                        <span class="text-[10px] text-rose-300 font-semibold">Risk Benchmark</span>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">US 10Y Yield</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-rose-500/10 text-rose-500 font-bold">Yield</span>
                     </div>
-                    <div class="mt-2 flex items-baseline justify-between">
-                        <div class="text-lg font-extrabold text-white font-mono">{f"{prices['^TNX']['close']:.3f}%" if prices.get('^TNX', {}).get('close') else "N/A"}</div>
+                    <div class="mt-1.5 flex items-baseline justify-between font-mono">
+                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"{prices['^TNX']['close']:.3f}%" if prices.get('^TNX', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('^TNX', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </section>
 
-    <!-- NAVIGATION TABS (CLEAN NATURAL PILLS) -->
-    <nav class="sticky top-0 z-30 bg-[#F4F6F0]/95 backdrop-blur-md border-b border-linen-300 px-4 sm:px-8 py-3">
-        <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
-                1. Ringkasan & Status Rezim
+    <!-- FINVIZ NAVIGATION TABS -->
+    <nav class="sticky top-0 z-30 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-300 dark:border-[#1f2937] px-4 sm:px-8 py-2.5 transition-colors">
+        <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
+            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
+                1. Overview & Rezim
             </button>
-            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
-                2. Flow Projection (7–30 Hari)
+            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
+                2. Flow Projection (7–30D)
             </button>
-            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
-                3. Kalender Ekonomi & Dampak
+            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
+                3. Kalender Ekonomi
             </button>
-            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
                 4. Rotasi 11 Sektor US
             </button>
-            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
-                5. Dampak Indonesia & Berita
+            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
+                5. Transmisi Indonesia
             </button>
-            <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap">
+            <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
                 6. WhatsApp Broadcast
             </button>
         </div>
@@ -1394,6 +1549,33 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
     <!-- JAVASCRIPT: TAB SWITCHER, DUAL CLOCK, LIVE CRYPTO POLLING, DYNAMIC LANDSCAPE -->
     <script>
+        // 7. Finviz Dark / Light Mode Switcher
+        function toggleFinvizTheme() {{
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('finviz_theme', isDark ? 'dark' : 'light');
+            updateThemeToggleUI(isDark);
+        }}
+
+        function updateThemeToggleUI(isDark) {{
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+            const btn = document.getElementById('theme-toggle');
+            if (icon) icon.textContent = isDark ? '🌙' : '☀️';
+            if (label) label.textContent = isDark ? 'DARK' : 'LIGHT';
+            if (btn) {{
+                if (isDark) {{
+                    btn.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-bold transition-all border border-[#2a384c] bg-[#161d27] text-slate-200 hover:bg-[#1e2736] hover:text-white cursor-pointer shadow-sm';
+                }} else {{
+                    btn.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-bold transition-all border border-slate-300 bg-slate-100 text-slate-800 hover:bg-slate-200 cursor-pointer shadow-sm';
+                }}
+            }}
+        }}
+
+        document.addEventListener('DOMContentLoaded', () => {{
+            const isDark = document.documentElement.classList.contains('dark');
+            updateThemeToggleUI(isDark);
+        }});
+
         // 1. Tab Switcher
         function switchTab(tabId) {{
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
