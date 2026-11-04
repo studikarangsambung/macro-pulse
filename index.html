@@ -278,9 +278,9 @@
             <!-- Finviz Brand & Subtitle -->
             <div class="flex items-center gap-2.5">
                 <span class="px-2.5 py-0.5 rounded bg-blue-600 text-white font-extrabold text-sm tracking-widest font-mono shadow-sm">FINVIZ</span>
-                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">MACRO PULSE</span>
+                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">ML4T TERMINAL</span>
                 <span class="text-slate-500 hidden sm:inline font-mono">|</span>
-                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Global Screener & Cross-Asset Intelligence</span>
+                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Machine Learning for Trading &middot; Tri-Asset Universe: S&P 500, IHSG, BTC</span>
             </div>
 
             <!-- Clocks, Session & Dark/Light Switcher -->
@@ -312,13 +312,13 @@
                 <div class="space-y-1">
                     <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-mono bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
                         <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        <span>DATABASE FRED & SEKTOR: <b class="font-mono text-slate-800 dark:text-slate-200">Wednesday, 04 November 2026 · 14:59 WIB</b></span>
+                        <span>DATABASE FRED & SEKTOR: <b class="font-mono text-slate-800 dark:text-slate-200">Wednesday, 04 November 2026 · 17:00 WIB</b></span>
                     </div>
                     <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase font-mono">
-                        Finviz &middot; Macro Pulse Screener & Cross-Asset Intelligence
+                        Finviz &middot; Machine Learning for Algorithmic Trading Terminal
                     </h1>
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Sistem pemantauan makroekonomi institusional, transmisi likuiditas global, rotasi 11 sektor S&P 500, dan transmisi IHSG.
+                        Platform kuantitatif berbasis Machine Learning for Trading (Stefan Jansen 3rd Ed & Marcos L&oacute;pez de Prado) dari Bab 1 hingga 27: Tri-Asset GMM Regimes (S&P 500, IHSG, Bitcoin), rekayasa fitur alpha, dan evaluasi risiko empiris.
                     </p>
                 </div>
                 <div class="flex items-center gap-2.5">
@@ -343,8 +343,8 @@
                         <span class="text-[9px] uppercase px-1 rounded bg-emerald-500/10 text-emerald-500 font-bold">Live</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div id="live-btc" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$77,997</div>
-                        <div id="live-btc-chg" class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+1.66%</span></div>
+                        <div id="live-btc" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$78,312</div>
+                        <div id="live-btc-chg" class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+1.77%</span></div>
                     </div>
                 </div>
 
@@ -357,8 +357,8 @@
                         <span class="text-[9px] uppercase px-1 rounded bg-blue-500/10 text-blue-500 font-bold">Live</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div id="live-eth" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$2,300</div>
-                        <div id="live-eth-chg" class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+2.00%</span></div>
+                        <div id="live-eth" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$2,320</div>
+                        <div id="live-eth-chg" class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+2.43%</span></div>
                     </div>
                 </div>
 
@@ -395,8 +395,8 @@
                         <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">Spot</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$4,022.4</div>
-                        <div class="text-xs font-semibold"><span class="text-rose-600 font-semibold">-0.04%</span></div>
+                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">$4,043.9</div>
+                        <div class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+0.49%</span></div>
                     </div>
                 </div>
 
@@ -419,7 +419,7 @@
     <nav class="sticky top-0 z-30 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-300 dark:border-[#1f2937] px-4 sm:px-8 py-2.5 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
             <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                1. Overview & Rezim Bab 1
+                1. Hub Rezim Tri-Asset (Bab 1)
             </button>
             <button onclick="switchTab('tab-ml4t')" id="btn-tab-ml4t" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
                 2. Kurikulum 27 Bab ML4T
@@ -780,7 +780,7 @@
                     
         <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
             <span class="text-slate-500 dark:text-slate-400">Harga BTC Live</span>
-            <span class="font-bold text-slate-800 dark:text-slate-200">$77,997</span>
+            <span class="font-bold text-slate-800 dark:text-slate-200">$78,312</span>
         </div>
         
         <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
@@ -962,337 +962,64 @@
         </div>
     </div>
     
-
-            
-            <!-- Regime & EWS Hero Card -->
-            <div class="natural-card p-6 sm:p-8">
-                <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-linen-300">
-                    <div class="space-y-2">
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Status Rezim Makro Saat Ini</div>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-forest-900 tracking-tight flex items-center gap-3">
-                            STAGFLASI ENERGI & SQUEEZE BIAYA
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>STAGFLASI</span>
-                        </h2>
-                        <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
-                            Tekanan pasokan komoditas energi menaikkan yield dan membatasi ruang pelonggaran bank sentral, menekan margin emiten non-energi.
-                        </p>
-
-                        <!-- 4-Quadrant Macro Matrix Visualizer -->
-                        <div class="pt-3">
-                            <div class="text-[11px] font-bold uppercase text-sage-600 mb-1.5 flex items-center justify-between">
-                                <span>Klasifikasi 4-Kuadran Makro (Pertumbuhan vs Inflasi):</span>
-                                <span class="font-mono text-[10px] text-stone-500">Model Backtest Empiris 54 Tahun (1970–2024)</span>
-                            </div>
-                                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                                <div class="p-2.5 rounded-xl transition-all bg-linen-100 text-stone-500 border border-linen-200">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran I</span>
-                                        <span class="font-mono text-[10px]">Rotasi Siklikal</span>
-                                    </div>
-                                    <div class="font-bold">Reflasi</div>
-                                    <div class="text-[10px] opacity-80">Minyak &gt; $80 &bull; Yield &gt; 4.2%</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all bg-linen-100 text-stone-500 border border-linen-200">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran II</span>
-                                        <span class="font-mono text-[10px]">Ekspansi Likuiditas</span>
-                                    </div>
-                                    <div class="font-bold">Disinflasi Boom</div>
-                                    <div class="text-[10px] opacity-80">Likuiditas +20B &bull; VIX &lt; 20</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm">
-                                    <div class="text-[9px] uppercase tracking-wider text-sprout flex items-center justify-between">
-                                        <span>Kuadran III</span>
-                                        <span class="font-mono text-[10px] text-white">Aktif</span>
-                                    </div>
-                                    <div class="font-bold text-white">Stagflasi Energi</div>
-                                    <div class="text-[10px] text-sprout">Minyak &gt; $88 &bull; Yield &gt; 4.5%</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all bg-linen-100 text-stone-500 border border-linen-200">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran IV</span>
-                                        <span class="font-mono text-[10px]">Defensif</span>
-                                    </div>
-                                    <div class="font-bold">Deflasi Kontraksi</div>
-                                    <div class="text-[10px] opacity-80">Volatilitas / Perlambatan</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Empirical Macro Metrics Strip -->
-                            <div class="mt-2.5 p-2.5 rounded-xl bg-linen-100/90 border border-linen-300 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono">
-                                <div><span class="text-stone-500">Minyak WTI:</span> <b class="text-forest-900">$96.32</b> <span class="text-stone-400">(Syarat: &gt;$88)</span></div>
-                                <div><span class="text-stone-500">US 10Y Yield:</span> <b class="text-forest-900">4.952%</b> <span class="text-stone-400">(Syarat: &gt;4.50%)</span></div>
-                                <div><span class="text-stone-500">CBOE VIX:</span> <b class="text-forest-900">20.83</b> <span class="text-stone-400">(Syarat: &lt;22)</span></div>
-                                <div><span class="text-stone-500">Likuiditas 4W:</span> <b class="text-forest-900">-$47.9 Miliar</b> <span class="text-stone-400">(Kontraksi Likuiditas Ringan)</span></div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    <!-- EWS Danger Gauge -->
-                    <div class="bg-linen-100 p-4 rounded-2xl border border-linen-300 flex items-center gap-4 min-w-[280px]">
-                        <div class="w-12 h-12 rounded-xl bg-forest-700 text-white flex items-center justify-center font-bold text-lg font-mono">
-                            4/10
-                        </div>
-                        <div>
-                            <div class="text-xs font-semibold text-stone-500 uppercase">Early Warning Score</div>
-                            <div class="text-sm font-bold text-forest-900">
-                                4 Bahaya &middot; 2 Waspada
-                            </div>
-                            <div class="text-[10px] text-stone-500">
-                                Metodologi: 4 dari 10 indikator terintegrasi di zona merah (&ge;3 = Tekanan Tinggi)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Causality Transmission Pathway -->
-                <div class="pt-6 space-y-4">
-                    <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Rantai Transmisi Kausalitas Makro</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">1</span>
-                                Pemicu Utama
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Minyak WTI ($96.32) & US10Y (4.95%) berada di elevasi tinggi.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">2</span>
-                                Respon Moneter
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Breakeven Inflasi 10Y di 2.26% terukur moderat, namun harga minyak WTI ($96.32) menahan ruang pelonggaran likuiditas The Fed.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">3</span>
-                                Transmisi Likuiditas
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Suku Bunga Riil (TIPS) menekan rasio valuasi PE teknologi tinggi & menahan aliran modal kripto.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">4</span>
-                                Dampak Aset & Sektor
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Rotasi modal institusional ke sektor Energi (XLE) dan instrumen kas berbunga tinggi (T-Bills).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kausalitas & Atribusi Dinamika Pasar Terkini (Why Did It Move?) -->
-            <div class="natural-card p-6 sm:p-7 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
+            <!-- Quantitative Macro Factor & Liquidity Bar (ML4T Bab 2 & Bab 4) -->
+            <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 dark:border-[#1f2937] gap-2">
                     <div>
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Arah Pasar & Berita Terkait</div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900">Pergerakan Aset & Berita Terkait (Market Drivers)</h3>
+                        <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span>Likuiditas & Indikator Kuantitatif Lintas Makro (Point-in-Time)</span>
+                        </div>
+                        <h3 class="text-sm sm:text-base font-extrabold uppercase font-mono text-slate-900 dark:text-white mt-0.5">
+                            Pilar Likuiditas The Fed, Kurva Yield & Tekanan Volatilitas
+                        </h3>
                     </div>
-                    <div class="text-xs text-stone-500 font-mono flex items-center gap-1.5 bg-linen-100 px-3 py-1 rounded-full border border-linen-200">
-                        <span class="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
-                        Otomasi Deteksi Makro & Kripto
+                    <div class="flex items-center gap-2 font-mono text-xs">
+                        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-[#161d27] border border-slate-300 dark:border-[#232e3d] text-slate-700 dark:text-slate-300">
+                            EWS: 4 Bahaya / 2 Waspada
+                        </span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Driver 1: Emas Spot (XAUUSD) -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🟡 Emas Spot (XAUUSD)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                    Emas bergerak datar
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>$4,022.4</span>
-                                <span><span class="text-rose-600 font-semibold">-0.04%</span></span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Emas spot bergerak datar ke US$ 4,022.4/oz (1D -0.04%, 20D -2.5%).
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMi-gFBVV95cUxOQWhtQzV4clMzSzhURnJFTHhydkRDUy1zQVlKNmh5MW1BcXhJSkk4SlIteHlYQXJzTllkYVB0QloyandVcGlNclRFYkt1QVJDZXBTZk5QeS1PS1VlVXpOWkdIVm9PaEhMSjJnQTBFbVNRN3JhZ0wybEZ0N2VpYW9wX0hvMWNCcWFEclhNWG9HVFdoMzROWEsxRWp2TlZBSUlJdktVVXA5M3d1TmpqendqQ3Z3MHp3ZG1FN2g5emZ0cFZ6QWRwWl80RzNfalhIQmhOWmFFNlMwVTJzX2RhbGczTkpUS3R0SkU5QW1kcm5nc1JQYlJUVDBTU1Fn0gH_AUFVX3lxTFBGdG93LXFCVG9vZFRHMlhCNElLZzVlb0JMZUxpOUtMRkd1Q1NzNTNBX2VVcnlxS3Q2czh3UDlmZUg5X3ZSU2RsN2MwUVR2WjhodmtPT2RtS1JRZDlhWnIxWktZTkMtaEJtcS1LcDVvUHhJRUlKTHlCX0lTbnFTd0hTV1F1V2NrdnpMcHZ4ZVBpT3ZCS1JMN2NKVTlQMHI3aTlvNlVTX0tzYmtfXzFuVkthNUpuYU00YUZmQXZ4SUNaQTJnendyWExWd2FYNWppVFRhbVNPaWNDcHl2clpGeFZMSGdmZmQzcjc5bG9Uc0JkOEs3RHNHNnRRUUIxNEVTNA?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "Gold, silver rally as US midterm results weigh on dollar; gold tops $4,023, silver approaches $52" 
-            <span class="font-mono text-stone-400">(Moneycontrol.com) &#x2197;</span>
-        </a>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-3 text-xs font-mono">
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Likuiditas Bersih Fed</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">$5,745.5B</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">4W: -$47.9 Miliar</div>
                     </div>
 
-                    <!-- Driver 2: Bitcoin & Kripto -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🪙 Bitcoin & Kripto (BTC-USD)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
-                                    Bitcoin naik
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>$77,997</span>
-                                <span><span class="text-emerald-700 font-semibold">+1.66%</span></span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Bitcoin naik ke US$ 77,997 (1D +1.66%, 20D -5.0%). Tren 20D masih negatif (-5.0%) walau 1D naik. QQQ +0.62% (sejalan dengan pola tipikal).
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMigAFBVV95cUxPOFUxSjZRQVZfMFMxaTROWEsyU3kxMndiVkxQYkdJcTlVT1JZVXVMYXo0bVo1S0p6X19vazZ1WHlKOHl0VzRzRnhvWDd0NFFfMHVCNnA5cU1CdzNCeU9JSkxvZWtMbWdhMDkzX0huRlltQ0gzTmZjNWRnVVlTeTJaSw?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "Bitcoin ETF Outflows Pass $1 Billion: Why Institutions Are Selling After the Midterms" 
-            <span class="font-mono text-stone-400">(CryptoTicker.io) &#x2197;</span>
-        </a>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Slope Kurva (10Y-3M)</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">+0.93%</div>
+                        <div class="text-[10px] text-blue-500 mt-0.5">10Y: 4.95%</div>
                     </div>
 
-                    <!-- Driver 3: Minyak Mentah WTI -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🛢️ Minyak Mentah WTI (CL=F)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                    Minyak bergerak datar
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>$96.32</span>
-                                <span><span class="text-emerald-700 font-semibold">+0.24%</span></span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Minyak WTI bergerak datar ke US$ 96.32/barel (1D +0.24%, 20D +9.1%).
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMimwFBVV95cUxQRVhSdjdjcnhhX0FFOEtjd2tpRE5feHVXcy0xTy1CQUFvc0tQVzZJblhtaTFNWVd1RHRiejdiaEF5dzNoeERDZDd2RlAybmpkSGJPaG1PdThENVVlMmNBQjQyYUk5ZEUtM0EyeWIyQ21aOHpQTWM3NHNQR1dQcHpWNzRzMmV1RzV1cGI4RUR4RXR5NEtzSm90TU1hWQ?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "WTI Crude Climbs Toward $96 on US-Iran Diplomatic Risks" 
-            <span class="font-mono text-stone-400">(TradingPedia) &#x2197;</span>
-        </a>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Spread BI - Fed</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">+1.12%</div>
+                        <div class="text-[10px] text-amber-500 mt-0.5">Penyempitan Spread</div>
                     </div>
 
-                    <!-- Driver 4: Dollar AS & Yield 10Y -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    💵 Dollar (DXY) & US 10Y Yield
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-100 text-blue-900 border border-blue-200">
-                                    Yield naik, DXY turun
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>DXY: 101.41</span>
-                                <span>10Y Yield: 4.952%</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                US 10Y Yield naik ke 4.952% (+5.8 bp 1D); DXY 101.41 (-0.45%, turun).
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMi4gFBVV95cUxQRGpXMXJxUlRNT0FodGxMZ1JiX294aHdpUnpqT0I1UWJUaXhhaUZPVVdnOUE5LXM2cmRoRU9fQjdJcjdxdnJWenRUMG1NdjJsVUhtLWRLRWUxcHU4MVJvWHRaZnFVQ2V2bWJnb1VaNnFwRHhON3N2RUpOVEJ5M1A4NVV5NnA3U3hURXZIVDgzR0hqeW1ZLWhhVjBCaG4xTXRnT0l6U2M4ZXBDUTBnd01qY09zd1l4VW51ZGl4VjlNX2taX2VsMjlRX3BQR3E3ZG4zMGNKNXdVU3ZqdlpPVW4waVJ3?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "US Dollar Index (DXY) dives to late September lows near 101.25 on US election results" 
-            <span class="font-mono text-stone-400">(www.tmgm.com) &#x2197;</span>
-        </a>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Minyak Mentah WTI</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">$96.32</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">1D: +0.24%</div>
                     </div>
 
-                    <!-- Driver 5: Wall Street & Big Tech -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    💻 Wall Street & Big Tech (QQQ/SPY)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
-                                    Wall Street beragam
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>QQQ: <span class="text-emerald-700 font-semibold">+0.62%</span></span>
-                                <span>SPY: <span class="text-emerald-700 font-semibold">+0.30%</span></span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Wall Street beragam (QQQ +0.62%, SPY +0.30% 1D).
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMieEFVX3lxTE53d0N5ZnpGUGVfMjNJWi1iTlRjeVVFTmhfM0hnRDdKSTJqTnp2WllQS2M5eEhYbTJKcGZWZm1GU1RKZlZGNElva3dDSVhwVFlyTFk5ZGpNVEJpaU5WSmd3WjduZUNwc1VfcVZpa2xMY2tNTjRyenNaVA?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "Why Wall Street Is Split on Tech Stocks Right Now" 
-            <span class="font-mono text-stone-400">(Barron's) &#x2197;</span>
-        </a>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Indeks DXY & Kurs</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">101.41</div>
+                        <div class="text-[10px] text-rose-500 mt-0.5">USD/IDR Rp 18,160</div>
                     </div>
 
-                    <!-- Driver 6: IHSG & Pasar Modal Indonesia -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🇮🇩 IHSG (^JKSE) & Rupiah
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                                    Koreksi dalam (20D)
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>IHSG: 4,890.11</span>
-                                <span>USD/IDR: Rp 18,160</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                IHSG bergerak datar ke 4,890.11 (1D -0.29%, 20D -20.4%); USD/IDR Rp 18,160 (+3.94% 1D); EIDO -3.69% (proksi minat asing, bukan data arus langsung). Penurunan 20D (-20.4%) jauh lebih besar daripada 1D; periksa faktor domestik (indeks, MSCI, regulasi) sebelum menyalahkan faktor global. DXY -0.45% (berlawanan dengan pola tipikal) - kemungkinan faktor domestik/spesifik rupiah.
-                            </p>
-                        </div>
-                        <a href="https://news.google.com/rss/articles/CBMitgFBVV95cUxPNDBqWEphR01POXV1NW1RRlBPb2hSaEtvRUZPUEwxMHZ3N19NZ292WXUwcm90VXR0NjN2TzEzanlqUUliODRTRnJEcnZMXzVNYjlHUllKRlZuaTFzY0M3QVlJbDVXdHdaLWJQLXlDLVUzMHhUMzFHNC1pTVdIOHctTDY1eW1RMTNackExVjQ2M05ycHFNcy1YU3JIN3A2ZkpPVWpnOUdPczlDbUhiU3B4ZzZZVGtfQQ?oc=5" target="_blank" class="block p-2 rounded-xl bg-white/80 border border-linen-300 text-[11px] text-stone-600 hover:text-forest-900 hover:border-forest-600 transition-all">
-            <span class="font-bold text-forest-800">Berita Terkait:</span> "Setelah IHSG Terendah Dalam 6 Tahun & Isu Penyadapan, Cek Rekomendasi Saham Hari Ini" 
-            <span class="font-mono text-stone-400">(KONTAN) &#x2197;</span>
-        </a>
-                    </div>
-                </div>
-
-                <!-- Baris Tambahan: Likuiditas The Fed & Sensitivitas Rezim -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <!-- Driver 7: Likuiditas The Fed -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🏦 Likuiditas The Fed (Neraca H.4.1)
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                                Rilis Mingguan Tiap Kamis
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            Likuiditas Bersih The Fed US$ 5,745.5 Miliar (4 pekan: -47.9 Miliar, -0.83% dari level) - Kontraksi Ringan. Rilis H.4.1 berikutnya: Jumat ~04:30 WIB (16:30 EST). Perubahan neto dipengaruhi saldo TGA dan RRP.
-                        </p>
-                    </div>
-
-                    <!-- Driver 8: Sensitivitas Makro Rezim -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🎯 Sensitivitas Rezim 4-Kuadran
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-forest-100 text-forest-900 border border-forest-300">
-                                Syarat Transisi Rezim
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            Status Rezim: 'STAGFLASI ENERGI & SQUEEZE BIAYA'. Klasifikasi ini murni berbasis harga dan likuiditas (minyak, yield 10Y, VIX, perubahan likuiditas 4 pekan); model TIDAK memakai data pertumbuhan ekonomi. Uji batas: jika hanya minyak turun ke US$ 88 -> 'REFLASI & ROTASI SIKLIKAL'; jika hanya yield 10Y turun ke 4.50% -> 'REFLASI & ROTASI SIKLIKAL'. Label berubah hanya karena satu ambang harga, bukan karena data pertumbuhan. 
-                        </p>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">CBOE Volatilitas VIX</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">20.83</div>
+                        <div class="text-[10px] text-emerald-500 mt-0.5">Zona Normal (&lt;22)</div>
                     </div>
                 </div>
             </div>
-
-            <!-- Finviz-Style Live News & Sentimen Terminal -->
+<!-- Finviz-Style Live News & Sentimen Terminal -->
             <div class="natural-card p-6 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
                     <div>
@@ -2101,8 +1828,8 @@
                                 
                                 <tr class="hover:bg-linen-50 transition-colors">
                                     <td class="py-3 font-semibold text-stone-800 whitespace-nowrap">Emas (XAUUSD)</td>
-                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$4,022.4/oz</td>
-                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Emas $4,022.4/oz, 20D -2.5% (stabil).</td>
+                                    <td class="py-3 font-mono font-bold text-forest-900 whitespace-nowrap">$4,043.9/oz</td>
+                                    <td class="py-3 text-stone-600 text-xs leading-relaxed max-w-sm">Emas $4,043.9/oz, 20D -2.5% (stabil).</td>
                                     <td class="py-3 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full bg-[#EBF4E0] text-[#2E481D] border border-[#C6DEB0]"><span class="w-1.5 h-1.5 rounded-full bg-[#384C25]"></span>AMAN</span></td>
                                 </tr>
                                 
@@ -3482,9 +3209,9 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">BTC-USD <span class="text-stone-500 font-normal text-xs">(Bitcoin)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+1.66%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+1.77%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$77,997.00</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$78,312.00</div>
                         <div class="text-xs text-stone-600 flex justify-between">
                             <span>20D Return: <span class="text-rose-600 font-semibold">-5.03%</span></span>
                             <span>5D Return: <span class="text-emerald-700 font-semibold">+1.05%</span></span>
@@ -3497,9 +3224,9 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">ETH-USD <span class="text-stone-500 font-normal text-xs">(Ethereum)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+2.00%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+2.43%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$2,300.44</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$2,319.76</div>
                         <div class="text-xs text-stone-600 flex justify-between">
                             <span>20D Return: <span class="text-rose-600 font-semibold">-5.74%</span></span>
                             <span>5D Return: <span class="text-emerald-700 font-semibold">+2.65%</span></span>
@@ -3512,9 +3239,9 @@
                     <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-forest-900">SOL-USD <span class="text-stone-500 font-normal text-xs">(Solana)</span></span>
-                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+0.99%</span></span>
+                            <span class="text-xs font-semibold"><span class="text-emerald-700 font-semibold">+0.86%</span></span>
                         </div>
-                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$92.88</div>
+                        <div class="text-2xl font-extrabold text-forest-900 font-mono">$93.08</div>
                         <div class="text-xs text-stone-600 flex justify-between">
                             <span>20D Return: <span class="text-rose-600 font-semibold">-11.80%</span></span>
                             <span>5D Return: <span class="text-rose-600 font-semibold">-3.45%</span></span>
@@ -3596,7 +3323,7 @@
                         <p class="text-stone-600 leading-relaxed">Ketegangan kawasan Timur Tengah dan kuota pasokan OPEC+ menahan harga energi di atas $95–$100/barel, memicu 'cost-push inflation' di tingkat global.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
-                        <div class="font-bold text-forest-800">2. Jalur Emas Spot ($4,022.4/oz)</div>
+                        <div class="font-bold text-forest-800">2. Jalur Emas Spot ($4,043.9/oz)</div>
                         <p class="text-stone-600 leading-relaxed">Emas bertahan di area elevasi tinggi mencerminkan peran aset jangkar lindung nilai geopolitik dan diversifikasi cadangan devisa global.</p>
                     </div>
                     <div class="p-3 bg-white rounded-xl border border-linen-200 space-y-1">
@@ -3898,13 +3625,13 @@
                         <span class="text-stone-600">Jadwal Kalender Terkonversi DST (WIB) &bull; Dinamika Pasar & Sentimen Terkalibrasi &bull; Feed Disinkronkan</span>
                     </div>
                     <div class="text-[11px] font-mono text-stone-500">
-                        Sinkronisasi Terakhir: <b>Wednesday, 04 November 2026 · 14:59 WIB</b>
+                        Sinkronisasi Terakhir: <b>Wednesday, 04 November 2026 · 17:00 WIB</b>
                     </div>
                 </div>
 
                 <div class="relative">
                     <pre id="wa-text-content" class="p-6 rounded-2xl bg-linen-50 border border-linen-300 text-stone-800 text-xs sm:text-sm font-mono whitespace-pre-wrap leading-relaxed max-h-[600px] overflow-y-auto">Global Market Review
-(Penutupan Wall Street: Selasa, 3 November 2026 | disusun Rabu, 4 November 2026 14:59 WIB)
+(Penutupan Wall Street: Selasa, 3 November 2026 | disusun Rabu, 4 November 2026 17:00 WIB)
 
 Ekuitas AS bergerak beragam
 ↳ Berita terkait: Why Wall Street Is Split on Tech Stocks Right Now (Barron's)
@@ -3918,14 +3645,14 @@ Minyak Mentah Bergerak datar
 Minyak WTI US$ 96.32 / barel (1D +0.24%, 20D +9.1%)
 ↓
 Pasar Kripto: Bitcoin naik
-BTC US$ 77,997 (+1.66%), ETH US$ 2,300 (+2.00%), SOL US$ 92.88 (+0.99%)
+BTC US$ 78,312 (+1.77%), ETH US$ 2,320 (+2.43%), SOL US$ 93.08 (+0.86%)
 Tren 20D BTC masih negatif (-5.0%)
 ↳ Berita terkait: Bitcoin ETF Outflows Pass $1 Billion: Why Institutions Are Selling After the Midterms (CryptoTicker.io)
 ↓
 Yield, Dollar & Emas
 US 10Y Yield naik ke 4.952% (+5.8 bp 1D); DXY 101.41 (-0.45%, turun)
 ↳ Berita terkait: US Dollar Index (DXY) dives to late September lows near 101.25 on US election results (www.tmgm.com)
-Emas Spot US$ 4,022.4 / troy oz (-0.04% 1D, -2.5% 20D)
+Emas Spot US$ 4,043.9 / troy oz (+0.49% 1D, -2.5% 20D)
 ↳ Berita terkait: Gold, silver rally as US midterm results weigh on dollar; gold tops $4,023, silver approaches $52 (Moneycontrol.com)
 
 ━━━━━━━━━━━━━━━━━━━━━
@@ -3937,10 +3664,10 @@ LIKUIDITAS THE FED (H.4.1 BALANCE SHEET)
 
 ━━━━━━━━━━━━━━━━━━━━━
 DINAMIKA PASAR KRIPTO
-• Bitcoin (BTC): US$ 77,997 (1D: +1.66%) | 20D: -5.03%
-• Ethereum (ETH): US$ 2,300 (1D: +2.00%)
-• Solana (SOL): US$ 92.88 (1D: +0.99%)
-• Status Altseason: Dominasi Bitcoin Kuat (Altseason Tertahan) [Rasio ETH/BTC: 0.0295]
+• Bitcoin (BTC): US$ 78,312 (1D: +1.77%) | 20D: -5.03%
+• Ethereum (ETH): US$ 2,320 (1D: +2.43%)
+• Solana (SOL): US$ 93.08 (1D: +0.86%)
+• Status Altseason: Dominasi Bitcoin Kuat (Altseason Tertahan) [Rasio ETH/BTC: 0.0296]
 • Berita Kripto & Web3:
 • Bitcoin ETF Outflows Pass $1 Billion: Why Institutions Are Selling After the Midterms (CryptoTicker.io)
 • Bitcoin Slips as Democratic Sweep Bets Threaten Crypto Agenda (Bloomberg.com)
@@ -3987,7 +3714,7 @@ Disusun oleh studikarangsambung-market pulse engine</pre>
                 <div class="text-[11px] text-sage-300"><b class="text-sprout">Sumber Berita Makro Hari Ini:</b> StoneX, The Washington Post, Reuters, Forbes, Philadelphia Federal Reserve Bank, ABC News - Breaking News, Latest News and Videos, Greenpeace, Morningstar</div>
             </div>
             <div class="text-xs text-sage-300 font-mono">
-                Pembaruan: <span class="text-sprout">Wednesday, 04 November 2026 · 14:59 WIB</span>
+                Pembaruan: <span class="text-sprout">Wednesday, 04 November 2026 · 17:00 WIB</span>
             </div>
         </div>
     </footer>

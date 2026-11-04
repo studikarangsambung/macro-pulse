@@ -724,9 +724,9 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             <!-- Finviz Brand & Subtitle -->
             <div class="flex items-center gap-2.5">
                 <span class="px-2.5 py-0.5 rounded bg-blue-600 text-white font-extrabold text-sm tracking-widest font-mono shadow-sm">FINVIZ</span>
-                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">MACRO PULSE</span>
+                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">ML4T TERMINAL</span>
                 <span class="text-slate-500 hidden sm:inline font-mono">|</span>
-                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Global Screener & Cross-Asset Intelligence</span>
+                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Machine Learning for Trading &middot; Tri-Asset Universe: S&P 500, IHSG, BTC</span>
             </div>
 
             <!-- Clocks, Session & Dark/Light Switcher -->
@@ -761,10 +761,10 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                         <span>DATABASE FRED & SEKTOR: <b class="font-mono text-slate-800 dark:text-slate-200">{display_date}</b></span>
                     </div>
                     <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase font-mono">
-                        Finviz &middot; Macro Pulse Screener & Cross-Asset Intelligence
+                        Finviz &middot; Machine Learning for Algorithmic Trading Terminal
                     </h1>
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Sistem pemantauan makroekonomi institusional, transmisi likuiditas global, rotasi 11 sektor S&P 500, dan transmisi IHSG.
+                        Platform kuantitatif berbasis Machine Learning for Trading (Stefan Jansen 3rd Ed & Marcos L&oacute;pez de Prado) dari Bab 1 hingga 27: Tri-Asset GMM Regimes (S&P 500, IHSG, Bitcoin), rekayasa fitur alpha, dan evaluasi risiko empiris.
                     </p>
                 </div>
                 <div class="flex items-center gap-2.5">
@@ -865,7 +865,7 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     <nav class="sticky top-0 z-30 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-300 dark:border-[#1f2937] px-4 sm:px-8 py-2.5 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
             <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                1. Overview & Rezim Bab 1
+                1. Hub Rezim Tri-Asset (Bab 1)
             </button>
             <button onclick="switchTab('tab-ml4t')" id="btn-tab-ml4t" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
                 2. Kurikulum 27 Bab ML4T
@@ -896,319 +896,64 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             
             {tri_asset_hub_html}
             {tri_asset_risk_table_html}
-
-            
-            <!-- Regime & EWS Hero Card -->
-            <div class="natural-card p-6 sm:p-8">
-                <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-linen-300">
-                    <div class="space-y-2">
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Status Rezim Makro Saat Ini</div>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-forest-900 tracking-tight flex items-center gap-3">
-                            {regime['title']}
-                            {natural_badge(regime['regime_id'])}
-                        </h2>
-                        <p class="text-stone-600 text-sm sm:text-base max-w-3xl leading-relaxed">
-                            {regime['summary']}
-                        </p>
-
-                        <!-- 4-Quadrant Macro Matrix Visualizer -->
-                        <div class="pt-3">
-                            <div class="text-[11px] font-bold uppercase text-sage-600 mb-1.5 flex items-center justify-between">
-                                <span>Klasifikasi 4-Kuadran Makro (Pertumbuhan vs Inflasi):</span>
-                                <span class="font-mono text-[10px] text-stone-500">Model Backtest Empiris 54 Tahun (1970–2024)</span>
-                            </div>
-                                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'REFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran I</span>
-                                        <span class="font-mono text-[10px]">Rotasi Siklikal</span>
-                                    </div>
-                                    <div class="font-bold">Reflasi</div>
-                                    <div class="text-[10px] opacity-80">Minyak &gt; $80 &bull; Yield &gt; 4.2%</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DISINFLASI_BOOM' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran II</span>
-                                        <span class="font-mono text-[10px]">Ekspansi Likuiditas</span>
-                                    </div>
-                                    <div class="font-bold">Disinflasi Boom</div>
-                                    <div class="text-[10px] opacity-80">Likuiditas +20B &bull; VIX &lt; 20</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'STAGFLASI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
-                                    <div class="text-[9px] uppercase tracking-wider text-sprout flex items-center justify-between">
-                                        <span>Kuadran III</span>
-                                        <span class="font-mono text-[10px] {'text-white' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-500'}">Aktif</span>
-                                    </div>
-                                    <div class="font-bold {'text-white' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-800'}">Stagflasi Energi</div>
-                                    <div class="text-[10px] {'text-sprout' if regime['regime_id'] == 'STAGFLASI' else 'text-stone-500'}">Minyak &gt; $88 &bull; Yield &gt; 4.5%</div>
-                                </div>
-                                <div class="p-2.5 rounded-xl transition-all {'bg-forest-700 text-white font-bold ring-2 ring-forest-500 shadow-sm' if regime['regime_id'] == 'DEFLASI_KONTRAKSI' else 'bg-linen-100 text-stone-500 border border-linen-200'}">
-                                    <div class="text-[9px] uppercase tracking-wider flex items-center justify-between">
-                                        <span>Kuadran IV</span>
-                                        <span class="font-mono text-[10px]">Defensif</span>
-                                    </div>
-                                    <div class="font-bold">Deflasi Kontraksi</div>
-                                    <div class="text-[10px] opacity-80">Volatilitas / Perlambatan</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Empirical Macro Metrics Strip -->
-                            <div class="mt-2.5 p-2.5 rounded-xl bg-linen-100/90 border border-linen-300 flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono">
-                                <div><span class="text-stone-500">Minyak WTI:</span> <b class="text-forest-900">${prices.get('CL=F', {}).get('close', 0):.2f}</b> <span class="text-stone-400">(Syarat: &gt;$88)</span></div>
-                                <div><span class="text-stone-500">US 10Y Yield:</span> <b class="text-forest-900">{prices.get('^TNX', {}).get('close', 0):.3f}%</b> <span class="text-stone-400">(Syarat: &gt;4.50%)</span></div>
-                                <div><span class="text-stone-500">CBOE VIX:</span> <b class="text-forest-900">{prices.get('^VIX', {}).get('close', 0):.2f}</b> <span class="text-stone-400">(Syarat: &lt;22)</span></div>
-                                <div><span class="text-stone-500">Likuiditas 4W:</span> <b class="text-forest-900">{chg_liq_str}</b> <span class="text-stone-400">({liq_status})</span></div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-
-                    <!-- EWS Danger Gauge -->
-                    <div class="bg-linen-100 p-4 rounded-2xl border border-linen-300 flex items-center gap-4 min-w-[280px]">
-                        <div class="w-12 h-12 rounded-xl bg-forest-700 text-white flex items-center justify-center font-bold text-lg font-mono">
-                            {regime['score_bahaya']}/10
-                        </div>
-                        <div>
-                            <div class="text-xs font-semibold text-stone-500 uppercase">Early Warning Score</div>
-                            <div class="text-sm font-bold text-forest-900">
-                                {regime['score_bahaya']} Bahaya &middot; {regime['score_waspada']} Waspada
-                            </div>
-                            <div class="text-[10px] text-stone-500">
-                                Metodologi: {regime['score_bahaya']} dari 10 indikator terintegrasi di zona merah (&ge;3 = Tekanan Tinggi)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Causality Transmission Pathway -->
-                <div class="pt-6 space-y-4">
-                    <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Rantai Transmisi Kausalitas Makro</div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">1</span>
-                                Pemicu Utama
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Minyak WTI (${prices.get('CL=F', {}).get('close', 0):.2f}) & US10Y ({prices.get('^TNX', {}).get('close', 0):.2f}%) berada di elevasi tinggi.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">2</span>
-                                Respon Moneter
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Breakeven Inflasi 10Y di {regime.get('breakeven_inflation_10y', 2.26):.2f}% terukur moderat, namun harga minyak WTI (${prices.get('CL=F', {}).get('close', 0):.2f}) menahan ruang pelonggaran likuiditas The Fed.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">3</span>
-                                Transmisi Likuiditas
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Suku Bunga Riil (TIPS) menekan rasio valuasi PE teknologi tinggi & menahan aliran modal kripto.
-                            </p>
-                        </div>
-
-                        <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-1.5">
-                            <div class="text-xs font-bold text-forest-700 flex items-center gap-1.5">
-                                <span class="w-5 h-5 rounded-full bg-forest-100 text-forest-800 flex items-center justify-center text-xs">4</span>
-                                Dampak Aset & Sektor
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                Rotasi modal institusional ke sektor Energi (XLE) dan instrumen kas berbunga tinggi (T-Bills).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kausalitas & Atribusi Dinamika Pasar Terkini (Why Did It Move?) -->
-            <div class="natural-card p-6 sm:p-7 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
+            <!-- Quantitative Macro Factor & Liquidity Bar (ML4T Bab 2 & Bab 4) -->
+            <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 dark:border-[#1f2937] gap-2">
                     <div>
-                        <div class="text-xs uppercase tracking-wider text-sage-600 font-bold">Arah Pasar & Berita Terkait</div>
-                        <h3 class="text-base sm:text-lg font-extrabold text-forest-900">Pergerakan Aset & Berita Terkait (Market Drivers)</h3>
+                        <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span>Likuiditas & Indikator Kuantitatif Lintas Makro (Point-in-Time)</span>
+                        </div>
+                        <h3 class="text-sm sm:text-base font-extrabold uppercase font-mono text-slate-900 dark:text-white mt-0.5">
+                            Pilar Likuiditas The Fed, Kurva Yield & Tekanan Volatilitas
+                        </h3>
                     </div>
-                    <div class="text-xs text-stone-500 font-mono flex items-center gap-1.5 bg-linen-100 px-3 py-1 rounded-full border border-linen-200">
-                        <span class="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
-                        Otomasi Deteksi Makro & Kripto
+                    <div class="flex items-center gap-2 font-mono text-xs">
+                        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-[#161d27] border border-slate-300 dark:border-[#232e3d] text-slate-700 dark:text-slate-300">
+                            EWS: {regime['score_bahaya']} Bahaya / {regime['score_waspada']} Waspada
+                        </span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Driver 1: Emas Spot (XAUUSD) -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🟡 Emas Spot (XAUUSD)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                    {market_drivers.get('gold', {}).get('tag', 'Sentimen Suku Bunga & Dolar')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>${prices.get('GC=F', {}).get('close', 0):,.1f}</span>
-                                <span>{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('gold', {}).get('driver', 'Emas bergerak merefleksikan ekspektasi suku bunga riil dan premi safe-haven.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("gold", {}).get("news"))}
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-3 text-xs font-mono">
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Likuiditas Bersih Fed</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">${net_liq.get('net_liquidity_bil', 0):,.1f}B</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">4W: {chg_liq_str}</div>
                     </div>
 
-                    <!-- Driver 2: Bitcoin & Kripto -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🪙 Bitcoin & Kripto (BTC-USD)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-100 text-rose-900 border border-rose-200">
-                                    {market_drivers.get('crypto', {}).get('tag', 'Likuidasi Derivatif & Volatilitas')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>${prices.get('BTC-USD', {}).get('close', 0):,.0f}</span>
-                                <span>{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('crypto', {}).get('driver', 'Koreksi Bitcoin dipicu oleh lonjakan yield obligasi dan likuidasi leverage derivatif.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("crypto", {}).get("news"))}
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Slope Kurva (10Y-3M)</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">{(prices.get('^TNX', {}).get('close', 0) - prices.get('^IRX', {}).get('close', 0)):+.2f}%</div>
+                        <div class="text-[10px] text-blue-500 mt-0.5">10Y: {prices.get('^TNX', {}).get('close', 0):.2f}%</div>
                     </div>
 
-                    <!-- Driver 3: Minyak Mentah WTI -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🛢️ Minyak Mentah WTI (CL=F)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
-                                    {market_drivers.get('oil', {}).get('tag', 'Premi Pasokan & Geopolitik')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>${prices.get('CL=F', {}).get('close', 0):,.2f}</span>
-                                <span>{chg_badge(prices.get('CL=F', {}).get('change_1d_pct', 0))}</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('oil', {}).get('driver', 'Minyak bergerak merefleksikan ketatnya pasokan fisik dan tensi geopolitik.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("oil", {}).get("news"))}
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Spread BI - Fed</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">+1.12%</div>
+                        <div class="text-[10px] text-amber-500 mt-0.5">Penyempitan Spread</div>
                     </div>
 
-                    <!-- Driver 4: Dollar AS & Yield 10Y -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    💵 Dollar (DXY) & US 10Y Yield
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-blue-100 text-blue-900 border border-blue-200">
-                                    {market_drivers.get('dollar', {}).get('tag', 'Suku Bunga & Obligasi')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>DXY: {prices.get('DX-Y.NYB', {}).get('close', 0):.2f}</span>
-                                <span>10Y Yield: {prices.get('^TNX', {}).get('close', 0):.3f}%</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('dollar', {}).get('driver', 'Yield obligasi dan indeks dolar merefleksikan arah kebijakan suku bunga The Fed.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("dollar", {}).get("news"))}
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Minyak Mentah WTI</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">${prices.get('CL=F', {}).get('close', 0):.2f}</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5">1D: {prices.get('CL=F', {}).get('change_1d_pct', 0):+.2f}%</div>
                     </div>
 
-                    <!-- Driver 5: Wall Street & Big Tech -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    💻 Wall Street & Big Tech (QQQ/SPY)
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-purple-100 text-purple-900 border border-purple-200">
-                                    {market_drivers.get('tech', {}).get('tag', 'Valuasi AI & Laba Korporasi')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>QQQ: {chg_badge(prices.get('QQQ', {}).get('change_1d_pct', 0))}</span>
-                                <span>SPY: {chg_badge(prices.get('SPY', {}).get('change_1d_pct', 0))}</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('tech', {}).get('driver', 'Wall Street mencermati valuasi laba emiten teknologi dan belanja infrastruktur AI.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("tech", {}).get("news"))}
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">Indeks DXY & Kurs</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">{prices.get('DX-Y.NYB', {}).get('close', 0):.2f}</div>
+                        <div class="text-[10px] text-rose-500 mt-0.5">USD/IDR Rp {indo_macro['usdidr_val']:,.0f}</div>
                     </div>
 
-                    <!-- Driver 6: IHSG & Pasar Modal Indonesia -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2.5 hover:border-forest-600/30 transition-all flex flex-col justify-between">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                    🇮🇩 IHSG (^JKSE) & Rupiah
-                                </span>
-                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                                    {market_drivers.get('indonesia', {}).get('tag', 'Arus Modal & Kurs Valas')}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between text-xs font-mono font-bold text-stone-800">
-                                <span>IHSG: {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}</span>
-                                <span>USD/IDR: {f"Rp {indo_macro['usdidr_val']:,.0f}" if indo_macro.get('usdidr_val') else "N/A"}</span>
-                            </div>
-                            <p class="text-xs text-stone-700 leading-relaxed">
-                                {clean_driver_text(market_drivers.get('indonesia', {}).get('driver', 'IHSG dan Rupiah dipengaruhi oleh aliran modal asing dan kebijakan stabilitas Bank Indonesia.'))}
-                            </p>
-                        </div>
-                        {render_news_pill(market_drivers.get("indonesia", {}).get("news"))}
-                    </div>
-                </div>
-
-                <!-- Baris Tambahan: Likuiditas The Fed & Sensitivitas Rezim -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <!-- Driver 7: Likuiditas The Fed -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🏦 Likuiditas The Fed (Neraca H.4.1)
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">
-                                Rilis Mingguan Tiap Kamis
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            {market_drivers.get('fed', {}).get('driver', 'Neraca The Fed dirilis resmi tiap Kamis sore US (Jumat subuh WIB).')}
-                        </p>
-                    </div>
-
-                    <!-- Driver 8: Sensitivitas Makro Rezim -->
-                    <div class="p-4 rounded-2xl bg-linen-50 border border-linen-200 space-y-2 hover:border-forest-600/30 transition-all">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-forest-900 flex items-center gap-1.5">
-                                🎯 Sensitivitas Rezim 4-Kuadran
-                            </span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-forest-100 text-forest-900 border border-forest-300">
-                                Syarat Transisi Rezim
-                            </span>
-                        </div>
-                        <p class="text-xs text-stone-700 leading-relaxed">
-                            {market_drivers.get('regime', {}).get('driver', 'Rezim aktif saat ini berakar pada tingginya komoditas energi dan suku bunga riil.')}
-                        </p>
+                    <div class="p-3 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042]">
+                        <div class="text-[10px] text-slate-500 dark:text-slate-400">CBOE Volatilitas VIX</div>
+                        <div class="text-sm font-bold text-slate-900 dark:text-white mt-1">{prices.get('^VIX', {}).get('close', 0):.2f}</div>
+                        <div class="text-[10px] text-emerald-500 mt-0.5">Zona Normal (&lt;22)</div>
                     </div>
                 </div>
             </div>
-
-            <!-- Finviz-Style Live News & Sentimen Terminal -->
+<!-- Finviz-Style Live News & Sentimen Terminal -->
             <div class="natural-card p-6 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-linen-300 gap-2">
                     <div>
