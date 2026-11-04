@@ -39,47 +39,50 @@ def render_asset_card(asset_dict, badge_color):
     feats_html = ""
     for k, v in asset_dict["features"].items():
         feats_html += f"""
-        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
-            <span class="text-slate-500 dark:text-slate-400">{k}</span>
-            <span class="font-bold text-slate-800 dark:text-slate-200">{v}</span>
+        <div class="flex justify-between py-1.5 border-b border-[#E5DFD5]/70 dark:border-[#2C3E2F]/80 text-[11px] font-mono">
+            <span class="text-[#756A5D] dark:text-[#A4B6A6]">{k}</span>
+            <span class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">{v}</span>
         </div>
         """
         
+    # Monogram symbol for circular emblem
+    symbol = "US" if "S&P" in asset_dict["asset"] else ("ID" if "IHSG" in asset_dict["asset"] else "₿")
+    
     return f"""
     <!-- Card: {asset_dict['asset']} -->
-    <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm flex flex-col justify-between space-y-4">
+    <div class="finviz-card arch-card bg-white dark:bg-[#1D2A1F] p-6 rounded-2xl border border-[#E5DFD5] dark:border-[#2C3E2F] shadow-sm flex flex-col justify-between space-y-5 transition-all hover:shadow-md">
         <div>
-            <!-- Header -->
-            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#1f2937]">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full {badge_color} animate-pulse"></span>
+            <!-- Arched Header with Circular Seal Emblem -->
+            <div class="flex items-center justify-between pb-4 border-b border-[#E5DFD5] dark:border-[#2C3E2F]">
+                <div class="flex items-center gap-3">
+                    <div class="seal-emblem w-9 h-9 text-xs">{symbol}</div>
                     <div>
-                        <h3 class="text-sm font-extrabold uppercase font-mono text-slate-900 dark:text-white">{asset_dict['asset']}</h3>
-                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">{asset_dict['ticker']}</span>
+                        <h3 class="text-base font-serif font-bold text-[#2A241E] dark:text-[#F7F4EE] leading-tight">{asset_dict['asset']}</h3>
+                        <span class="text-[10px] font-mono text-[#756A5D] dark:text-[#A4B6A6] uppercase tracking-wider">{asset_dict['ticker']}</span>
                     </div>
                 </div>
                 <div class="text-right">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#A8522A]/10 dark:bg-[#D97343]/15 text-[#A8522A] dark:text-[#D97343] border border-[#A8522A]/20">
                         {asset_dict['confidence']:.1f}% P(Regime)
                     </span>
                 </div>
             </div>
 
             <!-- Dominant Regime -->
-            <div class="mt-3 p-2.5 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200/80 dark:border-[#233042]">
-                <div class="text-[9px] uppercase font-mono tracking-wider text-slate-400 dark:text-slate-500 font-bold">Status Rezim Dominan (GMM EM)</div>
-                <div class="text-xs font-extrabold text-blue-600 dark:text-blue-400 mt-0.5 font-mono">{asset_dict['dominant_regime']}</div>
+            <div class="mt-3.5 p-3 rounded-xl bg-[#FAF7F2] dark:bg-[#19241B] border border-[#E5DFD5]/80 dark:border-[#2C3E2F]">
+                <div class="text-[9px] uppercase font-mono tracking-wider text-[#756A5D] dark:text-[#A4B6A6] font-bold">Status Rezim Dominan (GMM EM)</div>
+                <div class="text-sm font-serif font-bold text-[#A8522A] dark:text-[#D97343] mt-0.5">{asset_dict['dominant_regime']}</div>
             </div>
 
             <!-- Soft Probabilities -->
             <div class="mt-4 space-y-2.5">
-                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400">Distribusi Probabilitas Campuran (Soft Assignment)</div>
+                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-[#756A5D] dark:text-[#A4B6A6]">Distribusi Probabilitas Campuran (Soft Assignment)</div>
                 {probs_html}
             </div>
 
             <!-- Features -->
-            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-[#1f2937]">
-                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400 mb-1.5">Fitur Pilar Penggerak Rezim</div>
+            <div class="mt-4 pt-3.5 border-t border-[#E5DFD5] dark:border-[#2C3E2F]">
+                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-[#756A5D] dark:text-[#A4B6A6] mb-1.5">Fitur Pilar Penggerak Rezim</div>
                 <div class="space-y-0.5">
                     {feats_html}
                 </div>
@@ -87,13 +90,13 @@ def render_asset_card(asset_dict, badge_color):
         </div>
 
         <!-- Metrics & Stance Footer -->
-        <div class="pt-3 border-t border-slate-200 dark:border-[#1f2937] space-y-2.5">
-            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                <span>Silhouette: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['silhouette_score']:.3f}</b></span>
-                <span>DBI: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['davies_bouldin']:.2f}</b></span>
-                <span>CHI: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['calinski_harabasz']:.1f}</b></span>
+        <div class="pt-3.5 border-t border-[#E5DFD5] dark:border-[#2C3E2F] space-y-2.5">
+            <div class="flex items-center justify-between text-[10px] font-mono text-[#756A5D] dark:text-[#A4B6A6]">
+                <span>Silhouette: <b class="text-[#2A241E] dark:text-[#F7F4EE]">{asset_dict['metrics']['silhouette_score']:.3f}</b></span>
+                <span>DBI: <b class="text-[#2A241E] dark:text-[#F7F4EE]">{asset_dict['metrics']['davies_bouldin']:.2f}</b></span>
+                <span>CHI: <b class="text-[#2A241E] dark:text-[#F7F4EE]">{asset_dict['metrics']['calinski_harabasz']:.1f}</b></span>
             </div>
-            <div class="p-2 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-700 dark:text-amber-400 font-medium">
+            <div class="p-2.5 rounded-xl bg-[#A8522A]/10 dark:bg-[#D97343]/15 border border-[#A8522A]/20 dark:border-[#D97343]/25 text-[10px] font-mono text-[#A8522A] dark:text-[#D97343] font-medium leading-relaxed">
                 <span class="font-bold">Direktif Risiko:</span> {asset_dict['quant_stance']}
             </div>
         </div>
@@ -452,11 +455,11 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>FINVIZ &middot; MACRO PULSE | Stock Screener & Cross-Asset Intelligence</title>
-    <!-- Google Fonts: Inter & JetBrains Mono for authentic Finviz terminal experience -->
+    <title>ML4T &middot; Machine Learning for Trading | Tri-Asset Quantitative Terminal</title>
+    <!-- Google Fonts: Cormorant Garamond (Luxury Editorial Serif), Playfair Display, Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {{
@@ -464,25 +467,51 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             theme: {{
                 extend: {{
                     fontFamily: {{
+                        serif: ['"Cormorant Garamond"', '"Playfair Display"', 'Georgia', 'serif'],
+                        display: ['"Playfair Display"', '"Cormorant Garamond"', 'Georgia', 'serif'],
                         sans: ['"Inter"', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
+                    }},
+                    colors: {{
+                        terracotta: {{
+                            50: '#FBF5F2',
+                            100: '#F4EAE4',
+                            200: '#E8D2C5',
+                            500: '#C26335',
+                            600: '#A8522A',
+                            700: '#8F421D',
+                        }},
+                        forest: {{
+                            800: '#223223',
+                            900: '#162118',
+                            950: '#0F1710',
+                        }},
+                        linen: {{
+                            50: '#FAF8F4',
+                            100: '#F7F4EE',
+                            200: '#EFEAE0',
+                            300: '#E5DFD5',
+                            400: '#D5CBBF',
+                        }}
                     }}
                 }}
             }}
         }};
 
-        // Instant Finviz Theme Detection to prevent theme flicker
+        // Instant Theme Detection to prevent theme flicker
         (function() {{
             const savedTheme = localStorage.getItem('finviz_theme');
-            if (savedTheme === 'light') {{
-                document.documentElement.classList.remove('dark');
-            }} else {{
+            if (savedTheme === 'dark') {{
                 document.documentElement.classList.add('dark');
+            }} else {{
+                document.documentElement.classList.remove('dark');
             }}
         }})();
     </script>
     <style>
         :root {{
+            --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+            --font-display: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }}
@@ -497,252 +526,244 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         body {{
             font-family: var(--font-sans);
             -webkit-font-smoothing: antialiased;
-            transition: background-color 0.15s ease, color 0.15s ease;
+            transition: background-color 0.2s ease, color 0.2s ease;
         }}
 
-        /* Finviz Dark Theme Base */
-        html.dark body {{
-            background-color: #0b0f17;
-            color: #cbd5e1;
-        }}
-        /* Finviz Light Theme Base */
+        /* Light Mode Base: Warm Linen & Terracotta (Rio Minimalist Aesthetic) */
         html:not(.dark) body {{
-            background-color: #f1f4f8;
-            color: #0f172a;
+            background-color: #F7F4EE;
+            color: #2A241E;
         }}
 
-        /* Finviz Cards & Containers */
-        .finviz-card, .natural-card {{
-            border-radius: 0.5rem;
-            transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        /* Dark Mode Base: Deep Forest Olive Green (Image 5 Aesthetic) */
+        html.dark body {{
+            background-color: #162118;
+            color: #F7F4EE;
         }}
-        html.dark .finviz-card, html.dark .natural-card {{
-            background-color: #131922 !important;
-            border: 1px solid #1f2937 !important;
-            color: #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+
+        /* Cards & Containers */
+        .finviz-card, .natural-card {{
+            border-radius: 0.75rem;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }}
         html:not(.dark) .finviz-card, html:not(.dark) .natural-card {{
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            color: #0f172a;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: #FFFDFB !important;
+            border: 1px solid #E5DFD5 !important;
+            color: #2A241E;
+            box-shadow: 0 1px 3px rgba(42, 36, 30, 0.04), 0 4px 14px rgba(42, 36, 30, 0.02);
+        }}
+        html.dark .finviz-card, html.dark .natural-card {{
+            background-color: #1D2A1F !important;
+            border: 1px solid #2C3E2F !important;
+            color: #F7F4EE;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
         }}
 
         /* Inner Panels & Sub-boxes */
-        html.dark .bg-linen-50 {{ background-color: #17202c !important; }}
-        html.dark .bg-linen-100 {{ background-color: #1b2432 !important; }}
-        html.dark .bg-linen-100\\/90 {{ background-color: rgba(27, 36, 50, 0.95) !important; }}
-        html.dark .bg-linen-200 {{ background-color: #233042 !important; }}
-        html.dark .border-linen-200 {{ border-color: #233042 !important; }}
-        html.dark .border-linen-300 {{ border-color: #2a384c !important; }}
-        html.dark .bg-white {{ background-color: #131922 !important; }}
-        html.dark .bg-white\\/80 {{ background-color: rgba(19, 25, 34, 0.85) !important; }}
-        html.dark .bg-white\\/60 {{ background-color: rgba(19, 25, 34, 0.65) !important; }}
+        html:not(.dark) .bg-linen-50, html:not(.dark) .bg-slate-50 {{ background-color: #FAF7F2 !important; }}
+        html:not(.dark) .bg-linen-100, html:not(.dark) .bg-slate-100 {{ background-color: #F2EDE4 !important; }}
+        html:not(.dark) .border-linen-200, html:not(.dark) .border-slate-200 {{ border-color: #E5DFD5 !important; }}
+        html:not(.dark) .border-linen-300, html:not(.dark) .border-slate-300 {{ border-color: #D8D1C4 !important; }}
+        html:not(.dark) .bg-white {{ background-color: #FFFDFB !important; }}
 
-        html:not(.dark) .bg-linen-50 {{ background-color: #f8fafc !important; }}
-        html:not(.dark) .bg-linen-100 {{ background-color: #f1f5f9 !important; }}
-        html:not(.dark) .bg-linen-100\\/90 {{ background-color: rgba(241, 245, 249, 0.95) !important; }}
-        html:not(.dark) .bg-linen-200 {{ background-color: #e2e8f0 !important; }}
-        html:not(.dark) .border-linen-200 {{ border-color: #e2e8f0 !important; }}
-        html:not(.dark) .border-linen-300 {{ border-color: #cbd5e1 !important; }}
-        html:not(.dark) .bg-white {{ background-color: #ffffff !important; }}
-        html:not(.dark) .bg-white\\/80 {{ background-color: rgba(255, 255, 255, 0.85) !important; }}
-        html:not(.dark) .bg-white\\/60 {{ background-color: rgba(255, 255, 255, 0.65) !important; }}
-
-        /* Forest color overrides for Finviz theme */
-        html.dark .bg-forest-900 {{ background-color: #161d27 !important; color: #f8fafc !important; }}
-        html.dark .bg-forest-800 {{ background-color: #1a2332 !important; color: #f8fafc !important; }}
-        html.dark .bg-forest-700 {{ background-color: #2563eb !important; color: #ffffff !important; }}
-        html.dark .bg-forest-600 {{ background-color: #3b82f6 !important; }}
-        html.dark .bg-forest-100 {{ background-color: #1e293b !important; color: #93c5fd !important; }}
-        html.dark .border-forest-800 {{ border-color: #1f2937 !important; }}
-        html.dark .border-forest-700 {{ border-color: #2a384c !important; }}
-        html.dark .border-forest-600 {{ border-color: #374151 !important; }}
-        html.dark .border-forest-200 {{ border-color: #233042 !important; }}
-
-        html:not(.dark) .bg-forest-900 {{ background-color: #0f172a !important; color: #ffffff !important; }}
-        html:not(.dark) .bg-forest-800 {{ background-color: #1e293b !important; color: #ffffff !important; }}
-        html:not(.dark) .bg-forest-700 {{ background-color: #1d4ed8 !important; color: #ffffff !important; }}
-        html:not(.dark) .bg-forest-600 {{ background-color: #2563eb !important; }}
-        html:not(.dark) .bg-forest-100 {{ background-color: #dbeafe !important; color: #1e40af !important; }}
-        html:not(.dark) .border-forest-800 {{ border-color: #cbd5e1 !important; }}
-        html:not(.dark) .border-forest-700 {{ border-color: #94a3b8 !important; }}
-        html:not(.dark) .border-forest-600 {{ border-color: #cbd5e1 !important; }}
-        html:not(.dark) .border-forest-200 {{ border-color: #e2e8f0 !important; }}
+        html.dark .bg-linen-50, html.dark .bg-slate-50 {{ background-color: #19241B !important; }}
+        html.dark .bg-linen-100, html.dark .bg-slate-100 {{ background-color: #223124 !important; }}
+        html.dark .border-linen-200, html.dark .border-slate-200 {{ border-color: #2C3E2F !important; }}
+        html.dark .border-linen-300, html.dark .border-slate-300 {{ border-color: #384F3C !important; }}
+        html.dark .bg-white {{ background-color: #1D2A1F !important; }}
 
         /* Typography & Headings */
-        html.dark .text-forest-900 {{ color: #f8fafc !important; }}
-        html.dark .text-forest-800 {{ color: #e2e8f0 !important; }}
-        html.dark .text-forest-700 {{ color: #94a3b8 !important; }}
-        html.dark .text-stone-900 {{ color: #f8fafc !important; }}
-        html.dark .text-stone-800 {{ color: #f1f5f9 !important; }}
-        html.dark .text-stone-700 {{ color: #cbd5e1 !important; }}
-        html.dark .text-stone-600 {{ color: #94a3b8 !important; }}
-        html.dark .text-stone-500 {{ color: #64748b !important; }}
-        html.dark .text-stone-400 {{ color: #475569 !important; }}
-        html.dark .text-sage-600 {{ color: #38bdf8 !important; }}
-        html.dark .text-sage-700 {{ color: #60a5fa !important; }}
-        html.dark .text-sage-300 {{ color: #94a3b8 !important; }}
-        html.dark .text-sage-200 {{ color: #cbd5e1 !important; }}
-        html.dark .text-sprout {{ color: #38bdf8 !important; }}
+        html:not(.dark) .text-forest-900, html:not(.dark) .text-slate-900 {{ color: #2A241E !important; }}
+        html:not(.dark) .text-forest-800, html:not(.dark) .text-slate-800 {{ color: #3F372E !important; }}
+        html:not(.dark) .text-forest-700, html:not(.dark) .text-slate-700 {{ color: #5B5044 !important; }}
+        html:not(.dark) .text-stone-900 {{ color: #2A241E !important; }}
+        html:not(.dark) .text-stone-800 {{ color: #3F372E !important; }}
+        html:not(.dark) .text-stone-700 {{ color: #5B5044 !important; }}
+        html:not(.dark) .text-stone-600, html:not(.dark) .text-slate-600 {{ color: #756A5D !important; }}
+        html:not(.dark) .text-stone-500, html:not(.dark) .text-slate-500 {{ color: #8F8273 !important; }}
+        html:not(.dark) .text-stone-400, html:not(.dark) .text-slate-400 {{ color: #A89B8C !important; }}
+        html:not(.dark) .text-sage-600, html:not(.dark) .text-blue-600 {{ color: #A8522A !important; }}
+        html:not(.dark) .text-sage-700, html:not(.dark) .text-blue-700 {{ color: #8F421D !important; }}
+        html:not(.dark) .text-sprout {{ color: #A8522A !important; }}
 
-        html:not(.dark) .text-forest-900 {{ color: #0f172a !important; }}
-        html:not(.dark) .text-forest-800 {{ color: #1e293b !important; }}
-        html:not(.dark) .text-forest-700 {{ color: #334155 !important; }}
-        html:not(.dark) .text-stone-900 {{ color: #0f172a !important; }}
-        html:not(.dark) .text-stone-800 {{ color: #1e293b !important; }}
-        html:not(.dark) .text-stone-700 {{ color: #334155 !important; }}
-        html:not(.dark) .text-stone-600 {{ color: #475569 !important; }}
-        html:not(.dark) .text-stone-500 {{ color: #64748b !important; }}
-        html:not(.dark) .text-stone-400 {{ color: #94a3b8 !important; }}
-        html:not(.dark) .text-sage-600 {{ color: #0284c7 !important; }}
-        html:not(.dark) .text-sage-700 {{ color: #0369a1 !important; }}
-        html:not(.dark) .text-sage-300 {{ color: #475569 !important; }}
-        html:not(.dark) .text-sage-200 {{ color: #334155 !important; }}
-        html:not(.dark) .text-sprout {{ color: #0284c7 !important; }}
+        html.dark .text-forest-900, html.dark .text-slate-900 {{ color: #F7F4EE !important; }}
+        html.dark .text-forest-800, html.dark .text-slate-800 {{ color: #EAE4DA !important; }}
+        html.dark .text-forest-700, html.dark .text-slate-700 {{ color: #C5BCB0 !important; }}
+        html.dark .text-stone-900 {{ color: #F7F4EE !important; }}
+        html.dark .text-stone-800 {{ color: #EAE4DA !important; }}
+        html.dark .text-stone-700 {{ color: #C5BCB0 !important; }}
+        html.dark .text-stone-600, html.dark .text-slate-600 {{ color: #A4B6A6 !important; }}
+        html.dark .text-stone-500, html.dark .text-slate-500 {{ color: #829684 !important; }}
+        html.dark .text-stone-400, html.dark .text-slate-400 {{ color: #697D6B !important; }}
+        html.dark .text-sage-600, html.dark .text-blue-600 {{ color: #D97343 !important; }}
+        html.dark .text-sage-700, html.dark .text-blue-700 {{ color: #EA8455 !important; }}
+        html.dark .text-sprout {{ color: #D97343 !important; }}
 
-        /* Finviz Tables */
-        table {{ border-collapse: collapse; }}
-        html.dark table th {{
-            background-color: #17202c !important;
-            color: #94a3b8 !important;
-            border-bottom: 1px solid #233042 !important;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }}
-        html:not(.dark) table th {{
-            background-color: #eaedf2 !important;
-            color: #475569 !important;
-            border-bottom: 1px solid #cbd5e1 !important;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }}
-        html.dark table tbody tr:nth-child(even) {{ background-color: #10161f; }}
-        html.dark table tbody tr:nth-child(odd) {{ background-color: #131922; }}
-        html.dark table tbody tr:hover {{ background-color: #1d2736 !important; }}
-        html:not(.dark) table tbody tr:nth-child(even) {{ background-color: #f8fafc; }}
-        html:not(.dark) table tbody tr:nth-child(odd) {{ background-color: #ffffff; }}
-        html:not(.dark) table tbody tr:hover {{ background-color: #f1f5f9 !important; }}
-
-        /* Finviz Navigation Tabs */
+        /* Navigation Tabs */
         .tab-btn {{
-            border: 1px solid transparent;
             font-family: var(--font-mono);
-            border-radius: 0.375rem;
-            transition: all 0.15s ease-in-out;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease-in-out;
             cursor: pointer;
         }}
-        html.dark .tab-btn.active {{
-            background-color: #2563eb !important;
-            color: #ffffff !important;
-            border-color: #3b82f6 !important;
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
-        }}
-        html.dark .tab-btn:not(.active) {{
-            background-color: #131922 !important;
-            color: #94a3b8 !important;
-            border-color: #1f2937 !important;
-        }}
-        html.dark .tab-btn:not(.active):hover {{
-            background-color: #1c2533 !important;
-            color: #f8fafc !important;
-            border-color: #374151 !important;
-        }}
         html:not(.dark) .tab-btn.active {{
-            background-color: #1d4ed8 !important;
-            color: #ffffff !important;
-            border-color: #2563eb !important;
-            box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+            background-color: #A8522A !important;
+            color: #FFFFFF !important;
+            border-color: #8F421D !important;
+            box-shadow: 0 2px 8px rgba(168, 82, 42, 0.25);
         }}
         html:not(.dark) .tab-btn:not(.active) {{
-            background-color: #ffffff !important;
-            color: #475569 !important;
-            border-color: #e2e8f0 !important;
+            background-color: #FFFDFB !important;
+            color: #756A5D !important;
+            border: 1px solid #E5DFD5 !important;
         }}
         html:not(.dark) .tab-btn:not(.active):hover {{
-            background-color: #f1f5f9 !important;
-            color: #0f172a !important;
-            border-color: #cbd5e1 !important;
+            background-color: #F2ECE2 !important;
+            color: #2A241E !important;
+            border-color: #D8D1C4 !important;
+        }}
+
+        html.dark .tab-btn.active {{
+            background-color: #D97343 !important;
+            color: #FFFFFF !important;
+            border-color: #EA8455 !important;
+            box-shadow: 0 2px 10px rgba(217, 115, 67, 0.35);
+        }}
+        html.dark .tab-btn:not(.active) {{
+            background-color: #1D2A1F !important;
+            color: #A4B6A6 !important;
+            border: 1px solid #2C3E2F !important;
+        }}
+        html.dark .tab-btn:not(.active):hover {{
+            background-color: #27392A !important;
+            color: #F7F4EE !important;
+            border-color: #384F3C !important;
+        }}
+
+        /* Table Styling */
+        table {{ border-collapse: collapse; }}
+        html:not(.dark) table th {{
+            background-color: #F2ECE2 !important;
+            color: #5B5044 !important;
+            border-bottom: 1px solid #D8D1C4 !important;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        html:not(.dark) table tbody tr:nth-child(even) {{ background-color: #FAF7F2; }}
+        html:not(.dark) table tbody tr:nth-child(odd) {{ background-color: #FFFDFB; }}
+        html:not(.dark) table tbody tr:hover {{ background-color: #F4EFE6 !important; }}
+
+        html.dark table th {{
+            background-color: #223124 !important;
+            color: #A4B6A6 !important;
+            border-bottom: 1px solid #2C3E2F !important;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        html.dark table tbody tr:nth-child(even) {{ background-color: #172219; }}
+        html.dark table tbody tr:nth-child(odd) {{ background-color: #1D2A1F; }}
+        html.dark table tbody tr:hover {{ background-color: #263829 !important; }}
+
+        /* Terracotta Circular Emblem Seal (like RS in Image 1 & emblems in Image 2) */
+        .seal-emblem {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background-color: #A8522A;
+            color: #FFFFFF;
+            font-family: var(--font-serif);
+            font-weight: 700;
+            box-shadow: 0 0 0 2px #FFFDFB, 0 0 0 3.5px #A8522A;
+        }}
+        html.dark .seal-emblem {{
+            background-color: #D97343;
+            box-shadow: 0 0 0 2px #162118, 0 0 0 3.5px #D97343;
+        }}
+
+        /* Arched Card Styling (like Image 3 & 4) */
+        .arch-card {{
+            border-top-left-radius: 2rem !important;
+            border-top-right-radius: 2rem !important;
         }}
 
         /* Footer */
-        html.dark footer {{
-            background-color: #0b0f17 !important;
-            border-color: #1f2937 !important;
-            color: #94a3b8 !important;
-        }}
         html:not(.dark) footer {{
-            background-color: #ffffff !important;
-            border-color: #e2e8f0 !important;
-            color: #64748b !important;
+            background-color: #F2ECE2 !important;
+            border-color: #E5DFD5 !important;
+            color: #756A5D !important;
+        }}
+        html.dark footer {{
+            background-color: #111A13 !important;
+            border-color: #2C3E2F !important;
+            color: #A4B6A6 !important;
         }}
 
-        /* Broadcast Pre/Code Box */
-        html.dark #wa-text-content {{
-            background-color: #0b0f17 !important;
-            color: #38bdf8 !important;
-            border-color: #1f2937 !important;
-        }}
+        /* WhatsApp Box */
         html:not(.dark) #wa-text-content {{
-            background-color: #f8fafc !important;
-            color: #0369a1 !important;
-            border-color: #cbd5e1 !important;
+            background-color: #FAF7F2 !important;
+            color: #A8522A !important;
+            border-color: #E5DFD5 !important;
+        }}
+        html.dark #wa-text-content {{
+            background-color: #111A13 !important;
+            color: #E07A4A !important;
+            border-color: #2C3E2F !important;
         }}
 
         /* Finviz Flashes */
         @keyframes flashGreen {{
-            0% {{ background-color: rgba(16, 185, 129, 0.35); }}
+            0% {{ background-color: rgba(46, 107, 62, 0.35); }}
             100% {{ background-color: transparent; }}
         }}
         @keyframes flashRed {{
-            0% {{ background-color: rgba(239, 68, 68, 0.35); }}
+            0% {{ background-color: rgba(166, 58, 43, 0.35); }}
             100% {{ background-color: transparent; }}
         }}
         .flash-up {{ animation: flashGreen 1s ease-out; }}
         .flash-down {{ animation: flashRed 1s ease-out; }}
 
-        /* Custom Finviz Scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {{ width: 6px; height: 6px; }}
-        html.dark ::-webkit-scrollbar-track {{ background: #0b0f17; }}
-        html.dark ::-webkit-scrollbar-thumb {{ background: #233042; border-radius: 9999px; }}
-        html.dark ::-webkit-scrollbar-thumb:hover {{ background: #374151; }}
-        html:not(.dark) ::-webkit-scrollbar-track {{ background: #f1f4f8; }}
-        html:not(.dark) ::-webkit-scrollbar-thumb {{ background: #cbd5e1; border-radius: 9999px; }}
-        html:not(.dark) ::-webkit-scrollbar-thumb:hover {{ background: #94a3b8; }}
+        html:not(.dark) ::-webkit-scrollbar-track {{ background: #F7F4EE; }}
+        html:not(.dark) ::-webkit-scrollbar-thumb {{ background: #D8D1C4; border-radius: 9999px; }}
+        html.dark ::-webkit-scrollbar-track {{ background: #162118; }}
+        html.dark ::-webkit-scrollbar-thumb {{ background: #2C3E2F; border-radius: 9999px; }}
     </style>
 </head>
-<body class="bg-[#f1f4f8] text-slate-900 dark:bg-[#0b0f17] dark:text-slate-100 min-h-screen font-sans transition-colors">
+<body class="bg-[#F7F4EE] text-[#2A241E] dark:bg-[#162118] dark:text-[#F7F4EE] min-h-screen font-sans transition-colors">
 
-    <!-- TOP FINVIZ STATUS & TICKER BAR -->
-    <header class="bg-[#0b0f17] text-slate-200 text-xs border-b border-[#1f2937] py-2 px-4 sm:px-8">
+    <!-- TOP EDITORIAL STATUS & TICKER BAR -->
+    <header class="bg-[#F2EDE4] dark:bg-[#111A13] text-[#2A241E] dark:text-[#F7F4EE] text-xs border-b border-[#E5DFD5] dark:border-[#2C3E2F] py-2 px-4 sm:px-8 transition-colors">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-            <!-- Finviz Brand & Subtitle -->
-            <div class="flex items-center gap-2.5">
-                <span class="px-2.5 py-0.5 rounded bg-blue-600 text-white font-extrabold text-sm tracking-widest font-mono shadow-sm">FINVIZ</span>
-                <span class="font-extrabold tracking-wide uppercase text-white text-sm font-mono">ML4T TERMINAL</span>
-                <span class="text-slate-500 hidden sm:inline font-mono">|</span>
-                <span class="text-slate-400 hidden sm:inline text-xs font-mono">Machine Learning for Trading &middot; Tri-Asset Universe: S&P 500, IHSG, BTC</span>
+            <!-- Brand & Emblem -->
+            <div class="flex items-center gap-3">
+                <div class="seal-emblem w-7 h-7 text-[11px] tracking-widest">4T</div>
+                <div class="flex items-center gap-2">
+                    <span class="font-serif font-bold tracking-wider text-sm text-[#2A241E] dark:text-[#F7F4EE] uppercase">ML4T QUANTITATIVE</span>
+                    <span class="text-[#8F8273] dark:text-[#697D6B] hidden sm:inline font-mono">|</span>
+                    <span class="text-[#756A5D] dark:text-[#A4B6A6] hidden sm:inline text-xs font-mono">Tri-Asset Universe: S&P 500 &middot; IHSG &middot; Bitcoin</span>
+                </div>
             </div>
 
             <!-- Clocks, Session & Dark/Light Switcher -->
             <div class="flex items-center gap-3 text-xs font-mono">
-                <div class="flex items-center gap-1.5 bg-[#161d27] px-2.5 py-1 rounded border border-[#232e3d]">
-                    <span class="text-slate-400">WIB:</span>
-                    <span id="live-clock-wib" class="font-bold text-white">--:--:--</span>
+                <div class="flex items-center gap-1.5 bg-[#FAF7F2] dark:bg-[#19241B] px-2.5 py-1 rounded-md border border-[#E5DFD5] dark:border-[#2C3E2F]">
+                    <span class="text-[#756A5D] dark:text-[#A4B6A6]">WIB:</span>
+                    <span id="live-clock-wib" class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">--:--:--</span>
                 </div>
-                <div class="flex items-center gap-1.5 bg-[#161d27] px-2.5 py-1 rounded border border-[#232e3d]">
-                    <span id="ny-tz-label" class="text-slate-400">NYC:</span>
-                    <span id="live-clock-est" class="font-bold text-white">--:--:--</span>
+                <div class="flex items-center gap-1.5 bg-[#FAF7F2] dark:bg-[#19241B] px-2.5 py-1 rounded-md border border-[#E5DFD5] dark:border-[#2C3E2F]">
+                    <span id="ny-tz-label" class="text-[#756A5D] dark:text-[#A4B6A6]">NYC:</span>
+                    <span id="live-clock-est" class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">--:--:--</span>
                 </div>
                 {session_pill_html}
 
                 <!-- Dark Mode / Light Mode Switcher Button -->
-                <button id="theme-toggle" onclick="toggleFinvizTheme()" class="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-bold transition-all border border-[#2a384c] bg-[#161d27] text-slate-200 hover:bg-[#1e2736] hover:text-white cursor-pointer shadow-sm" title="Toggle Finviz Dark/Light Mode">
+                <button id="theme-toggle" onclick="toggleFinvizTheme()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-bold transition-all border border-[#E5DFD5] dark:border-[#2C3E2F] bg-[#FAF7F2] dark:bg-[#19241B] text-[#2A241E] dark:text-[#F7F4EE] hover:bg-[#EBE5DA] dark:hover:bg-[#223124] cursor-pointer shadow-sm" title="Toggle Dark/Light Mode">
                     <span id="theme-icon">🌙</span>
                     <span id="theme-label" class="uppercase tracking-wider">DARK</span>
                 </button>
@@ -750,72 +771,72 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         </div>
     </header>
 
-    <!-- FINVIZ HERO & MARKET TICKER TILES -->
-    <section class="border-b border-slate-200 dark:border-[#1f2937] bg-white dark:bg-[#101620] px-4 sm:px-8 py-5 transition-colors">
-        <div class="max-w-7xl mx-auto space-y-4">
+    <!-- WARM EDITORIAL HERO & MARKET TICKER TILES -->
+    <section class="border-b border-[#E5DFD5] dark:border-[#2C3E2F] bg-[#FFFDFB] dark:bg-[#18231A] px-4 sm:px-8 py-6 transition-colors">
+        <div class="max-w-7xl mx-auto space-y-5">
             <!-- Header Row -->
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div class="space-y-1">
-                    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-mono bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        <span>DATABASE FRED & SEKTOR: <b class="font-mono text-slate-800 dark:text-slate-200">{display_date}</b></span>
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                <div class="space-y-1.5 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full text-[11px] font-mono bg-[#A8522A]/10 dark:bg-[#D97343]/15 text-[#A8522A] dark:text-[#D97343] border border-[#A8522A]/20 font-bold">
+                        <span class="w-2 h-2 rounded-full bg-[#A8522A] dark:bg-[#D97343] animate-pulse"></span>
+                        <span>Stefan Jansen (3rd Ed) &middot; Marcos L&oacute;pez de Prado &middot; Database: <b class="font-mono text-[#2A241E] dark:text-[#F7F4EE]">{display_date}</b></span>
                     </div>
-                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase font-mono">
-                        Finviz &middot; Machine Learning for Algorithmic Trading Terminal
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold tracking-tight text-[#2A241E] dark:text-[#F7F4EE] leading-tight">
+                        Machine Learning for Trading &middot; <span class="italic font-normal">Tri-Asset Terminal</span>
                     </h1>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Platform kuantitatif berbasis Machine Learning for Trading (Stefan Jansen 3rd Ed & Marcos L&oacute;pez de Prado) dari Bab 1 hingga 27: Tri-Asset GMM Regimes (S&P 500, IHSG, Bitcoin), rekayasa fitur alpha, dan evaluasi risiko empiris.
+                    <p class="text-xs sm:text-sm text-[#756A5D] dark:text-[#A4B6A6] leading-relaxed">
+                        Arsitektur sistematis 27 bab pemodelan kuantitatif: Deteksi Rezim GMM tak bersyarat, rekayasa fitur alpha, dan alokasi risiko empiris lintas Wall Street (S&P 500), Pasar Domestik (IHSG), dan Aset Digital (Bitcoin).
                     </p>
                 </div>
-                <div class="flex items-center gap-2.5">
-                    <button onclick="refreshAllData()" class="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow cursor-pointer">
+                <div class="flex items-center gap-3 font-mono text-xs">
+                    <button onclick="refreshAllData()" class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold bg-[#A8522A] hover:bg-[#8F421D] dark:bg-[#D97343] dark:hover:bg-[#EA8455] text-white transition-all shadow cursor-pointer">
                         <span id="sync-icon">🔄</span>
-                        <span id="btn-refresh-text">Refresh Data</span>
+                        <span id="btn-refresh-text">Refresh Data Pasar</span>
                     </button>
-                    <a href="https://github.com/studikarangsambung/macro-pulse" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-semibold bg-slate-100 dark:bg-[#161d27] hover:bg-slate-200 dark:hover:bg-[#1e2736] text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-[#232e3d] transition-all">
+                    <a href="https://github.com/studikarangsambung/macro-pulse" target="_blank" class="flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium bg-[#F2EDE4] dark:bg-[#223124] text-[#2A241E] dark:text-[#F7F4EE] border border-[#E5DFD5] dark:border-[#2C3E2F] hover:bg-[#EBE5DA] dark:hover:bg-[#2B3E2E] transition-all">
                         <span>GitHub</span> ↗
                     </a>
                 </div>
             </div>
 
-            <!-- Finviz 6 Key Assets Ticker Strip -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-1">
+            <!-- 6 Key Assets Ticker Strip (Arched Window Minimalist Cards) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
                 <!-- BTC Live -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm" id="card-btc">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm hover:border-[#A8522A]/50" id="card-btc">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold flex items-center gap-1 text-[#2A241E] dark:text-[#F7F4EE]">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>BTC / USD
                         </span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-emerald-500/10 text-emerald-500 font-bold">Live</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Live</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div id="live-btc" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
+                        <div id="live-btc" class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">${prices.get('BTC-USD', {}).get('close', 0):,.0f}</div>
                         <div id="live-btc-chg" class="text-xs font-semibold">{chg_badge(prices.get('BTC-USD', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- ETH Live -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm" id="card-eth">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold flex items-center gap-1 text-slate-800 dark:text-slate-200">
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm hover:border-[#A8522A]/50" id="card-eth">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold flex items-center gap-1 text-[#2A241E] dark:text-[#F7F4EE]">
                             <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>ETH / USD
                         </span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-blue-500/10 text-blue-500 font-bold">Live</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold">Live</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div id="live-eth" class="text-base font-extrabold text-slate-900 dark:text-white font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
+                        <div id="live-eth" class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">${prices.get('ETH-USD', {}).get('close', 0):,.0f}</div>
                         <div id="live-eth-chg" class="text-xs font-semibold">{chg_badge(prices.get('ETH-USD', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- IHSG Spot (^JKSE) -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold text-slate-800 dark:text-slate-200">IHSG (^JKSE)</span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">{indo_macro.get('ihsg_status', 'Spot')}</span>
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">IHSG (^JKSE)</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">{indo_macro.get('ihsg_status', 'Spot')}</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">
+                        <div class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">
                             {f"{indo_macro['ihsg_val']:,.2f}" if indo_macro.get('ihsg_val') else "N/A"}
                         </div>
                         <div class="text-xs font-semibold">{chg_badge(indo_macro.get('ihsg_chg', 0))}</div>
@@ -823,37 +844,37 @@ def render_html_report(payload, output_path="report_us_macro.html"):
                 </div>
 
                 <!-- USD / IDR -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold text-slate-800 dark:text-slate-200">USD / IDR</span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">{indo_macro.get('kurs_status', 'Kurs')}</span>
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">USD / IDR</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">{indo_macro.get('kurs_status', 'Kurs')}</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"Rp {prices['USDIDR=X']['close']:,.0f}" if prices.get('USDIDR=X', {}).get('close') else "N/A"}</div>
+                        <div class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">{f"Rp {prices['USDIDR=X']['close']:,.0f}" if prices.get('USDIDR=X', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('USDIDR=X', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- XAUUSD (Gold Spot) -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold text-slate-800 dark:text-slate-200">Emas (XAUUSD)</span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold">Spot</span>
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">Emas (XAUUSD)</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">Spot</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}</div>
+                        <div class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">{f"${prices['GC=F']['close']:,.1f}" if prices.get('GC=F', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('GC=F', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
 
                 <!-- US 10Y Yield -->
-                <div class="p-3 rounded-lg bg-slate-50 dark:bg-[#131922] border border-slate-200 dark:border-[#1f2937] transition-all shadow-sm">
-                    <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        <span class="font-bold text-slate-800 dark:text-slate-200">US 10Y Yield</span>
-                        <span class="text-[9px] uppercase px-1 rounded bg-rose-500/10 text-rose-500 font-bold">Yield</span>
+                <div class="p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#1D2A1F] border border-[#E5DFD5] dark:border-[#2C3E2F] transition-all shadow-sm">
+                    <div class="flex items-center justify-between text-[11px] text-[#756A5D] dark:text-[#A4B6A6] font-mono">
+                        <span class="font-bold text-[#2A241E] dark:text-[#F7F4EE]">US 10Y Yield</span>
+                        <span class="text-[9px] uppercase px-1 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold">Yield</span>
                     </div>
                     <div class="mt-1.5 flex items-baseline justify-between font-mono">
-                        <div class="text-base font-extrabold text-slate-900 dark:text-white font-mono">{f"{prices['^TNX']['close']:.3f}%" if prices.get('^TNX', {}).get('close') else "N/A"}</div>
+                        <div class="text-base font-extrabold text-[#2A241E] dark:text-[#F7F4EE] font-mono">{f"{prices['^TNX']['close']:.3f}%" if prices.get('^TNX', {}).get('close') else "N/A"}</div>
                         <div class="text-xs font-semibold">{chg_badge(prices.get('^TNX', {}).get('change_1d_pct', 0))}</div>
                     </div>
                 </div>
@@ -861,29 +882,29 @@ def render_html_report(payload, output_path="report_us_macro.html"):
         </div>
     </section>
 
-    <!-- FINVIZ NAVIGATION TABS -->
-    <nav class="sticky top-0 z-30 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-300 dark:border-[#1f2937] px-4 sm:px-8 py-2.5 transition-colors">
+    <!-- EXACT 7 ML4T NAVIGATION TABS (USER SPECIFICATION) -->
+    <nav class="sticky top-0 z-30 bg-[#F7F4EE]/95 dark:bg-[#162118]/95 backdrop-blur-md border-b border-[#E5DFD5] dark:border-[#2C3E2F] px-4 sm:px-8 py-2.5 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
-            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                1. Hub Rezim Tri-Asset (Bab 1)
+            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 1: Hub Rezim Tri-Asset (Bab 1)
             </button>
-            <button onclick="switchTab('tab-ml4t')" id="btn-tab-ml4t" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                2. Kurikulum 27 Bab ML4T
+            <button onclick="switchTab('tab-ml4t')" id="btn-tab-ml4t" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 2: Kurikulum 27 Bab ML4T (Peta Jalan Stefan Jansen)
             </button>
-            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                3. Flow Projection (7–30D)
+            <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 3: Flow Projection (7–30D)
             </button>
-            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                4. Kalender Ekonomi
+            <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 4: Kalender Ekonomi DST
             </button>
-            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                5. Rotasi 11 Sektor US
+            <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 5: Rotasi 11 Sektor US
             </button>
-            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                6. Transmisi Indonesia
+            <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 6: Transmisi Makro Indonesia
             </button>
-            <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                7. WhatsApp Broadcast
+            <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-3.5 py-1.5 rounded-lg font-bold transition-all whitespace-nowrap">
+                Tab 7: WhatsApp Quant Broadcast
             </button>
         </div>
     </nav>
