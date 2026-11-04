@@ -12,6 +12,271 @@ Features:
 import json
 import os
 
+import sys
+import os
+
+def render_prob_bar(label, pct, is_max=False):
+    bar_color = "bg-blue-600 dark:bg-blue-500" if is_max else "bg-slate-300 dark:bg-slate-700"
+    text_color = "text-blue-600 dark:text-blue-400 font-bold" if is_max else "text-slate-600 dark:text-slate-400"
+    return f"""
+    <div class="space-y-1">
+        <div class="flex justify-between text-[11px] font-mono">
+            <span class="{text_color}">{label}</span>
+            <span class="{text_color}">{pct:.1f}%</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="{bar_color} h-1.5 rounded-full transition-all duration-500" style="width: {pct:.1f}%"></div>
+        </div>
+    </div>
+    """
+
+def render_asset_card(asset_dict, badge_color):
+    probs_html = ""
+    max_pct = max(asset_dict["probabilities"].values())
+    for lbl, pct in asset_dict["probabilities"].items():
+        probs_html += render_prob_bar(lbl, pct, is_max=(pct == max_pct))
+        
+    feats_html = ""
+    for k, v in asset_dict["features"].items():
+        feats_html += f"""
+        <div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
+            <span class="text-slate-500 dark:text-slate-400">{k}</span>
+            <span class="font-bold text-slate-800 dark:text-slate-200">{v}</span>
+        </div>
+        """
+        
+    return f"""
+    <!-- Card: {asset_dict['asset']} -->
+    <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm flex flex-col justify-between space-y-4">
+        <div>
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#1f2937]">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full {badge_color} animate-pulse"></span>
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase font-mono text-slate-900 dark:text-white">{asset_dict['asset']}</h3>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">{asset_dict['ticker']}</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                        {asset_dict['confidence']:.1f}% P(Regime)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Dominant Regime -->
+            <div class="mt-3 p-2.5 rounded bg-slate-50 dark:bg-[#17202c] border border-slate-200/80 dark:border-[#233042]">
+                <div class="text-[9px] uppercase font-mono tracking-wider text-slate-400 dark:text-slate-500 font-bold">Status Rezim Dominan (GMM EM)</div>
+                <div class="text-xs font-extrabold text-blue-600 dark:text-blue-400 mt-0.5 font-mono">{asset_dict['dominant_regime']}</div>
+            </div>
+
+            <!-- Soft Probabilities -->
+            <div class="mt-4 space-y-2.5">
+                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400">Distribusi Probabilitas Campuran (Soft Assignment)</div>
+                {probs_html}
+            </div>
+
+            <!-- Features -->
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-[#1f2937]">
+                <div class="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400 mb-1.5">Fitur Pilar Penggerak Rezim</div>
+                <div class="space-y-0.5">
+                    {feats_html}
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics & Stance Footer -->
+        <div class="pt-3 border-t border-slate-200 dark:border-[#1f2937] space-y-2.5">
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                <span>Silhouette: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['silhouette_score']:.3f}</b></span>
+                <span>DBI: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['davies_bouldin']:.2f}</b></span>
+                <span>CHI: <b class="text-slate-800 dark:text-slate-200">{asset_dict['metrics']['calinski_harabasz']:.1f}</b></span>
+            </div>
+            <div class="p-2 rounded bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-700 dark:text-amber-400 font-medium">
+                <span class="font-bold">Direktif Risiko:</span> {asset_dict['quant_stance']}
+            </div>
+        </div>
+    </div>
+    """
+
+def generate_tri_asset_hub_html(ml4t_data):
+    c1 = render_asset_card(ml4t_data["sp500"], "bg-blue-500")
+    c2 = render_asset_card(ml4t_data["ihsg"], "bg-emerald-500")
+    c3 = render_asset_card(ml4t_data["bitcoin"], "bg-amber-500")
+    
+    return f"""
+    <!-- ML4T BAB 1: TRI-ASSET REGIME CLASSIFIER (S&P 500, IHSG, BITCOIN) -->
+    <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-[#1f2937] pb-3">
+            <div>
+                <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span>Stefan Jansen &middot; Machine Learning for Trading (3rd Ed) &mdash; Bab 1: Deteksi Rezim Makro</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-extrabold uppercase font-mono text-slate-900 dark:text-white mt-1">
+                    Tri-Asset Unsupervised Market Regime Hub
+                </h2>
+                <p class="text-xs text-slate-600 dark:text-slate-400 font-mono mt-0.5">
+                    Klasifikasi Gaussian Mixture Models (GMM) & Rantai Markov bebas look-ahead bias untuk S&P 500 (US), IHSG (Indonesia), dan Bitcoin (Kripto).
+                </p>
+            </div>
+            <div class="flex items-center gap-2 font-mono text-xs">
+                <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-[#161d27] border border-slate-300 dark:border-[#232e3d] text-slate-700 dark:text-slate-300 font-bold">
+                    Algoritma: GMM EM (Full Covariance)
+                </span>
+            </div>
+        </div>
+
+        <!-- 3 Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {c1}
+            {c2}
+            {c3}
+        </div>
+    </div>
+    """
+
+def generate_tri_asset_risk_table_html(ml4t_data):
+    rows_html = ""
+    for asset_key, asset_name in [("sp500", "S&P 500 (US Macro)"), ("ihsg", "IHSG (Indonesia Emerging)"), ("bitcoin", "Bitcoin (Crypto Liquidity)")]:
+        item = ml4t_data[asset_key]
+        for row in item["historical_risk"]:
+            ret_str = row["annual_return"]
+            ret_color = "text-emerald-600 dark:text-emerald-400 font-bold" if "+" in ret_str else "text-rose-600 dark:text-rose-400 font-bold"
+            rows_html += f"""
+            <tr class="border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-[#1d2736]">
+                <td class="py-2.5 px-3 font-bold text-slate-900 dark:text-white">{asset_name}</td>
+                <td class="py-2.5 px-3 text-slate-700 dark:text-slate-300">{row['regime']}</td>
+                <td class="py-2.5 px-3 text-right text-slate-600 dark:text-slate-400">{row['months']} bln</td>
+                <td class="py-2.5 px-3 text-right {ret_color}">{row['annual_return']}</td>
+                <td class="py-2.5 px-3 text-right text-slate-700 dark:text-slate-300">{row['annual_vol']}</td>
+                <td class="py-2.5 px-3 text-right text-rose-600 dark:text-rose-400 font-bold">{row['max_dd']}</td>
+            </tr>
+            """
+            
+    return f"""
+    <!-- Matriks Evaluasi Risiko Empiris Kuantitatif Lintas Rezim -->
+    <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-[#1f2937]">
+            <div>
+                <h3 class="text-sm font-extrabold uppercase font-mono text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>Matriks Evaluasi Risiko Empiris Kuantitatif Lintas Rezim (ML4T Bab 1)</span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                    Evaluasi volatilitas realisasi tahunan dan Maximum Drawdown pada data historis S&P 500, IHSG, dan Bitcoin.
+                </p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                Backtest 2005&ndash;2026
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+                <thead>
+                    <tr class="border-b border-slate-200 dark:border-[#1f2937]">
+                        <th class="py-2 px-3">Instrumen / Aset</th>
+                        <th class="py-2 px-3">Rezim Terklasifikasi</th>
+                        <th class="py-2 px-3 text-right">Durasi Sampel</th>
+                        <th class="py-2 px-3 text-right">Return Tahunan (p.a.)</th>
+                        <th class="py-2 px-3 text-right">Volatilitas (p.a.)</th>
+                        <th class="py-2 px-3 text-right">Max Drawdown</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows_html}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    """
+
+def generate_curriculum_tab_html(ml4t_data):
+    parts_html = ""
+    for p in ml4t_data["curriculum"]:
+        chapters_grid = ""
+        for ch in p["chapters"]:
+            if ch["status"] == "LIVE ACTIVE":
+                badge = '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">LIVE ACTIVE</span>'
+            elif ch["status"] == "ACTIVE":
+                badge = '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30">ACTIVE</span>'
+            elif ch["status"] == "INTEGRATED":
+                badge = '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30">INTEGRATED</span>'
+            else:
+                badge = '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-slate-500/15 text-slate-600 dark:text-slate-400 border border-slate-500/30">PLANNED</span>'
+                
+            chapters_grid += f"""
+            <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-[#17202c] border border-slate-200 dark:border-[#233042] flex flex-col justify-between space-y-2">
+                <div>
+                    <div class="flex items-center justify-between gap-1 mb-1 font-mono">
+                        <span class="text-[10px] font-extrabold text-blue-600 dark:text-blue-400">BAB {ch['no']:02d}</span>
+                        {badge}
+                    </div>
+                    <div class="text-xs font-bold text-slate-900 dark:text-white font-mono">{ch['title']}</div>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">{ch['detail']}</p>
+                </div>
+                <div class="flex items-center gap-1.5 pt-2 border-t border-slate-200/60 dark:border-[#233042]/80 text-[9px] font-mono text-slate-500">
+                    <span class="px-1 rounded bg-slate-200 dark:bg-slate-800">S&P 500</span>
+                    <span class="px-1 rounded bg-slate-200 dark:bg-slate-800">IHSG</span>
+                    <span class="px-1 rounded bg-slate-200 dark:bg-slate-800">BTC</span>
+                </div>
+            </div>
+            """
+            
+        parts_html += f"""
+        <div class="finviz-card bg-white dark:bg-[#131922] p-5 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-[#1f2937]">
+                <h3 class="text-xs font-extrabold font-mono text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>{p['part']}</span>
+                </h3>
+                <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">5 Bab Terstruktur</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {chapters_grid}
+            </div>
+        </div>
+        """
+        
+    return f"""
+    <!-- TAB 2: ML4T 27 CHAPTERS CURRICULUM & QUANTITATIVE MODELS -->
+    <div id="tab-ml4t" class="tab-pane hidden space-y-6">
+        <div class="finviz-card bg-white dark:bg-[#131922] p-6 rounded-lg border border-slate-200 dark:border-[#1f2937] shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-[#1f2937]">
+                <div class="space-y-1">
+                    <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span>Peta Jalan Kuantitatif End-to-End</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-extrabold uppercase font-mono text-slate-900 dark:text-white">
+                        Kurikulum Machine Learning for Trading (Stefan Jansen 3rd Ed) &mdash; 27 Bab
+                    </h2>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 font-mono">
+                        Struktur sistematis 5 bagian dari data, rekayasa fitur, pemodelan ML/DL, simulasi portofolio, hingga live trading & MLOps lintas aset (S&P 500, IHSG, BTC).
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-xs">
+                    <span class="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+                        Bab 1: Live Terintegrasi
+                    </span>
+                    <span class="px-2.5 py-1 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-bold">
+                        Multi-Asset: US &bull; ID &bull; Crypto
+                    </span>
+                </div>
+            </div>
+
+            <!-- 5 Parts Sections -->
+            <div class="mt-6 space-y-6">
+                {parts_html}
+            </div>
+        </div>
+    </div>
+    """
+
+
+
+
 def render_html_report(payload, output_path="report_us_macro.html"):
     regime = payload["regime"]
     ews = payload["ews"]
@@ -31,6 +296,13 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     flow_proj = payload.get("flow_proj", {})
     market_drivers = payload.get("market_drivers") or {}
     today_iso = payload.get("iso_timestamp", "")[:10]
+    # ML4T Multi-Asset Regimes & Curriculum
+    from ml4t_regime_engine import get_tri_asset_regimes
+    ml4t_data = payload.get("ml4t_regimes") or get_tri_asset_regimes(snapshot=payload, prices=prices, indo_macro=indo_macro)
+    tri_asset_hub_html = generate_tri_asset_hub_html(ml4t_data)
+    tri_asset_risk_table_html = generate_tri_asset_risk_table_html(ml4t_data)
+    curriculum_tab_html = generate_curriculum_tab_html(ml4t_data)
+
 
     # Compute dynamic Net Liquidity status & impact
     net_liq_chg = net_liq.get('change_4w_bil', 0)
@@ -593,22 +865,25 @@ def render_html_report(payload, output_path="report_us_macro.html"):
     <nav class="sticky top-0 z-30 bg-white/95 dark:bg-[#0b0f17]/95 backdrop-blur-md border-b border-slate-300 dark:border-[#1f2937] px-4 sm:px-8 py-2.5 transition-colors">
         <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
             <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                1. Overview & Rezim
+                1. Overview & Rezim Bab 1
+            </button>
+            <button onclick="switchTab('tab-ml4t')" id="btn-tab-ml4t" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
+                2. Kurikulum 27 Bab ML4T
             </button>
             <button onclick="switchTab('tab-flow')" id="btn-tab-flow" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                2. Flow Projection (7–30D)
+                3. Flow Projection (7–30D)
             </button>
             <button onclick="switchTab('tab-calendar')" id="btn-tab-calendar" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                3. Kalender Ekonomi
+                4. Kalender Ekonomi
             </button>
             <button onclick="switchTab('tab-sectors')" id="btn-tab-sectors" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                4. Rotasi 11 Sektor US
+                5. Rotasi 11 Sektor US
             </button>
             <button onclick="switchTab('tab-indonesia')" id="btn-tab-indonesia" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                5. Transmisi Indonesia
+                6. Transmisi Indonesia
             </button>
             <button onclick="switchTab('tab-wa')" id="btn-tab-wa" class="tab-btn px-3.5 py-1.5 rounded font-bold transition-all whitespace-nowrap">
-                6. WhatsApp Broadcast
+                7. WhatsApp Broadcast
             </button>
         </div>
     </nav>
@@ -618,6 +893,10 @@ def render_html_report(payload, output_path="report_us_macro.html"):
 
         <!-- TAB 1: RINGKASAN & STATUS REZIM -->
         <div id="tab-overview" class="tab-pane space-y-6">
+            
+            {tri_asset_hub_html}
+            {tri_asset_risk_table_html}
+
             
             <!-- Regime & EWS Hero Card -->
             <div class="natural-card p-6 sm:p-8">
@@ -1070,6 +1349,8 @@ def render_html_report(payload, output_path="report_us_macro.html"):
             </div>
 
         </div>
+
+        {curriculum_tab_html}
 
         <!-- TAB 2: FLOW PROJECTION (7-30 HARI) -->
         <div id="tab-flow" class="tab-pane hidden space-y-6">

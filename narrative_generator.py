@@ -246,7 +246,14 @@ def generate_report_payload(snapshot, ews_signals, regime, corrs, sectors, crypt
                                                 market_drivers)
     wib_now = get_wib_now()
 
+    try:
+        from ml4t_regime_engine import get_tri_asset_regimes
+        ml4t_regimes = get_tri_asset_regimes(snapshot, snapshot.get("prices", {}), indo_macro)
+    except Exception:
+        ml4t_regimes = {}
+
     payload = {
+        "ml4t_regimes": ml4t_regimes,
         "timestamp": wib_now.strftime("%Y-%m-%d %H:%M:%S"),
         "display_date": f"{wib_now.strftime('%A, %d %B %Y')} · {wib_now.strftime('%H:%M')} WIB",
         "iso_timestamp": wib_now.isoformat(),
